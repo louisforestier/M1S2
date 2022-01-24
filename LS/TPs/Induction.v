@@ -499,17 +499,27 @@ Proof.
     théorème. Vous trouverez sans doute que [plus_swap] est utile. *)
 
 
+Theorem mult_aux : forall m n : nat, m * S n = m + m * n.
+Proof.
+  intros.
+  induction m as [|m' IHm'].
+  -simpl. reflexivity.
+  -simpl. rewrite -> IHm'. rewrite <- plus_swap. reflexivity.
+Qed.
+
+
 Theorem mult_comm : forall m n : nat,
   m * n = n * m.
 Proof.
   intros n m.
   induction n as [|n' IHn'].
     -simpl. rewrite -> mult_0_r. reflexivity.
-    -simpl.
-     assert( m * S n' = m + n' * m). 
-     { rewrite -> IHn'. simpl. rewrite}
-    -simpl. 
-  (* Remplir ici *) Admitted.
+    (*-assert( m * S n' = m + m * n'). 
+     { induction m as [|m' IHm']. simpl. reflexivity. simpl. rewrite->IHm'. rewrite <- plus_swap. reflexivity. }
+      + rewrite -> H. rewrite <- IHn'. reflexivity. *)
+    -simpl. rewrite -> mult_aux. rewrite <- IHn'. reflexivity.
+Qed. 
+
 (** [] *)
 
 (** **** Exercice: ***, optionnel *)
