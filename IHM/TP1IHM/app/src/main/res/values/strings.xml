@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TP1IHM</string>
+    <string name="input_temperature">Input temperature</string>
+    <string name="celsius_c" translatable="false">Celsius (°C)</string>
+    <string name="fahrenheit_f" translatable="false">Fahrenheit (°F)</string>
+    <string name="convert">Convert</string>
+    <string name="input_temperature_unit">Input temperature unit</string>
+    <string name="result"><![CDATA[<Result>]]></string>
+    <string name="auto_convert">Auto-convert</string>
+    <string name="no_unit">No unit selected.</string>
+</resources>

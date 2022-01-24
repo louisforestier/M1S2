@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TP1IHM</string>
+    <string name="input_temperature">Température d\'entrée</string>
+    <string name="convert">Convertir</string>
+    <string name="input_temperature_unit">Unité de la température d\'entrée</string>
+    <string name="result"><![CDATA[<Résultat>]]></string>
+    <string name="auto_convert">Convertir automatiquement</string>
+    <string name="no_unit">Aucune unité sélectionnée.</string>
+</resources>

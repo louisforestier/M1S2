@@ -1,0 +1,225 @@
+package fr.univ_poitiers.dptinfo.algo3d;
+
+import android.opengl.GLES20;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Sphere {
+
+    private int glposbuffer;
+    private int gltrianglesbuffer;
+    private float[] vertexpos;
+    private float[] vertexposIco;
+    private short[] triangles;
+    private short[] trianglesIco;
+    private short nbIndicesV;
+    private int nbIndicesT;
+    private Map<String,Short> middleVertices = new HashMap();
+
+    public Sphere(int slice, int quarter) {
+        int r = 1;
+        vertexpos = new float[((slice - 1) * (quarter + 1) + 2) * 3];
+        int k = 0;
+        for (int i = 1; i < slice; i++) {
+            double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
+            for (int j = 0; j <= quarter; j++) {
+                double phi = Math.toRadians((360.0 / quarter) * j);
+                System.out.println((i - 1) * (1 + quarter) * 3 + (j * 3) + " : theta = " + theta + "; phi = " + phi);
+                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
+                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
+                vertexpos[k++] = (float) (r * Math.sin(theta));
+            }
+        }
+        vertexpos[vertexpos.length - 4] = -1;
+        vertexpos[vertexpos.length - 1] = 1;
+
+        triangles = new short[(quarter * (slice - 2) * 2 + quarter * 2) * 3];
+        k = 0;
+        for (short i = 0; i < slice - 2; i++) {
+            for (short j = 0; j < quarter; j++) {
+                triangles[k] = (short) (i * (quarter + 1) + j);
+                triangles[k + 1] = (short) (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k + 2] = (short) (i * (quarter + 1) + 1 + j);
+                triangles[k + 3] = (short) (i * (quarter + 1) + j);
+                triangles[k + 4] = (short) (i * (quarter + 1) + quarter + 1 + j);
+                triangles[k + 5] = (short) (i * (quarter + 1) + quarter + 2 + j);
+                k += 6;
+            }
+        }
+        for (int i = 0; i < quarter; i++, k+=3) {
+            triangles[k] = (short) (vertexpos.length / 3 - 1);
+            triangles[k + 1] = (short) i;
+            triangles[k + 2] = (short) (i + 1);
+        }
+        for (int i = 0; i < quarter; i++,k+=3) {
+            triangles[k] = (short) (vertexpos.length / 3 - 2);
+            triangles[k + 1] = (short) (i + vertexpos.length / 3 - 2 - quarter);
+            triangles[k + 2] = (short) (i - 1 + vertexpos.length / 3 - 2 - quarter);
+        }
+        System.out.println();
+    }
+
+    public Sphere(int nbDiv) {
+        vertexpos = new float[]{
+                1.F, 0.F, 0.F,
+                0.F, 1.F, 0.F,
+                0.F, 0.F, 1.F,
+                -1.F, 0.F, 0.F,
+                0.F, -1.F, 0.F,
+                0.F, 0.F, -1.F
+        };
+        nbIndicesV = (short) vertexpos.length;
+        triangles = new short[]{
+                0, 1, 2,
+                0, 5, 1,
+                0, 4, 3,
+                0, 2, 4,
+                3, 5, 4,
+                3, 4, 2,
+                3, 1, 5,
+                3, 2, 1
+
+        };
+        nbIndicesT = 0;
+        if (nbDiv > 0) {
+            vertexposIco = new float[(int) (8 * 3 *  Math.pow(4,nbDiv) - 6)];
+            trianglesIco = new short[(int) (8 * 3 *  Math.pow(4,nbDiv))];
+
+            for (int i = 0 ; i < vertexpos.length ; i++){
+                vertexposIco[i] = vertexpos[i];
+            }
+            for (int i = 0; i < triangles.length; i += 3) {
+                divideTriangle(triangles[i], triangles[i + 1], triangles[i + 2], nbDiv);
+            }
+            vertexpos = vertexposIco;
+            triangles = trianglesIco;
+        }
+
+    }
+    //TODO:pb de NaN dans les vertexposIco, tableau trop grand, et quart de demi sphère inférieur manquant
+    //pour éviter d'ajouter en trop faire une map , pb d'indice trop grand : divisé par 3 ?
+    private void divideTriangle(short v1, short v2, short v3, int nbDiv) {
+        if (nbDiv == 0) {
+            trianglesIco[nbIndicesT] = v1;
+            trianglesIco[nbIndicesT+1] = v2;
+            trianglesIco[nbIndicesT+2] = v3;
+            nbIndicesT+=3;
+        } else {
+            short middleV1V2 = getMiddle(v1,v2);
+            short middleV2V3 = getMiddle(v2,v3);
+            short middleV3V1 = getMiddle(v3,v1);
+            divideTriangle(v1, middleV1V2,middleV3V1,nbDiv-1);
+            divideTriangle(middleV1V2,v2, middleV2V3, nbDiv-1);
+            divideTriangle(middleV2V3,v3,middleV3V1, nbDiv-1);
+            divideTriangle(middleV1V2,middleV2V3,middleV3V1,nbDiv-1);
+        }
+    }
+
+    private short getMiddle(short v1, short v2) {
+        float x  = (vertexposIco[v1*3] + vertexposIco[v2*3])/2;
+        float y = (vertexposIco[v1*3+1] + vertexposIco[v2*3+1])/2;
+        float z = (vertexposIco[v1*3+2] + vertexposIco[v2*3+2])/2;
+        double scale = Math.sqrt(x*x + y*y + z*z);
+        x /= scale;
+        y /= scale;
+        z /= scale;
+        StringBuilder sb = new StringBuilder();
+        sb.append(x).append(y).append(z);
+        String key = sb.toString();
+        if (middleVertices.containsKey(key)){
+            return middleVertices.get(key);
+        } else {
+            short vertex = (short) (nbIndicesV/3);
+            vertexposIco[nbIndicesV] = x;
+            vertexposIco[nbIndicesV + 1] = y;
+            vertexposIco[nbIndicesV + 2] = z;
+            nbIndicesV += 3;
+            middleVertices.put(key,vertex);
+            return vertex;
+        }
+    }
+
+
+    void initGraphics() {
+
+        /**
+         * Buffer des sommets
+         */
+        ByteBuffer posbytebuf = ByteBuffer.allocateDirect(vertexpos.length * Float.BYTES);
+        posbytebuf.order(ByteOrder.nativeOrder());
+        FloatBuffer posbuffer = posbytebuf.asFloatBuffer();
+        posbuffer.put(vertexpos);
+        posbuffer.position(0);
+
+
+        /**
+         * Buffer du des triangles
+         */
+        ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Short.BYTES);
+        trianglesbutebuf.order(ByteOrder.nativeOrder());
+        ShortBuffer trianglesbuf = trianglesbutebuf.asShortBuffer();
+        trianglesbuf.put(triangles);
+        trianglesbuf.position(0);
+
+        int[] buffers = new int[1];
+        GLES20.glGenBuffers(1, buffers, 0);
+
+        glposbuffer = buffers[0];
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexpos.length * Float.BYTES, posbuffer, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
+        int[] trianglesbuffers = new int[1];
+        GLES20.glGenBuffers(1, trianglesbuffers, 0);
+
+        gltrianglesbuffer = trianglesbuffers[0];
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, triangles.length * Short.BYTES, trianglesbuf, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+    }
+
+
+    public void draw(final NoLightShaders shaders) {
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
+        shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_SHORT, 0);
+
+        shaders.setColor(MyGLRenderer.black);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    public void drawWithLines(final NoLightShaders shaders) {
+        GLES20.glPolygonOffset(2.F, 4.F);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
+        shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_SHORT, 0);
+
+        GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
+        shaders.setColor(MyGLRenderer.black);
+
+        for (int i = 0; i < triangles.length; i += 3)
+            GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_SHORT, i * Short.BYTES);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+
+
+}

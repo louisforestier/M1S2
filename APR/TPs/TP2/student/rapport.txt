@@ -1,0 +1,6 @@
+ex1 : 
+prend des floats en entrées, les converti en m256, et grâce au type union on peut récupérer un type float sans avoir à convertir explicitement.
+
+ex2:
+machine utilisée :
+mesure de l'efficacité : 
