@@ -54,6 +54,15 @@ float StudentWorkImpl::run(float const * const input, const size_t size)
 	return result;
 }
 
+double hsum_double_avx(__m256 v) {
+    __m128 vlow  = _mm256_castps256_ps128(v);
+    __m128 vhigh = _mm256_extractf128_ps(v, 1); // high 128
+            vlow  = _mm_add_ps(vlow, vhigh);     // reduce down to 128
+
+    __m128 high64 = _mm_unpackhi_ps(vlow, vlow);
+    return  _mm_cvtss_f32(_mm_add_ss(vlow, high64));  // reduce to scalar
+}
+
 // calculate with mm256
 #pragma optimize("", off)
 float StudentWorkImpl::run(__m256 const *const input, const size_t size) 
@@ -66,12 +75,19 @@ float StudentWorkImpl::run(__m256 const *const input, const size_t size)
 		sum =_mm256_add_ps(sum,input[i]);
 	}
 	Convertor c(sum);
+	std::cout<<c<<std::endl;
 	float res =0.f;
 	for (int i = 0; i < 8; i++)
 	{
 		res += c(i);
 	}
 	
+    __m128 vlow  = _mm256_castps256_ps128(sum);
+	Convertor c1(sum);
+    __m128 vhigh = _mm256_extractf128_ps(sum, 1); // high 128
+            vlow  = _mm_add_ps(vlow, vhigh);     // reduce down to 128
 
-	return res;
+    __m128 high64 = _mm_unpackhi_ps(vlow, vlow);
+
+	return (float) hsum_double_avx(sum);
 }
