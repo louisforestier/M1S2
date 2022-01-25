@@ -62,7 +62,6 @@ public class Sphere {
             triangles[k + 1] = (short) (i + vertexpos.length / 3 - 2 - quarter);
             triangles[k + 2] = (short) (i - 1 + vertexpos.length / 3 - 2 - quarter);
         }
-        System.out.println();
     }
 
     public Sphere(int nbDiv) {
@@ -78,7 +77,7 @@ public class Sphere {
         triangles = new short[]{
                 0, 1, 2,
                 0, 5, 1,
-                0, 4, 3,
+                0, 4, 5,
                 0, 2, 4,
                 3, 5, 4,
                 3, 4, 2,
@@ -88,8 +87,9 @@ public class Sphere {
         };
         nbIndicesT = 0;
         if (nbDiv > 0) {
-            vertexposIco = new float[(int) (8 * 3 *  Math.pow(4,nbDiv) - 6)];
             trianglesIco = new short[(int) (8 * 3 *  Math.pow(4,nbDiv))];
+            int nbVertices = trianglesIco.length * 3 / 2 - trianglesIco.length + 6; //adapté de la relation d'euler : V - E + F = 2, pour je ne sais quelle raison on a V - E + F = 6
+            vertexposIco = new float[nbVertices];
 
             for (int i = 0 ; i < vertexpos.length ; i++){
                 vertexposIco[i] = vertexpos[i];
@@ -102,8 +102,7 @@ public class Sphere {
         }
 
     }
-    //TODO:pb de NaN dans les vertexposIco, tableau trop grand, et quart de demi sphère inférieur manquant
-    //pour éviter d'ajouter en trop faire une map , pb d'indice trop grand : divisé par 3 ?
+
     private void divideTriangle(short v1, short v2, short v3, int nbDiv) {
         if (nbDiv == 0) {
             trianglesIco[nbIndicesT] = v1;
@@ -125,10 +124,10 @@ public class Sphere {
         float x  = (vertexposIco[v1*3] + vertexposIco[v2*3])/2;
         float y = (vertexposIco[v1*3+1] + vertexposIco[v2*3+1])/2;
         float z = (vertexposIco[v1*3+2] + vertexposIco[v2*3+2])/2;
-        double scale = Math.sqrt(x*x + y*y + z*z);
-        x /= scale;
-        y /= scale;
-        z /= scale;
+        double norm = Math.sqrt(x*x + y*y + z*z);
+        x /= norm;
+        y /= norm;
+        z /= norm;
         StringBuilder sb = new StringBuilder();
         sb.append(x).append(y).append(z);
         String key = sb.toString();

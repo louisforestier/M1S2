@@ -8,7 +8,7 @@ public class Ball {
     private float posx;
     private float posz;
     private float[] color;
-    static private Sphere sphere= new Sphere(50,50);
+    static private Sphere sphere= new Sphere(5);
     static {
         sphere.initGraphics();
     }
