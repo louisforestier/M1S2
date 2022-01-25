@@ -594,7 +594,7 @@ Proof.
   Or_Intro_1.
   Not_Intro.
   Impl_Elim in H and H0.
-  assume (~P \/ Q).
-  Or_Elim in H2.
+  assume (~P).
   Not_Elim in H2 and H0.
   exact H3.
+  Not_Intro.

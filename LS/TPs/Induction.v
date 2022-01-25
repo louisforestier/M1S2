@@ -535,31 +535,58 @@ Check leb.
 Theorem leb_refl : forall n:nat,
   true = leb n n.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros n.
+  induction n as [| n' IHn'].
+  reflexivity.
+  simpl.
+  rewrite <- IHn'.
+  reflexivity.
+Qed.
+  
 
 Theorem zero_nbeq_S : forall n:nat,
   beq_nat 0 (S n) = false.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  simpl.
+  reflexivity.
+Qed.
+
 
 Theorem andb_false_r : forall b : bool,
   andb b false = false.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros. destruct b.
+    - reflexivity.
+    - reflexivity.
+Qed.
 
 Theorem plus_ble_compat_l : forall n m p : nat,
   leb n m = true -> leb (p + n) (p + m) = true.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  induction p as [|p' IHp'].
+  - simpl. rewrite -> H. reflexivity.
+  - simpl. rewrite -> IHp'. reflexivity.
+Qed.
+
 
 Theorem S_nbeq_0 : forall n:nat,
   beq_nat (S n) 0 = false.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  destruct n as [|n'].
+  reflexivity.
+  reflexivity.
+Qed.
 
 Theorem mult_1_l : forall n:nat, 1 * n = n.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  destruct n as [|n'].
+    - reflexivity.
+    - simpl. rewrite <- plus_n_O. reflexivity.
+Qed.
 
 Theorem all3_spec : forall b c : bool,
     orb
@@ -568,16 +595,32 @@ Theorem all3_spec : forall b c : bool,
                (negb c))
   = true.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  destruct b.
+    - destruct c.
+      + reflexivity.
+      + reflexivity.
+    - destruct c.
+      + reflexivity.
+      + reflexivity.
+Qed.
+    
 
 Theorem mult_plus_distr_r : forall n m p : nat,
   (n + m) * p = (n * p) + (m * p).
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  induction p as [|p' IHp'].
+    - simpl. rewrite -> mult_0_r. rewrite -> mult_0_r. rewrite -> mult_0_r. reflexivity.
+    - Abort. (*rewrite  mult_assoc. rewrite <- IHp'.*)
 
 Theorem mult_assoc : forall n m p : nat,
   n * (m * p) = (n * m) * p.
 Proof.
+  intros.
+  destruct n as [|n'].
+  simpl. reflexivity.
+  simpl. rewrite -> mult_comm. 
   (* Remplir ici *) Admitted.
 (** [] *)
 

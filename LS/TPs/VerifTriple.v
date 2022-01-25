@@ -352,8 +352,17 @@ Qed.
 Votre programme décoré
   {{True}}
     If (x <=? y)
-    Then z ::= y - x
-    Else z ::= x - y
+    Then
+    {{True /\ x <= y}}
+    {{(y - x + x = y) \/ (y - x + y = x)}} 
+    z ::= y - x
+    {{z = y - x}}.
+    {{(z + x = y) \/ (z + y = x)}}.
+    Else 
+    {{True /\ x > y}}
+    {{(x - y + x = y) \/ (x - y + y = x)}}
+    z ::= x - y
+    {{(z + x = y) \/ (z + y = x)}}.
     Fi
     {{(z + x = y) \/ (z + y = x)}}.
 *)
@@ -367,13 +376,13 @@ Lemma ex41 (x y z : nat) :
     {{(z + x = y) \/ (z + y = x)}}.
 Proof.
   Hoare_if_rule.
-  * Hoare_consequence_rule_left with ((y-x) >= 0 /\ y+x-x = y).
-    + Impl_Intro.
-      And_Intro.
-      lia.
-      lia.
-    + Hoare_assignment_rule._
-Admitted.
+  - Hoare_consequence_rule_left with (y-x+x=y \/ y - x + y =x).
+    + Impl_Intro. And_Elim_2 in H. bool2Prop in H0.  lia.
+    + Hoare_assignment_rule.
+  - Hoare_consequence_rule_left with ((x - y + x = y) \/ (x - y + y = x)).
+    + Impl_Intro. And_Elim_2 in H. bool2Prop in H0. lia.
+    + Hoare_assignment_rule.
+Qed.
 
 
 (* Pour cet exercice, il est plus pratique d'utiliser la règle alternative de la 
@@ -386,6 +395,22 @@ Admitted.
   la décoration du programme est plus facile à faire avec la séquence. 
 
 Votre programme décoré
+
+ {{True}}
+    {{x+1=x+1}}
+    a ::= x + 1;;
+    {{a=x+1}}
+    If (a - 1 =? 0)
+    Then 
+    {{1 = x + 1}}.
+    y ::= 1
+    {{y = x + 1}}.
+    Else 
+    {{a = x + 1}}.
+    y ::= a 
+    {{y = x + 1}}.
+    Fi
+    {{y = x + 1}}.
 *)
 
 Lemma Ex42 (a x y : nat) :
@@ -397,7 +422,17 @@ Lemma Ex42 (a x y : nat) :
     Fi
     {{y = x + 1}}.
 Proof.
-Admitted.
+  Hoare_sequence_rule with (a=x+1).
+  Hoare_consequence_rule_left with (x+1=x+1).
+  Hoare_assignment_rule.
+  Hoare_if_rule.
+  - Hoare_consequence_rule_left with (1 = x + 1).
+    +Impl_Intro. bool2Prop in H. And_Elim_2 in H. lia.
+    +Hoare_assignment_rule.
+  - Hoare_consequence_rule_left with (a = x +1).
+    +Impl_Intro. bool2Prop in H. And_Elim_2 in H. lia.
+    +Hoare_assignment_rule.
+Qed.
 
 (* [] *)
 
@@ -470,6 +505,21 @@ Admitted.
 
 (*
 Votre programme décoré
+{{ n=m }} 
+  {{n+0=m}}
+  res ::= 0;; 
+  {{n+res=m}}
+  While negb (n =? 0)
+  Do 
+    {{(n+res=m/\ negb (n =? 0)) = true}}
+    {{n - 1  + res + 1 = m}}
+    res ::= res+1;;
+    {{n-1 + res =m}} 
+    n   ::= n-1 
+    {{n+res=m}}
+  Od 
+  {{(n+res =m /\ negb (n =? 0)) = false}}
+{{res = m}}.
  *)
 
 Lemma ex51(m n res : nat) :
@@ -482,7 +532,20 @@ Lemma ex51(m n res : nat) :
   Od 
 {{res = m}}.
 Proof.
-Admitted.
+  Hoare_sequence_rule with (n+res=m).
+  Hoare_consequence_rule_left with (n+0=m).
+  lia.
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_right with (n+res=m /\  (negb (n =? 0) = false)).
+  Hoare_while_rule.
+  Hoare_sequence_rule with ((n-1) + res =m).
+  Hoare_consequence_rule_left with ((n - 1)  + (res + 1) = m).
+  Impl_Intro. bool2Prop in H. lia.
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+  Impl_Intro. bool2Prop in H. lia.
+Qed.
+
 
 (** 
 
@@ -500,6 +563,17 @@ Admitted.
 
 (*
 Votre programme décoré
+  {{ X=m }}
+  {{X=m /\ m>=0}}
+    Z ::= 0;;
+    {{X=m /\ Z*Z<=m }}
+    While ((Z+1)*(Z+1) <=? X) Do
+    {{X=m /\ ((Z+1)*(Z+1) <= m}}
+      Z ::= Z+1
+      {{X=m /\ Z*Z<=m }}
+    Od
+    {{ X=m /\ Z*Z<=m  /\ (((Z+1)*(Z+1) <=? X) = false)}}
+  {{ Z*Z<=m /\ m<(Z+1)*(Z+1) }}.
 *)
 
 Lemma ex52(X m Z : nat) :
@@ -508,6 +582,17 @@ Lemma ex52(X m Z : nat) :
     While ((Z+1)*(Z+1) <=? X) Do
       Z ::= Z+1
     Od
+    
   {{ Z*Z<=m /\ m<(Z+1)*(Z+1) }}.
 Proof.
-Admitted.
+  Hoare_sequence_rule with (X=m /\ Z*Z <= m).
+  Hoare_consequence_rule_left with (X=m /\ m >= 0). 
+  lia.
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_right with ((X=m /\ Z*Z<=m ) /\ (((Z+1)*(Z+1) <=? X) = false)).
+  Hoare_while_rule.
+  Hoare_consequence_rule_left with (X=m /\ ((Z+1)*(Z+1) <= m)).
+  Impl_Intro. bool2Prop in H. lia.
+  Hoare_assignment_rule.
+  Impl_Intro. bool2Prop in H. lia.
+Qed.
