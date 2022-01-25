@@ -620,7 +620,6 @@ Proof.
   intros.
   destruct n as [|n'].
   simpl. reflexivity.
-  simpl. rewrite -> mult_comm. 
   (* Remplir ici *) Admitted.
 (** [] *)
 
@@ -635,7 +634,11 @@ Proof.
 Theorem beq_nat_refl : forall n : nat,
   true = beq_nat n n.
 Proof.
-  (* Remplir ici *) Admitted.
+  intros.
+  rewrite <- beq_nat_n.
+  reflexivity.
+Qed.
+
 (** [] *)
 
 (** **** Exercice: **, optionnel (plus_swap')  *)
@@ -652,6 +655,13 @@ Proof.
 Theorem plus_swap' : forall n m p : nat,
   n + (m + p) = m + (n + p).
 Proof.
+  intros.
+  rewrite -> plus_assoc. 
+  rewrite -> plus_assoc.
+  replace m with n. 
+  reflexivity.
+Abort.
+
   (* Remplir ici *) Admitted.
 (** [] *)
 
