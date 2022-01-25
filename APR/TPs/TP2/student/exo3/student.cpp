@@ -69,7 +69,6 @@ void StudentWorkImpl::run(const size_t nb_threads, float const * const input, fl
 	// travail constant par threads (sqrt est une instruction) ... on divise en le nombre de threads
 	const size_t packet_size = (size + nb_threads-1) / nb_threads;
 	std::vector<std::thread> threads(nb_threads);
-	// TODO: creates threads to do the calculation with floats
 	for (size_t i = 0; i < nb_threads; i++)
 	{
 		const size_t start = i * packet_size;
@@ -89,7 +88,6 @@ void StudentWorkImpl::run(const size_t nb_threads, __m256 const *const input, __
 	// travail constant par threads (sqrt est une instruction) ... on divise en le nombre de threads
 	const size_t packet_size = (size + nb_threads-1) / nb_threads;
 	std::vector<std::thread> threads(nb_threads);
-	// TODO: creates threads to do the calculation with AVX 
 	for (size_t i = 0; i < nb_threads; i++)
 	{
 		const size_t start = i * packet_size;
