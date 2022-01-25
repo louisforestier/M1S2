@@ -8,19 +8,41 @@ efficacité :  Tseq / p * Tpar = Tseq / Wp
 ex2:
 machine utilisée :
 n = 4096
-mesure de l'efficacité : 144  us / 1 * 36 us
+mesure de l'efficacité : 41  us / 1 * 5 us
 
 n = 40960
-mesure de l'efficacité : 469 us / 1 * 117 us
+mesure de l'efficacité : 411 us / 1 * 55 us
 
 n = 409600
-mesure de l'efficacité : 4806 us / 1 * 3125 us
+mesure de l'efficacité : 4243 us / 1 * 1567 us
 
 n = 4096000
-mesure de l'efficacité : 48695 us / 1 * 29881 us
+mesure de l'efficacité : 42695 us / 1 * 16412 us
 
 ex3:
+avec 12 threads
+n = 4096 
+seq = 428 us
+vec = 425 us
+mesure de l'efficacité : 41  us / 1 * 5 us
+
+n = 40960
+seq = 462 us
+vec = 435 us
+mesure de l'efficacité : 411 us / 1 * 55 us
+
+n = 409600
+seq = 1037 us
+vec = 716 us
+mesure de l'efficacité : 4243 us / 1 * 1567 us
+
+n = 4096000
+seq = 14794 us
+vec = 14706 us
+mesure de l'efficacité : 42695 us / 1 * 16412 us
+
 
 ex4:
+
 
 ex5:
