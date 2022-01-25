@@ -176,10 +176,10 @@ Qed.
     x ::= 5
   {{x = 5}}.
 *)
-
+(*
 Search add_comm.
 Print add_comm.
-About add_comm.
+About add_comm.*)
 (*Dans coqide queries, emacs find*)
 
 Lemma ex21 (x : nat) :
@@ -286,9 +286,9 @@ Qed.
 (*
 Votre programme décoré
   {{True}}
-  {{x = x}}
+  {{x+x+x = 3*x }}
     y ::= x;;
-    {{y = x /\ x + x + y = x + x + x }}
+    {{x+x+y = 3*x}}
     y ::= x + x + y
   {{y = 3*x}}.                        
 *)
@@ -299,21 +299,24 @@ Lemma ex32 (x y : nat) :
     y ::= x + x + y
   {{y = 3*x}}.                        
 Proof.
-  Hoare_sequence_rule with (y = x).
-  Hoare_consequence_rule_left with (x = x ).
-  Hoare_assignment_rule.
-  Hoare_consequence_rule_left with (y = x /\ x + x + x = 3*x).
+  Hoare_sequence_rule with (x+x+y = 3*x).
+  Hoare_consequence_rule_left with (x+x+x = 3*x ).
   Impl_Intro.
-  And_Intro.
-  exact H.
-  simpl.
-  reflexivity.
+  lia.
   Hoare_assignment_rule.
-Admitted.
+  Hoare_assignment_rule.
+Qed.
 
 
 (*
 Votre programme décoré
+{{x > 1}}
+    a ::= 1;;  
+
+    y ::= x;;
+    {{y+a > 0 /\ y+a > x}}
+    y ::= y + a
+  {{y > 0 /\ y > x}}.
 *)
 
 Lemma ex33 (x y a : nat) :
@@ -323,8 +326,16 @@ Lemma ex33 (x y a : nat) :
     y ::= y + a
   {{y > 0 /\ y > x}}.
 Proof.
-Admitted.
-
+  Hoare_sequence_rule with (y+a > 0 /\ y+a > x).
+  Hoare_sequence_rule with (x+a > 0 /\ x+a > x).
+  Hoare_consequence_rule_left with ( x+1 > 0 /\ x+1 > x).
+  Impl_Intro.
+  lia.
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+Qed.
+  
 (** [] *)
 
 (** * La règle de la conditionnelle *)
@@ -339,6 +350,12 @@ Admitted.
 *)
 (*
 Votre programme décoré
+  {{True}}
+    If (x <=? y)
+    Then z ::= y - x
+    Else z ::= x - y
+    Fi
+    {{(z + x = y) \/ (z + y = x)}}.
 *)
 
 Lemma ex41 (x y z : nat) :
@@ -349,6 +366,13 @@ Lemma ex41 (x y z : nat) :
     Fi
     {{(z + x = y) \/ (z + y = x)}}.
 Proof.
+  Hoare_if_rule.
+  * Hoare_consequence_rule_left with ((y-x) >= 0 /\ y+x-x = y).
+    + Impl_Intro.
+      And_Intro.
+      lia.
+      lia.
+    + Hoare_assignment_rule._
 Admitted.
 
 
