@@ -253,9 +253,9 @@ Votre programme décoré
 
 {{ n = p /\ m = q }}
   h ::= n;;
-  {{m = q}}
+  {{h = p /\ m = q}}
   n ::= m;;
-  {{h = p}}
+  {{h = p /\ n = q}}
   m ::= h
 {{ n = q /\ m = p }}.
 
@@ -268,13 +268,29 @@ Lemma ex31 (n m p q h : nat) :
   m ::= h
 {{ n = q /\ m = p }}.
 Proof.
-Hoare_sequence_rule with (h=p).
-Hoare_sequence_rule with (m=q).
+  Hoare_sequence_rule with (h = p /\ n = q).
+  Hoare_sequence_rule with (h = p /\ m = q).
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_left with ( n = q /\ h = p ).
+  Impl_Intro.
+  And_Intro.
+  And_Elim_2 in H.
+  exact H0.
+  And_Elim_1 in H.
+  exact H0.
+  Hoare_assignment_rule.
+Qed.
 
-Admitted.
 
 (*
 Votre programme décoré
+  {{True}}
+  {{x = x}}
+    y ::= x;;
+    {{y = x /\ x + x + y = x + x + x }}
+    y ::= x + x + y
+  {{y = 3*x}}.                        
 *)
 
 Lemma ex32 (x y : nat) :
@@ -283,6 +299,16 @@ Lemma ex32 (x y : nat) :
     y ::= x + x + y
   {{y = 3*x}}.                        
 Proof.
+  Hoare_sequence_rule with (y = x).
+  Hoare_consequence_rule_left with (x = x ).
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_left with (y = x /\ x + x + x = 3*x).
+  Impl_Intro.
+  And_Intro.
+  exact H.
+  simpl.
+  reflexivity.
+  Hoare_assignment_rule.
 Admitted.
 
 
