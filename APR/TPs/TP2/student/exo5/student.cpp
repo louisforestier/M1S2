@@ -33,7 +33,7 @@ namespace {
 }
 
 bool StudentWorkImpl::isImplemented() const {
-	return false;
+	return true;
 }
 
 
@@ -47,8 +47,19 @@ void StudentWorkImpl::run(
 	// each coordinates of the result vector is a dot product 
 	// between the row i of the input square matrix and the 
 	// input vector ... 
-	// TODO
+
+	for (size_t i = 0; i < vector_size; i++)
+	{
+		output_vector[i]=0;
+		for (size_t j = 0; j < vector_size; j++)
+		{
+			output_vector[i] += input_matrix[i*vector_size+j] * input_vector[j];
+		}
+	}
+	
 }
+
+#include <vector>
 
 #pragma optimize("", off)
 void StudentWorkImpl::run(
@@ -64,5 +75,17 @@ void StudentWorkImpl::run(
 	// NB: the matrix contains vector_size columns (with AVX), and so 8*vector_size rows ...
 	//     for instance if vector_size is 1, you have 1 column, and 8 rows, so that the matrix
 	//     contains 8x8 floats :-)
-	// TODO
+
+	for (size_t i = 0; i < vector_size * 8 ; i++)
+	{
+		output_vector[i]=0;
+		__m256 res = _mm256_setzero_ps();
+		for (size_t j = 0; j < vector_size; j++)
+		{
+			__m256 tmp = _mm256_dp_ps(input_matrix[i*vector_size+j],input_vector[j],0xff);
+			res = _mm256_add_ps(res,tmp);
+		}
+		Convertor c(res);
+		output_vector[i] = c(0) + c(4);
+	}
 }
