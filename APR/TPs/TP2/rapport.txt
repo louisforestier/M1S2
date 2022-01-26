@@ -1,0 +1,70 @@
+ex1 : 
+prend des floats en entrées, les converti en m256, et grâce au type union on peut récupérer un type float sans avoir à convertir explicitement.
+
+
+accélération : Sq(n) = Tseq / Tpar
+travail = Wp = p * Tpar
+efficacité :  Tseq / p * Tpar = Tseq / Wp
+ex2:
+machine utilisée :
+n = 4096
+mesure de l'efficacité : 41  us / 8 * 5 us
+
+n = 40960
+mesure de l'efficacité : 411 us / 8 * 55 us
+
+n = 409600
+mesure de l'efficacité : 4243 us / 8 * 1567 us
+
+n = 4096000
+mesure de l'efficacité : 42695 us / 8 * 16412 us
+
+ex3:
+avec 12 threads
+n = 4096 
+seq = 446 us
+vec = 414 us
+mesure de l'efficacité : 41  us / 8 * 5 us
+
+n = 40960
+seq = 447 us
+vec = 452 us
+mesure de l'efficacité : 411 us / 8 * 55 us
+
+n = 409600
+seq = 1022 us
+vec = 644 us
+mesure de l'efficacité : 4243 us / 8 * 1567 us
+
+n = 4096000
+seq = 14827 us
+vec = 14821 us
+mesure de l'efficacité : 42695 us / 8 * 16412 us
+
+-----avec 4 threads
+n = 4096 
+seq = 171 us
+vec = 162 us
+mesure de l'efficacité : 41  us / 8 * 5 us
+
+n = 40960
+seq = 275 us
+vec = 165 us
+mesure de l'efficacité : 411 us / 8 * 55 us
+
+n = 409600
+seq = 1354 us
+vec = 608 us
+mesure de l'efficacité : 4243 us / 8 * 1567 us
+
+n = 4096000
+seq = 14527 us
+vec = 14208 us
+mesure de l'efficacité : 42695 us / 8 * 16412 us
+
+
+
+ex4:
+
+
+ex5:

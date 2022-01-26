@@ -82,7 +82,7 @@ void StudentWorkImpl::run(
 		__m256 res = _mm256_setzero_ps();
 		for (size_t j = 0; j < vector_size; j++)
 		{
-			__m256 tmp = _mm256_dp_ps(input_matrix[i*vector_size+j],input_vector[j],0xff);
+			__m256 tmp = _mm256_dp_ps(input_matrix[i*vector_size+j],input_vector[j],255);
 			res = _mm256_add_ps(res,tmp);
 		}
 		Convertor c(res);

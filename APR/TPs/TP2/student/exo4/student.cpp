@@ -45,7 +45,6 @@ bool StudentWorkImpl::isImplemented() const {
 float StudentWorkImpl::run(float const * const input, const size_t size) 
 {
 	// attention au sch�ma de calcul ... 
-	// TODO
 	float result=0;
 	for (size_t i = 0; i < size; i++)
 	{
@@ -54,40 +53,32 @@ float StudentWorkImpl::run(float const * const input, const size_t size)
 	return result;
 }
 
-double hsum_double_avx(__m256 v) {
-    __m128 vlow  = _mm256_castps256_ps128(v);
-    __m128 vhigh = _mm256_extractf128_ps(v, 1); // high 128
-            vlow  = _mm_add_ps(vlow, vhigh);     // reduce down to 128
-
-    __m128 high64 = _mm_unpackhi_ps(vlow, vlow);
-    return  _mm_cvtss_f32(_mm_add_ss(vlow, high64));  // reduce to scalar
-}
-
 // calculate with mm256
 #pragma optimize("", off)
 float StudentWorkImpl::run(__m256 const *const input, const size_t size) 
 {
-	// attention au sch�ma de calcul ... 
-	// TODO
 	__m256 sum = input[0];
 	for (size_t i = 1; i < size; i++)
 	{
 		sum =_mm256_add_ps(sum,input[i]);
 	}
-	Convertor c(sum);
-	std::cout<<c<<std::endl;
-	float res =0.f;
-	for (int i = 0; i < 8; i++)
-	{
-		res += c(i);
-	}
-	
-    __m128 vlow  = _mm256_castps256_ps128(sum);
-	Convertor c1(sum);
-    __m128 vhigh = _mm256_extractf128_ps(sum, 1); // high 128
-            vlow  = _mm_add_ps(vlow, vhigh);     // reduce down to 128
-
-    __m128 high64 = _mm_unpackhi_ps(vlow, vlow);
-
-	return (float) hsum_double_avx(sum);
+	//on découpe le m256 en 2 parties qu'on additionne horizontalement
+	/*
+	 1,2,3,4,5,6,7,8
+	+5,6,7,8,1,2,3,4
+	=6,8,10,12,6,8,10,12
+	*/
+	__m256 partie_basse = sum;
+	__m256 partie_haute = _mm256_permute2f128_ps(sum,sum,1);
+	__m256 somme_horizontale = _mm256_add_ps(partie_basse, partie_haute);
+	//on fait additionner les nombres d'indice pair avec le nombre suivant 2 fois de suite
+	/*
+	 6,8,10,12,6,8,10,12
+	 1ere fois : 14,22,14,22,14,22,14,22
+	 2ème fois : 36,36,36,36,36,36,36,36
+	*/
+	somme_horizontale = _mm256_hadd_ps(somme_horizontale,somme_horizontale);
+	somme_horizontale = _mm256_hadd_ps(somme_horizontale,somme_horizontale);
+	Convertor c(somme_horizontale);
+    return c(0);
 }
