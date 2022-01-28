@@ -5,7 +5,8 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.IntBuffer;
+import java.nio.IntBuffer;
 
 public class Room {
 
@@ -14,10 +15,10 @@ public class Room {
     private final int glceilingbuffer;
     private final int glwallbuffer;
     private final int glcontourbuffer;
-    private final short[] trianglesFLoor;
-    private final short[] trianglesCeiling;
-    private final short[] walls;
-    private short[] contours;
+    private final int[] trianglesFLoor;
+    private final int[] trianglesCeiling;
+    private final int[] walls;
+    private int[] contours;
 
     public Room() {
 
@@ -54,15 +55,15 @@ public class Room {
                 -0.5F,0.F,3.F
         };
 
-        trianglesFLoor = new short[]{
+        trianglesFLoor = new int[]{
                 0, 2, 1, //0123
                 3, 2, 0
         };
-        trianglesCeiling = new short[]{
+        trianglesCeiling = new int[]{
                 7, 5, 6,//7654
                 4, 5, 7
         };
-        walls = new short[]{
+        walls = new int[]{
                 8,10,9,//8-9-10-11
                 11,10,8,
                 12,14,13,//12-13-14-15
@@ -79,7 +80,7 @@ public class Room {
                 29,22,28
         };
 
-        contours = new short[]{
+        contours = new int[]{
                 0,1,
                 1,2,
                 2,3,
@@ -108,36 +109,36 @@ public class Room {
         /**
          * Buffer du sol
          */
-        ByteBuffer trianglesfloorbytebuf = ByteBuffer.allocateDirect(trianglesFLoor.length * Short.BYTES);
+        ByteBuffer trianglesfloorbytebuf = ByteBuffer.allocateDirect(trianglesFLoor.length * Integer.BYTES);
         trianglesfloorbytebuf.order(ByteOrder.nativeOrder());
-        ShortBuffer trianglesfloorbuf = trianglesfloorbytebuf.asShortBuffer();
+        IntBuffer trianglesfloorbuf = trianglesfloorbytebuf.asIntBuffer();
         trianglesfloorbuf.put(trianglesFLoor);
         trianglesfloorbuf.position(0);
 
         /**
          * Buffer du plafond
          */
-        ByteBuffer trianglesceilingbytebuf = ByteBuffer.allocateDirect(trianglesCeiling.length * Short.BYTES);
+        ByteBuffer trianglesceilingbytebuf = ByteBuffer.allocateDirect(trianglesCeiling.length * Integer.BYTES);
         trianglesceilingbytebuf.order(ByteOrder.nativeOrder());
-        ShortBuffer trianglesceilingbuf = trianglesceilingbytebuf.asShortBuffer();
+        IntBuffer trianglesceilingbuf = trianglesceilingbytebuf.asIntBuffer();
         trianglesceilingbuf.put(trianglesCeiling);
         trianglesceilingbuf.position(0);
 
         /**
          * Buffer des murs
          */
-        ByteBuffer triangleswallsbytebuf = ByteBuffer.allocateDirect(walls.length * Short.BYTES);
+        ByteBuffer triangleswallsbytebuf = ByteBuffer.allocateDirect(walls.length * Integer.BYTES);
         triangleswallsbytebuf.order(ByteOrder.nativeOrder());
-        ShortBuffer triangleswallsbuf = triangleswallsbytebuf.asShortBuffer();
+        IntBuffer triangleswallsbuf = triangleswallsbytebuf.asIntBuffer();
         triangleswallsbuf.put(walls);
         triangleswallsbuf.position(0);
 
         /**
          * Buffer des contours
          */
-        ByteBuffer contoursbytebuf = ByteBuffer.allocateDirect(contours.length * Short.BYTES);
+        ByteBuffer contoursbytebuf = ByteBuffer.allocateDirect(contours.length * Integer.BYTES);
         contoursbytebuf.order(ByteOrder.nativeOrder());
-        ShortBuffer contoursbuf = contoursbytebuf.asShortBuffer();
+        IntBuffer contoursbuf = contoursbytebuf.asIntBuffer();
         contoursbuf.put(contours);
         contoursbuf.position(0);
 
@@ -157,7 +158,7 @@ public class Room {
         glfloorbuffer = floorbuffers[0];
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glfloorbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, trianglesFLoor.length * Short.BYTES, trianglesfloorbuf,GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, trianglesFLoor.length * Integer.BYTES, trianglesfloorbuf,GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
@@ -167,7 +168,7 @@ public class Room {
         glceilingbuffer = ceilingbuffers[0];
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glceilingbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, trianglesCeiling.length * Short.BYTES, trianglesceilingbuf,GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, trianglesCeiling.length * Integer.BYTES, trianglesceilingbuf,GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
@@ -177,7 +178,7 @@ public class Room {
         glwallbuffer = wallbuffers[0];
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glwallbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, walls.length * Short.BYTES, triangleswallsbuf,GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, walls.length * Integer.BYTES, triangleswallsbuf,GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
         int[] contoursbuffers = new int[1];
@@ -186,7 +187,7 @@ public class Room {
         glcontourbuffer = contoursbuffers[0];
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glcontourbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, contours.length * Short.BYTES, contoursbuf,GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, contours.length * Integer.BYTES, contoursbuf,GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
@@ -206,12 +207,12 @@ public class Room {
         shaders.setColor(MyGLRenderer.blue);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,glfloorbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES,trianglesFLoor.length,GLES20.GL_UNSIGNED_SHORT,0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES,trianglesFLoor.length,GLES20.GL_UNSIGNED_INT,0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
         shaders.setColor(MyGLRenderer.red);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,glceilingbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES,trianglesCeiling.length,GLES20.GL_UNSIGNED_SHORT,0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES,trianglesCeiling.length,GLES20.GL_UNSIGNED_INT,0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
         switch (i){
@@ -223,7 +224,7 @@ public class Room {
                 break;
         }
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,glwallbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, walls.length,GLES20.GL_UNSIGNED_SHORT,0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, walls.length,GLES20.GL_UNSIGNED_INT,0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
         GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
@@ -231,7 +232,7 @@ public class Room {
 
         shaders.setColor(MyGLRenderer.black);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,glcontourbuffer);
-        GLES20.glDrawElements(GLES20.GL_LINES, contours.length,GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glDrawElements(GLES20.GL_LINES, contours.length,GLES20.GL_UNSIGNED_INT, 0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,0);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,0);

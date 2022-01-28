@@ -5,21 +5,21 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-import java.util.HashMap;
+import java.nio.IntBuffer;
 import java.util.Map;
+import java.util.TreeMap;
 
-    //TODO:
-    // - mettre les matrices dans les classes et pas dans room
-    // - faire une room avec paramètres
-    // - classe cube paramètre arête
-    // - classe pyramide paramètrée par le nombre de face
-    // - classe cone (juste une pyramide avec beaucoup de face)
-    // - classe cylinder (faire un cercle d'abord)
-    // - classe capsule (utiliser le cylindre et la sphère)
-    // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles)
-    // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés
-    // - joysticks
+//TODO:
+// - mettre les matrices dans les classes et pas dans room
+// - faire une room avec paramètres
+// - classe cube paramètre arête
+// - classe pyramide paramètrée par le nombre de face
+// - classe cone (juste une pyramide avec beaucoup de face)
+// - classe cylinder (faire un cercle d'abord)
+// - classe capsule (utiliser le cylindre et la sphère)
+// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles)
+// - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés
+// - joysticks
 
 
 public class Sphere {
@@ -28,11 +28,11 @@ public class Sphere {
     private int gltrianglesbuffer;
     private float[] vertexpos;
     private float[] vertexposIco;
-    private short[] triangles;
-    private short[] trianglesIco;
-    private short nbIndicesV;
+    private int[] triangles;
+    private int[] trianglesIco;
+    private int nbIndicesV;
     private int nbIndicesT;
-    private Map<String,Short> middleVertices = new HashMap();
+    private Map<Key,Integer> middleVertices = new TreeMap<>();
 
     public Sphere(int slice, int quarter) {
         int r = 1;
@@ -51,28 +51,28 @@ public class Sphere {
         vertexpos[vertexpos.length - 4] = -1;
         vertexpos[vertexpos.length - 1] = 1;
 
-        triangles = new short[(quarter * (slice - 2) * 2 + quarter * 2) * 3];
+        triangles = new int[(quarter * (slice - 2) * 2 + quarter * 2) * 3];
         k = 0;
-        for (short i = 0; i < slice - 2; i++) {
-            for (short j = 0; j < quarter; j++) {
-                triangles[k] = (short) (i * (quarter + 1) + j);
-                triangles[k + 1] = (short) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k + 2] = (short) (i * (quarter + 1) + 1 + j);
-                triangles[k + 3] = (short) (i * (quarter + 1) + j);
-                triangles[k + 4] = (short) (i * (quarter + 1) + quarter + 1 + j);
-                triangles[k + 5] = (short) (i * (quarter + 1) + quarter + 2 + j);
+        for (int i = 0; i < slice - 2; i++) {
+            for (int j = 0; j < quarter; j++) {
+                triangles[k] = (int) (i * (quarter + 1) + j);
+                triangles[k + 1] = (int) (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k + 2] = (int) (i * (quarter + 1) + 1 + j);
+                triangles[k + 3] = (int) (i * (quarter + 1) + j);
+                triangles[k + 4] = (int) (i * (quarter + 1) + quarter + 1 + j);
+                triangles[k + 5] = (int) (i * (quarter + 1) + quarter + 2 + j);
                 k += 6;
             }
         }
         for (int i = 0; i < quarter; i++, k+=3) {
-            triangles[k] = (short) (vertexpos.length / 3 - 1);
-            triangles[k + 1] = (short) i;
-            triangles[k + 2] = (short) (i + 1);
+            triangles[k] = (int) (vertexpos.length / 3 - 1);
+            triangles[k + 1] = (int) i;
+            triangles[k + 2] = (int) (i + 1);
         }
         for (int i = 0; i < quarter; i++,k+=3) {
-            triangles[k] = (short) (vertexpos.length / 3 - 2);
-            triangles[k + 1] = (short) (i + vertexpos.length / 3 - 2 - quarter);
-            triangles[k + 2] = (short) (i - 1 + vertexpos.length / 3 - 2 - quarter);
+            triangles[k] = (int) (vertexpos.length / 3 - 2);
+            triangles[k + 1] = (int) (i + vertexpos.length / 3 - 2 - quarter);
+            triangles[k + 2] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
         }
     }
 
@@ -85,8 +85,8 @@ public class Sphere {
                 0.F, -1.F, 0.F,
                 0.F, 0.F, -1.F
         };
-        nbIndicesV = (short) vertexpos.length;
-        triangles = new short[]{
+        nbIndicesV = (int) vertexpos.length;
+        triangles = new int[]{
                 0, 1, 2,
                 0, 5, 1,
                 0, 4, 5,
@@ -99,8 +99,8 @@ public class Sphere {
         };
         nbIndicesT = 0;
         if (nbDiv > 0) {
-            trianglesIco = new short[(int) (8 * 3 *  Math.pow(4,nbDiv))];
-            int nbVertices = trianglesIco.length * 3 / 2 - trianglesIco.length + 6; //adapté de la relation d'euler : V - E + F = 2, pour je ne sais quelle raison on a V - E + F = 6
+            trianglesIco = new int[(int) (8 * 3 *  Math.pow(4,nbDiv))];
+            int nbVertices = trianglesIco.length * 3 / 2 - trianglesIco.length + 6; //adapté de la relation d'euler : V - E + F = 2 => 3V - 3E + 3F = 2*3
             vertexposIco = new float[nbVertices];
 
             System.arraycopy(vertexpos, 0, vertexposIco, 0, vertexpos.length);
@@ -113,16 +113,16 @@ public class Sphere {
 
     }
 
-    private void divideTriangle(short v1, short v2, short v3, int nbDiv) {
+    private void divideTriangle(int v1, int v2, int v3, int nbDiv) {
         if (nbDiv == 0) {
             trianglesIco[nbIndicesT] = v1;
             trianglesIco[nbIndicesT+1] = v2;
             trianglesIco[nbIndicesT+2] = v3;
             nbIndicesT+=3;
         } else {
-            short middleV1V2 = getMiddle(v1,v2);
-            short middleV2V3 = getMiddle(v2,v3);
-            short middleV3V1 = getMiddle(v3,v1);
+            int middleV1V2 = getMiddle(v1,v2);
+            int middleV2V3 = getMiddle(v2,v3);
+            int middleV3V1 = getMiddle(v3,v1);
             divideTriangle(v1, middleV1V2,middleV3V1,nbDiv-1);
             divideTriangle(middleV1V2,v2, middleV2V3, nbDiv-1);
             divideTriangle(middleV2V3,v3,middleV3V1, nbDiv-1);
@@ -130,7 +130,7 @@ public class Sphere {
         }
     }
 
-    private short getMiddle(short v1, short v2) {
+    private int getMiddle(int v1, int v2) {
         float x  = (vertexposIco[v1*3] + vertexposIco[v2*3])/2;
         float y = (vertexposIco[v1*3+1] + vertexposIco[v2*3+1])/2;
         float z = (vertexposIco[v1*3+2] + vertexposIco[v2*3+2])/2;
@@ -138,13 +138,11 @@ public class Sphere {
         x /= norm;
         y /= norm;
         z /= norm;
-        StringBuilder sb = new StringBuilder();
-        sb.append(x).append(y).append(z);
-        String key = sb.toString();
+        Key key = new Key(x,y,z);
         if (middleVertices.containsKey(key)){
             return middleVertices.get(key);
         } else {
-            short vertex = (short) (nbIndicesV/3);
+            int vertex = (int) (nbIndicesV/3);
             vertexposIco[nbIndicesV] = x;
             vertexposIco[nbIndicesV + 1] = y;
             vertexposIco[nbIndicesV + 2] = z;
@@ -170,9 +168,9 @@ public class Sphere {
         /**
          * Buffer du des triangles
          */
-        ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Short.BYTES);
+        ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Integer.BYTES);
         trianglesbutebuf.order(ByteOrder.nativeOrder());
-        ShortBuffer trianglesbuf = trianglesbutebuf.asShortBuffer();
+        IntBuffer trianglesbuf = trianglesbutebuf.asIntBuffer();
         trianglesbuf.put(triangles);
         trianglesbuf.position(0);
 
@@ -192,7 +190,7 @@ public class Sphere {
         gltrianglesbuffer = trianglesbuffers[0];
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, triangles.length * Short.BYTES, trianglesbuf, GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, triangles.length * Integer.BYTES, trianglesbuf, GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -205,7 +203,7 @@ public class Sphere {
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
         shaders.setColor(MyGLRenderer.black);
 
@@ -218,13 +216,13 @@ public class Sphere {
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
         GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
         shaders.setColor(MyGLRenderer.black);
 
         for (int i = 0; i < triangles.length; i += 3)
-            GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_SHORT, i * Short.BYTES);
+            GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
