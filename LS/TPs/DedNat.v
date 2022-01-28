@@ -420,7 +420,6 @@ Qed.
   - [(P /\ ~Q) -> R, ~R, P |- Q ] 
 *)
 
-(* J'y arrive pas.*)
 Lemma expluie (P Q R: Prop) : P /\ ~Q -> R -> (~R -> (P -> Q)).
 Proof.
   Impl_Intro.

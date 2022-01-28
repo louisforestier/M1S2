@@ -23,12 +23,25 @@ namespace OPP
         //  that does something like the following
         //for(auto iter = aBegin; iter<aEnd; ++iter)
         //    oBegin[iter-aBegin] = functor(*iter);
-        
         // chunk size
         auto fullSize = aEnd - aBegin;
         auto chunkSize = (fullSize + OPP::nbThreads-1) / OPP::nbThreads;
         // launch the threads/tasks
         // TODO
+        OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
+        size_t nb_threads = pool.getRealThreadNumber();
+        for (auto i = 0; i < nb_threads; ++i)
+        {
+            pool.push_task(
+                [i](){
+                    for (auto n = i; i < fullSize; n+=nb_threads)
+                    {
+                        
+                    }
+                    
+                }
+            );
+        }
     }
 
  
