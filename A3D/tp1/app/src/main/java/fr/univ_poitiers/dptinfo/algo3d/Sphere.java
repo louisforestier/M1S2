@@ -9,6 +9,18 @@ import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+    //TODO:
+    // - mettre les matrices dans les classes et pas dans room
+    // - faire une room avec paramètres
+    // - classe cube paramètre arête
+    // - classe pyramide paramètrée par le nombre de face
+    // - classe cone (juste une pyramide avec beaucoup de face)
+    // - classe cylinder (faire un cercle d'abord)
+    // - classe capsule (utiliser le cylindre et la sphère)
+    // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles)
+    // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés
+    // - joysticks
+
 
 public class Sphere {
 
@@ -91,9 +103,7 @@ public class Sphere {
             int nbVertices = trianglesIco.length * 3 / 2 - trianglesIco.length + 6; //adapté de la relation d'euler : V - E + F = 2, pour je ne sais quelle raison on a V - E + F = 6
             vertexposIco = new float[nbVertices];
 
-            for (int i = 0 ; i < vertexpos.length ; i++){
-                vertexposIco[i] = vertexpos[i];
-            }
+            System.arraycopy(vertexpos, 0, vertexposIco, 0, vertexpos.length);
             for (int i = 0; i < triangles.length; i += 3) {
                 divideTriangle(triangles[i], triangles[i + 1], triangles[i + 2], nbDiv);
             }
