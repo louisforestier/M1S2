@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TP2</string>
+    <string name="enter_pokemon_name">Enter pokemon name:</string>
+    <string name="search">Search</string>
+    <string name="exit">Exit</string>
+    <string name="name">Name</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="type">Type</string>
+    <string name="stats">Stats</string>
+</resources>
