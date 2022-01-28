@@ -127,7 +127,6 @@ hs_err_pid*
 replay_pid*
 
 #custom
-*.pdf
 *.xlsx
 *.vcxproj*
 *.sln
