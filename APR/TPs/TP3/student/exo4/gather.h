@@ -30,7 +30,7 @@ namespace OPP {
         // auto chunkSize = (fullSize + OPP::nbThreads-1) / OPP::nbThreads;
         // launch the threads/tasks
         // TODO
-        OPP::ThreadPool& poule_de_freud = OPP::getDefaultThreadPool();
+        OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
         OPP::Semaphore<uint32_t> semaphore(0);
         int nb_tasks = 4 * OPP::nbThreads;
         for (int i = 0; i < nb_tasks; ++i)

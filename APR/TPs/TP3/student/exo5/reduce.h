@@ -21,7 +21,7 @@ namespace OPP {
         const MapFunction&& functor // binary functor
     ) {
         // TODO: 
-        OPP::ThreadPool& poule_de_freud = OPP::getDefaultThreadPool();
+        OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
         OPP::Semaphore<uint32_t> semaphore(0);
         int nb_tasks = 4 * OPP::nbThreads;
         std::vector<T> results(nb_tasks);

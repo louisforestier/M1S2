@@ -34,7 +34,7 @@ namespace OPP {
         int nb_tasks = 4 * OPP::nbThreads;
         for (int i = 0; i < nb_tasks; ++i)
         {
-            pool.push_task(
+            poule_de_freud.push_task(
                 [i,nb_tasks,&semaphore,&aBegin,&aEnd,&oBegin,&map](){
                     for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
                     {
