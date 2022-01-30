@@ -25,11 +25,25 @@ namespace OPP {
         //   oBegin[map[iter-aBegin]] = iter[iter-aBegin];
         
         // chunk size
-        auto fullSize = aEnd - aBegin;
-        auto chunkSize = (fullSize + nbThreads-1) / nbThreads;
-        // launch the threads
-        std::vector<std::thread> threads(nbThreads);
-
-        // ...
-    }
+        // auto fullSize = aEnd - aBegin;
+        // auto chunkSize = (fullSize + OPP::nbThreads-1) / OPP::nbThreads;
+        // launch the threads/tasks
+        // TODO
+        OPP::ThreadPool& poule_de_freud = OPP::getDefaultThreadPool();
+        OPP::Semaphore<uint32_t> semaphore(0);
+        int nb_tasks = 4 * OPP::nbThreads;
+        for (int i = 0; i < nb_tasks; ++i)
+        {
+            pool.push_task(
+                [i,nb_tasks,&semaphore,&aBegin,&aEnd,&oBegin,&map](){
+                    for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
+                    {
+                        oBegin[map[iter-aBegin]] = aBegin[iter-aBegin];
+                    }
+                    semaphore.release();
+                }
+            );
+        }
+        semaphore.acquire(nb_tasks);
+     }
 };
