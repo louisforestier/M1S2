@@ -11,9 +11,9 @@ import java.util.TreeMap;
 
 //TODO:
 // - mettre les matrices dans les classes et pas dans room
-// - faire une classe vbo
+// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles
 // - faire un obj importer
-// - faire une room avec paramètres
+// - faire une room avec paramètres (genre nb de portes et sur quel coté)
 // - classe cube paramètre arête
 // - classe pyramide paramètrée par le nombre de face
 // - classe cone (juste une pyramide avec beaucoup de face)

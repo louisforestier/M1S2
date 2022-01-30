@@ -39,7 +39,7 @@ public class MainActivity extends Activity
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity
-        this.scene =new Scene();
+        this.scene =new Scene(this);
         this.glview = new MyGLSurfaceView(this,this.scene);
         setContentView(this.glview);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

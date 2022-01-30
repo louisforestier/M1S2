@@ -1,9 +1,15 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
+import android.util.TypedValue;
+
+import java.io.InputStream;
+import java.util.Scanner;
 
 /**
  * Class to represent the scene. It includes all the objects to display, in this case a room
@@ -16,10 +22,12 @@ public class Scene {
      * A constant for the size of the wall
      */
     static final float wallsize = 3.F;
+    private Context context;
 
     Room room;
     Room room2;
     Sphere sphere;
+    VBO armadillo;
 
     /**
      * An angle used to animate the viewer
@@ -34,7 +42,8 @@ public class Scene {
     /**
      * Constructor : build each wall, the floor and the ceiling as quads
      */
-    public Scene() {
+    public Scene(Context current) {
+        this.context = current;
         // Init observer's view angles
         angley = 0.F;
     }
@@ -56,6 +65,9 @@ public class Scene {
         MainActivity.log("Graphics initialized");
         room = new Room();
         room2 = new Room();
+        InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
+        armadillo = OBJImporter.importOBJ(stream);
+        armadillo.initGraphics();
         //sphere = new Sphere(20,20);
         //sphere = new Sphere(5);
         //sphere.initGraphics();
@@ -103,11 +115,19 @@ public class Scene {
         Matrix.translateM(modelviewmatrixroom, 0, 0.F, 0.F, -6.F);
 
         Matrix.multiplyMM(modelviewmatrixroom,0,modelviewmatrix, 0, modelviewmatrixroom,0);
-
+        float[] modelviewmatrixarmadillo = new float[16];
+        Matrix.setIdentityM(modelviewmatrixarmadillo,0);
+        Matrix.translateM(modelviewmatrixarmadillo, 0, 0.F, 1.F, 0.F);
+        Matrix.scaleM(modelviewmatrixarmadillo,0,0.02F,0.02F,0.02F);
+        Matrix.multiplyMM(modelviewmatrixarmadillo,0,modelviewmatrix,0,modelviewmatrixarmadillo,0);
 
         shaders.setModelViewMatrix(modelviewmatrix);
         room.draw(shaders, 1);
         //sphere.draw(shaders);
+        shaders.setModelViewMatrix(modelviewmatrixarmadillo);
+        shaders.setColor(MyGLRenderer.lightgray);
+        armadillo.drawWithLines(shaders,MyGLRenderer.black);
+        shaders.setModelViewMatrix(modelviewmatrix);
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrixroom);
