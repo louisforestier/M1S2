@@ -29,19 +29,21 @@ namespace OPP
         // launch the threads/tasks
         // TODO
         OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
-        size_t nb_threads = pool.getRealThreadNumber();
-        for (auto i = 0; i < nb_threads; ++i)
+        OPP::Semaphore<uint32_t> semaphore(0);
+        int nb_tasks = 4 * OPP::nbThreads;
+        for (int i = 0; i < nb_tasks; ++i)
         {
             pool.push_task(
-                [i](){
-                    for (auto n = i; i < fullSize; n+=nb_threads)
+                [i,nb_tasks,&semaphore,&aBegin,&aEnd,&oBegin,&functor](){
+                    for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
                     {
-                        
+                        oBegin[iter-aBegin] = functor(*iter);
                     }
-                    
+                    semaphore.release();
                 }
             );
         }
+        semaphore.acquire(nb_tasks);
     }
 
  
@@ -67,5 +69,21 @@ namespace OPP
         auto chunkSize = (fullSize + OPP::nbThreads-1) / OPP::nbThreads;
         // launch the threads/Tasks
         // TODO
+        OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
+        OPP::Semaphore<uint32_t> semaphore(0);
+        int nb_tasks = 4 * OPP::nbThreads;
+        for (int i = 0; i < nb_tasks; ++i)
+        {
+            pool.push_task(
+                [i,nb_tasks,&semaphore,&aBegin,&aEnd,&bBegin,&oBegin,&functor](){
+                    for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
+                    {
+                        oBegin[iter-aBegin] = functor(*iter,bBegin[iter-aBegin]);
+                    }
+                    semaphore.release();
+                }
+            );
+        }
+        semaphore.acquire(nb_tasks);
     }
 };

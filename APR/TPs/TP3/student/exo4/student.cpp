@@ -8,7 +8,7 @@ namespace {
 }
 
 bool StudentWorkImpl::isImplemented() const {
-	return false;
+	return true;
 }
 
 void StudentWorkImpl::run_gather(
@@ -23,6 +23,6 @@ void StudentWorkImpl::run_scatter(
 	const std::vector<int>& input,
 	const std::vector<size_t>& map,
 	std::vector<int>& output
-) {
+) {	
 	OPP::scatter(input.begin(), input.end(), map.begin(), output.begin());
 }

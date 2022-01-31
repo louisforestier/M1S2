@@ -7,7 +7,7 @@ namespace {
 }
 
 bool StudentWorkImpl::isImplemented() const {
-	return false;
+	return true;
 }
 
 long long StudentWorkImpl::run_reduce(

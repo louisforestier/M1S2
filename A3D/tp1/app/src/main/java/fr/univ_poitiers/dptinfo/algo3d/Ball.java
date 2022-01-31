@@ -22,8 +22,8 @@ public class Ball {
         this.color = color;
         modelmatrix = new float[16];
         Matrix.setIdentityM(modelmatrix,0);
-        Matrix.translateM(modelmatrix,0,-posx,radius,-posz);
-        Matrix.scaleM(modelmatrix,0,radius,radius,radius);
+        Matrix.translateM(modelmatrix,0,-this.posx,this.radius,-this.posz);
+        Matrix.scaleM(modelmatrix,0,this.radius,this.radius,this.radius);
     }
 
     public void draw(final NoLightShaders shaders,final float[] viewmatrix){
