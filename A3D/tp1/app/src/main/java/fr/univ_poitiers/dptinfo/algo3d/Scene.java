@@ -2,14 +2,10 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
-import android.util.TypedValue;
 
 import java.io.InputStream;
-import java.util.Scanner;
 
 /**
  * Class to represent the scene. It includes all the objects to display, in this case a room
@@ -24,10 +20,11 @@ public class Scene {
     static final float wallsize = 3.F;
     private Context context;
 
-    Room room;
-    Room room2;
-    Sphere sphere;
-    VBO armadillo;
+    private Room room;
+    private Room room2;
+    private GameObject armadillo;
+    private Ball ball;
+    private Ball ball2;
 
     /**
      * An angle used to animate the viewer
@@ -35,8 +32,6 @@ public class Scene {
     float anglex, angley;
 
     float posx, posz;
-    private Ball ball;
-    private Ball ball2;
 
 
     /**
@@ -46,6 +41,14 @@ public class Scene {
         this.context = current;
         // Init observer's view angles
         angley = 0.F;
+        room = new Room(6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
+        room2 = new Room(6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray,0,6,180);
+        InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
+        ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
+        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
+        armadillo = new GameObject(MyGLRenderer.lightgray);
+        armadillo.setMesh(OBJImporter.importOBJ(stream));
+        armadillo.setTransform(new TransformBuilder().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F).buildTransform());
     }
 
 
@@ -63,17 +66,11 @@ public class Scene {
         GLES20.glDepthFunc(GLES20.GL_LESS);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         MainActivity.log("Graphics initialized");
-        room = new Room();
-        room2 = new Room();
-        InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
-        armadillo = OBJImporter.importOBJ(stream);
+        room.initGraphics();
+        room2.initGraphics();
+        ball.initGraphics();
+        ball2.initGraphics();
         armadillo.initGraphics();
-        //sphere = new Sphere(20,20);
-        //sphere = new Sphere(5);
-        //sphere.initGraphics();
-        ball = new Ball(1.2f,-1.5f,-1.5f,MyGLRenderer.orange);
-        ball2 = new Ball(0.3f,1.5f,-1.5f,MyGLRenderer.white);
-
     }
 
 
@@ -108,30 +105,17 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
 
-        float[] modelviewmatrixroom = new float[16];
-
-        Matrix.setIdentityM(modelviewmatrixroom, 0);
-        Matrix.rotateM(modelviewmatrixroom, 0, 180, 0.0F, 1.0F, 0.0F);
-        Matrix.translateM(modelviewmatrixroom, 0, 0.F, 0.F, -6.F);
-
-        Matrix.multiplyMM(modelviewmatrixroom,0,modelviewmatrix, 0, modelviewmatrixroom,0);
-        float[] modelviewmatrixarmadillo = new float[16];
-        Matrix.setIdentityM(modelviewmatrixarmadillo,0);
-        Matrix.translateM(modelviewmatrixarmadillo, 0, 0.F, 1.F, 0.F);
-        Matrix.scaleM(modelviewmatrixarmadillo,0,0.02F,0.02F,0.02F);
-        Matrix.multiplyMM(modelviewmatrixarmadillo,0,modelviewmatrix,0,modelviewmatrixarmadillo,0);
 
         shaders.setModelViewMatrix(modelviewmatrix);
-        room.draw(shaders, 1);
-        //sphere.draw(shaders);
-        shaders.setModelViewMatrix(modelviewmatrixarmadillo);
+        room.draw(shaders,1);
+        room2.draw(shaders, modelviewmatrix,2);
+
         shaders.setColor(MyGLRenderer.lightgray);
-        armadillo.drawWithLines(shaders,MyGLRenderer.black);
+        armadillo.draw(shaders,modelviewmatrix);
+
         shaders.setModelViewMatrix(modelviewmatrix);
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
-        shaders.setModelViewMatrix(modelviewmatrixroom);
-        room2.draw(shaders, 2);
 
 
 

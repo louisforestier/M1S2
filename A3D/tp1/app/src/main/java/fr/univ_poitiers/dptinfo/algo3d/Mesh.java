@@ -1,20 +1,35 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class VBO {
+public class Mesh {
     private int glposbuffer;
     private int gltrianglesbuffer;
-    private float[] vertexpos;
-    private int[] triangles;
+    protected float[] vertexpos;
+    protected int[] triangles;
 
-    public VBO(float[] vertexpos, int[] triangles) {
+    public Mesh(){
+    }
+
+
+    public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
+        this.triangles = triangles;
+    }
+
+
+    public void setVertexpos(float[] vertexpos) {
+        this.vertexpos = vertexpos;
+    }
+
+
+    public void setTriangles(int[] triangles) {
         this.triangles = triangles;
     }
 
@@ -60,6 +75,7 @@ public class VBO {
     }
 
     public void draw(final NoLightShaders shaders) {
+
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
 
@@ -87,6 +103,7 @@ public class VBO {
 
     }
     public void drawLinesOnly(final NoLightShaders shaders, float[] lineColor) {
+
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
 

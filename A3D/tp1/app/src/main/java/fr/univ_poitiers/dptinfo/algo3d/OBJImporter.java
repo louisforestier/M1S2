@@ -1,20 +1,15 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class OBJImporter {
 
-    public static VBO importOBJ(InputStream stream) {
+    public static Mesh importOBJ(InputStream stream) {
         List<Float> verticesList = new ArrayList();
         List<Integer> trianglesList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -53,7 +48,7 @@ public class OBJImporter {
         for (int i = 0 ; i < trianglesList.size(); i++){
             triangles[i] = trianglesList.get(i)-1;
         }
-        return new VBO(vertexpos, triangles);
+        return new Mesh(vertexpos, triangles);
     }
 
 }
