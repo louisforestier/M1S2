@@ -28,6 +28,8 @@ public class Scene {
     private GameObject donut;
     private GameObject cube;
     private GameObject pyramid;
+    private GameObject pipe;
+    private GameObject cylinder;
 
     /**
      * An angle used to animate the viewer
@@ -61,6 +63,12 @@ public class Scene {
         pyramid = new GameObject(MyGLRenderer.yellow);
         pyramid.setMesh(new Pyramid(1.f,0.5f,40));
         pyramid.getTransform().posx(-4).posz(6);
+        pipe = new GameObject(MyGLRenderer.white);
+        pipe.setMesh(new Pipe(20,50));
+        pipe.getTransform().posz(6);
+        cylinder = new GameObject(MyGLRenderer.black);
+        cylinder.setMesh(new Cylinder(50));
+        cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f);
     }
 
 
@@ -86,6 +94,8 @@ public class Scene {
         donut.initGraphics();
         cube.initGraphics();
         pyramid.initGraphics();
+        pipe.initGraphics();
+        cylinder.initGraphics();
     }
 
 
@@ -132,7 +142,8 @@ public class Scene {
         ball2.draw(shaders,modelviewmatrix);
         cube.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
-
+        pipe.draw(shaders,modelviewmatrix);
+        cylinder.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }
 }

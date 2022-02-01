@@ -17,8 +17,8 @@ import java.util.TreeMap;
 // - classe plane
 // - classe quad
 // - classe cube paramètre arête DONE
-// - classe pyramide paramètrée par le nombre de face
-// - classe cone (juste une pyramide avec beaucoup de face)
+// - classe pyramide paramètrée par le nombre de face DONE
+// - classe cone (juste une pyramide avec beaucoup de face) DONE
 // - classe cylinder (faire un cercle d'abord)
 // - classe capsule (utiliser le cylindre et la sphère)
 // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
@@ -36,7 +36,7 @@ public class Sphere extends Mesh{
     private Map<Key,Integer> middleVertices = new TreeMap<>();
 
     public Sphere(int slice, int quarter) {
-        int r = 1;
+        float r = 1.f;
         vertexpos = new float[((slice - 1) * (quarter + 1) + 2) * 3];
         int k = 0;
         for (int i = 1; i < slice; i++) {
