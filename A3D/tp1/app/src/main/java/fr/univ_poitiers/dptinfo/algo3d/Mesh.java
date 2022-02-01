@@ -23,16 +23,6 @@ public class Mesh {
         this.triangles = triangles;
     }
 
-
-    public void setVertexpos(float[] vertexpos) {
-        this.vertexpos = vertexpos;
-    }
-
-
-    public void setTriangles(int[] triangles) {
-        this.triangles = triangles;
-    }
-
     void initGraphics() {
         /**
          * Buffer des sommets

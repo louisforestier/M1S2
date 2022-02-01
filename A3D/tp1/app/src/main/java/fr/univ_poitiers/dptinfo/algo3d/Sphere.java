@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 //TODO:
-// - mettre les matrices dans les classes et pas dans room
-// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles
+// - mettre les matrices dans les classes et pas dans room DONE
+// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles DONE
 // - faire un obj importer
 // - faire une room avec paramètres (genre nb de portes et sur quel coté)
 // - classe cube paramètre arête
@@ -19,7 +19,7 @@ import java.util.TreeMap;
 // - classe cone (juste une pyramide avec beaucoup de face)
 // - classe cylinder (faire un cercle d'abord)
 // - classe capsule (utiliser le cylindre et la sphère)
-// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles)
+// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
 // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés
 // - joysticks
 
@@ -72,8 +72,6 @@ public class Sphere extends Mesh{
             triangles[k + 1] = (int) (i + vertexpos.length / 3 - 2 - quarter);
             triangles[k + 2] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
         }
-        this.setVertexpos(vertexpos);
-        this.setTriangles(triangles);
     }
 
     public Sphere(int nbDiv) {

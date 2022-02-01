@@ -217,7 +217,7 @@ public class Room {
     }
 
 
-    public void draw(final NoLightShaders shaders, int i){
+    public void draw(final NoLightShaders shaders){
         GLES20.glPolygonOffset(2.F,4.F);
         GLES20.glEnable(GLES20.GL_POLYGON_OFFSET_FILL);
 
@@ -251,12 +251,12 @@ public class Room {
         MyGLRenderer.checkGlError("glDrawArrays (GL_TRIANGLES)");
     }
 
-    public void draw(final NoLightShaders shaders, float[] viewmatrix, int i)
+    public void draw(final NoLightShaders shaders, float[] viewmatrix)
     {
         float[] modelviewmatrixroom = new float[16];
         Matrix.multiplyMM(modelviewmatrixroom,0,viewmatrix, 0, modelmatrix,0);
         shaders.setModelViewMatrix(modelviewmatrixroom);
-        this.draw(shaders, i);
+        this.draw(shaders);
     }
 
 }

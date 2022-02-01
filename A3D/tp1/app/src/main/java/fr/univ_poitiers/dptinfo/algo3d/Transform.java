@@ -11,7 +11,7 @@ public class Transform {
     public Transform() {
         pos = new Vec3f();
         rot = new Vec3f();
-        scale = new Vec3f();
+        scale = new Vec3f(1.0f,1.0f,1.0f);
     }
 
     public float[] getModelMatrix(){

@@ -25,6 +25,7 @@ public class Scene {
     private GameObject armadillo;
     private Ball ball;
     private Ball ball2;
+    private GameObject donut;
 
     /**
      * An angle used to animate the viewer
@@ -49,6 +50,9 @@ public class Scene {
         armadillo = new GameObject(MyGLRenderer.lightgray);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
         armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F);
+        donut = new GameObject(MyGLRenderer.cyan);
+        donut.setMesh(new Donut(1.0f,0.2f,50,20));
+        donut.getTransform().posz(6).posy(0.5f);
     }
 
 
@@ -71,6 +75,7 @@ public class Scene {
         ball.initGraphics();
         ball2.initGraphics();
         armadillo.initGraphics();
+        donut.initGraphics();
     }
 
 
@@ -107,13 +112,12 @@ public class Scene {
 
 
         shaders.setModelViewMatrix(modelviewmatrix);
-        room.draw(shaders,1);
-        room2.draw(shaders, modelviewmatrix,2);
+        room.draw(shaders,modelviewmatrix);
+        room2.draw(shaders, modelviewmatrix);
 
-        shaders.setColor(MyGLRenderer.lightgray);
         armadillo.draw(shaders,modelviewmatrix);
+        donut.draw(shaders,modelviewmatrix);
 
-        shaders.setModelViewMatrix(modelviewmatrix);
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
 
