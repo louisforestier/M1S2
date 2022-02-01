@@ -14,13 +14,16 @@ import java.util.TreeMap;
 // - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles DONE
 // - faire un obj importer DONE
 // - faire une room avec paramètres (genre nb de portes et sur quel coté)
-// - classe cube paramètre arête
+// - classe plane
+// - classe quad
+// - classe cube paramètre arête DONE
 // - classe pyramide paramètrée par le nombre de face
 // - classe cone (juste une pyramide avec beaucoup de face)
 // - classe cylinder (faire un cercle d'abord)
 // - classe capsule (utiliser le cylindre et la sphère)
 // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
 // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
+// - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
 // - joysticks
 
 
