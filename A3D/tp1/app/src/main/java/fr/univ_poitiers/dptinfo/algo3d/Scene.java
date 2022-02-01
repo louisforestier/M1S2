@@ -27,6 +27,7 @@ public class Scene {
     private Ball ball2;
     private GameObject donut;
     private GameObject cube;
+    private GameObject pyramid;
 
     /**
      * An angle used to animate the viewer
@@ -57,6 +58,9 @@ public class Scene {
         cube = new GameObject(MyGLRenderer.magenta);
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
+        pyramid = new GameObject(MyGLRenderer.yellow);
+        pyramid.setMesh(new Pyramid(1.f,0.5f,40));
+        pyramid.getTransform().posx(-4).posz(6);
     }
 
 
@@ -81,6 +85,7 @@ public class Scene {
         armadillo.initGraphics();
         donut.initGraphics();
         cube.initGraphics();
+        pyramid.initGraphics();
     }
 
 
@@ -126,7 +131,7 @@ public class Scene {
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
         cube.draw(shaders,modelviewmatrix);
-
+        pyramid.draw(shaders,modelviewmatrix);
 
         //MainActivity.log("Rendering terminated.");
     }
