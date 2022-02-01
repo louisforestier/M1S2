@@ -12,6 +12,7 @@ public class GameObject {
     }
 
     public GameObject(float[] color){
+        this.transform = new Transform();
         this.color = color;
     }
 
@@ -19,8 +20,8 @@ public class GameObject {
         this.mesh = mesh;
     }
 
-    public void setTransform(Transform transform) {
-        this.transform = transform;
+    public Transform getTransform() {
+        return transform;
     }
 
     public void initGraphics(){

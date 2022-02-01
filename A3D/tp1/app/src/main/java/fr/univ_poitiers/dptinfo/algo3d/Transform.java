@@ -4,108 +4,105 @@ import android.opengl.Matrix;
 
 public class Transform {
 
-    private float posx;
-    private float posy;
-    private float posz;
-    private float rotx;
-    private float roty;
-    private float rotz;
-    private float scalex;
-    private float scaley;
-    private float scalez;
+    private Vec3f pos;
+    private Vec3f rot;
+    private Vec3f scale;
 
-    public Transform(float posx, float posy, float posz, float rotx, float roty, float rotz, float scalex, float scaley, float scalez) {
-        this.posx = posx;
-        this.posy = posy;
-        this.posz = posz;
-        this.rotx = rotx;
-        this.roty = roty;
-        this.rotz = rotz;
-        this.scalex = scalex;
-        this.scaley = scaley;
-        this.scalez = scalez;
+    public Transform() {
+        pos = new Vec3f();
+        rot = new Vec3f();
+        scale = new Vec3f();
     }
 
     public float[] getModelMatrix(){
         float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix,0);
-        Matrix.rotateM(modelMatrix, 0, rotx, 1.0F, 0.0F, 0.0F);
-        Matrix.rotateM(modelMatrix, 0, roty, 0.0F, 1.0F, 0.0F);
-        Matrix.rotateM(modelMatrix, 0, rotz, 0.0F, 0.0F, 1.0F);
-        Matrix.translateM(modelMatrix,0,this.posx,this.posy,this.posz);
-        Matrix.scaleM(modelMatrix,0,scalex,scaley,scalez);
+        Matrix.rotateM(modelMatrix, 0, rot.x, 1.0F, 0.0F, 0.0F);
+        Matrix.rotateM(modelMatrix, 0, rot.y, 0.0F, 1.0F, 0.0F);
+        Matrix.rotateM(modelMatrix, 0, rot.z, 0.0F, 0.0F, 1.0F);
+        Matrix.translateM(modelMatrix,0,pos.x,pos.y,pos.z);
+        Matrix.scaleM(modelMatrix,0,scale.x,scale.y,scale.z);
         return modelMatrix;
     }
 
     public float getPosx() {
-        return posx;
+        return pos.x;
     }
 
-    public void setPosx(float posx) {
-        this.posx = posx;
+    public Transform posx(float posx) {
+        this.pos.x = posx;
+        return this;
     }
 
     public float getPosy() {
-        return posy;
+        return pos.y;
     }
 
-    public void setPosy(float posy) {
-        this.posy = posy;
+    public Transform posy(float posy) {
+        this.pos.y = posy;
+        return this;
     }
 
     public float getPosz() {
-        return posz;
+        return pos.z;
     }
 
-    public void setPosz(float posz) {
-        this.posz = posz;
+    public Transform posz(float posz) {
+        this.pos.z = posz;
+        return this;
     }
 
     public float getRotx() {
-        return rotx;
+        return rot.x;
     }
 
-    public void setRotx(float rotx) {
-        this.rotx = rotx;
+    public Transform rotx(float rotx) {
+        this.rot.x = rotx;
+        return this;
     }
 
     public float getRoty() {
-        return roty;
+        return rot.y;
     }
 
-    public void setRoty(float roty) {
-        this.roty = roty;
+    public Transform roty(float roty) {
+        this.rot.y = roty;
+        return this;
     }
 
     public float getRotz() {
-        return rotz;
+        return rot.z;
     }
 
-    public void setRotz(float rotz) {
-        this.rotz = rotz;
+    public Transform rotz(float rotz) {
+        this.rot.z = rotz;
+        return this;
     }
 
     public float getScalex() {
-        return scalex;
+        return scale.x;
     }
 
-    public void setScalex(float scalex) {
-        this.scalex = scalex;
+    public Transform scalex(float scalex) {
+        this.scale.x = scalex;
+        return this;
     }
 
     public float getScaley() {
-        return scaley;
+        return scale.y;
     }
 
-    public void setScaley(float scaley) {
-        this.scaley = scaley;
+    public Transform scaley(float scaley) {
+        this.scale.y = scaley;
+        return this;
     }
 
     public float getScalez() {
-        return scalez;
+        return scale.z;
     }
 
-    public void setScalez(float scalez) {
-        this.scalez = scalez;
+    public Transform scalez(float scalez) {
+        this.scale.z = scalez;
+        return this;
     }
 }

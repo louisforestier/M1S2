@@ -10,8 +10,7 @@ public class Ball extends GameObject{
     public Ball(float radius, float posx, float posz, float[] color) {
         super(color);
         this.setMesh(Ball.sphere);
-        TransformBuilder tb = new TransformBuilder();
-        this.setTransform(tb.posx(posx).posz(posz).posy(radius).scalex(radius).scaley(radius).scalez(radius).buildTransform());
+        this.getTransform().posx(posx).posz(posz).posy(radius).scalex(radius).scaley(radius).scalez(radius);
     }
 
     @Override

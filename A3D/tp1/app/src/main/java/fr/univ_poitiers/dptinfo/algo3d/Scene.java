@@ -48,7 +48,7 @@ public class Scene {
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
         armadillo = new GameObject(MyGLRenderer.lightgray);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
-        armadillo.setTransform(new TransformBuilder().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F).buildTransform());
+        armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F);
     }
 
 
