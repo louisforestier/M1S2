@@ -7,12 +7,12 @@ public class Donut extends Mesh{
         triangles= new int[slice * quarter * 2 * 3];
         int k = 0;
         for (int i = 0 ; i <= slice ; i++){
-            double theta = Math.toRadians((360.0 / quarter) * i);
+            double theta = Math.toRadians((360.0 / slice) * i);
             for (int j = 0 ; j <= quarter ; j++){
                 double phi = Math.toRadians((360.0 / quarter) * j);
-                vertexpos[k++] = (float) ((r1 + r2 * Math.cos(phi))*Math.cos(theta ));
+                vertexpos[k++] = (float) ((r1 + r2 * Math.cos(phi))*Math.cos(theta));
                 vertexpos[k++] = (float) (r2 * Math.sin(phi));
-                vertexpos[k++] = (float) ((r1 + r2 * Math.cos(phi))*Math.sin(theta ));
+                vertexpos[k++] = (float) ((r1 + r2 * Math.cos(phi))*Math.sin(theta));
             }
         }
 
