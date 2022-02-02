@@ -4,7 +4,7 @@ import android.opengl.Matrix;
 
 public class Ball extends GameObject{
 
-    static private Mesh sphere= new Sphere(5);
+    static private Mesh sphere= new Sphere(50,50);
 
     public Ball(float radius, float posx, float posz, float[] color) {
         super(color);

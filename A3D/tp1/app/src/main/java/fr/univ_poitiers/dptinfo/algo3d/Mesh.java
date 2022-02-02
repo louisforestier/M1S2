@@ -75,7 +75,7 @@ public class Mesh {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    public void drawWithLines(final NoLightShaders shaders, float[] lineColor) {
+    public void drawWithLines(final NoLightShaders shaders) {
         GLES20.glPolygonOffset(2.F, 4.F);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
@@ -84,7 +84,7 @@ public class Mesh {
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
         GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
-        shaders.setColor(lineColor);
+        shaders.setColor(MyGLRenderer.black);
 
         for (int i = 0; i < triangles.length; i += 3)
             GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);
@@ -92,14 +92,14 @@ public class Mesh {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
     }
-    public void drawLinesOnly(final NoLightShaders shaders, float[] lineColor) {
+    public void drawLinesOnly(final NoLightShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
 
-        shaders.setColor(lineColor);
+        shaders.setColor(MyGLRenderer.black);
 
         for (int i = 0; i < triangles.length; i += 3)
             GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);

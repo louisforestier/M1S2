@@ -45,35 +45,34 @@ public class Sphere extends Mesh{
                 double phi = Math.toRadians((360.0 / quarter) * j);
                 System.out.println((i - 1) * (1 + quarter) * 3 + (j * 3) + " : theta = " + theta + "; phi = " + phi);
                 vertexpos[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
-                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
                 vertexpos[k++] = (float) (r * Math.sin(theta));
+                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
             }
         }
-        vertexpos[vertexpos.length - 4] = -1;
-        vertexpos[vertexpos.length - 1] = 1;
+        vertexpos[vertexpos.length - 5] = -1;
+        vertexpos[vertexpos.length - 2] = 1;
 
         triangles = new int[(quarter * (slice - 2) * 2 + quarter * 2) * 3];
         k = 0;
         for (int i = 0; i < slice - 2; i++) {
             for (int j = 0; j < quarter; j++) {
-                triangles[k] = (int) (i * (quarter + 1) + j);
-                triangles[k + 1] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k + 2] = (int) (i * (quarter + 1) + 1 + j);
-                triangles[k + 3] = (int) (i * (quarter + 1) + j);
-                triangles[k + 4] = (int) (i * (quarter + 1) + quarter + 1 + j);
-                triangles[k + 5] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                k += 6;
+                triangles[k++] = (int) (i * (quarter + 1) + j);
+                triangles[k++] = (int) (i * (quarter + 1) + 1 + j);
+                triangles[k++] = (int) (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] = (int) (i * (quarter + 1) + j);
+                triangles[k++] = (int) (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] = (int) (i * (quarter + 1) + quarter + 1 + j);
             }
         }
-        for (int i = 0; i < quarter; i++, k+=3) {
-            triangles[k] = (int) (vertexpos.length / 3 - 1);
-            triangles[k + 1] = (int) i;
-            triangles[k + 2] = (int) (i + 1);
+        for (int i = 0; i < quarter; i++) {
+            triangles[k++] = (int) (vertexpos.length / 3 - 1);
+            triangles[k++] = (int) (i + 1);
+            triangles[k++] = (int) i;
         }
-        for (int i = 0; i < quarter; i++,k+=3) {
-            triangles[k] = (int) (vertexpos.length / 3 - 2);
-            triangles[k + 1] = (int) (i + vertexpos.length / 3 - 2 - quarter);
-            triangles[k + 2] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
+        for (int i = 0; i < quarter; i++) {
+            triangles[k++] = (int) (vertexpos.length / 3 - 2);
+            triangles[k++] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
+            triangles[k++] = (int) (i + vertexpos.length / 3 - 2 - quarter);
         }
     }
 
