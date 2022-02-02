@@ -2,10 +2,12 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 public class Pyramid extends Mesh {
 
-    public Pyramid(float height, float r, int quarter) {
+    public Pyramid(int quarter) {
         vertexpos = new float[(quarter+3)*3]; //+1 pour le sommet,+1 pour la base et +1 pour le sommet de jointure de la base (le sommet répété pour theta = 0 et theta = 360)
         triangles = new int[quarter*2*3];
         int k = 0;
+        float r = 1.f;
+        float height = 1.f;
         vertexpos[k++] = 0.f;
         vertexpos[k++] = 0.f;
         vertexpos[k++] = 0.f;

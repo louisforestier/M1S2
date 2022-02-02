@@ -1,11 +1,5 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-import android.opengl.GLES20;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,7 +14,7 @@ import java.util.TreeMap;
 // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
 // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
 // - faire une room avec paramètres (genre nb de portes et sur quel coté)
-// - classe capsule (utiliser le cylindre et la sphère)
+// - classe capsule (utiliser le cylindre et la sphère) DONE
 // - classe plane
 // - classe quad
 // - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
@@ -43,7 +37,7 @@ public class Sphere extends Mesh{
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
-                System.out.println((i - 1) * (1 + quarter) * 3 + (j * 3) + " : theta = " + theta + "; phi = " + phi);
+                // formule pour l'indice sans utiliser l'astuce de la variable k, (i - 1) * (1 + quarter) * 3 + (j * 3)
                 vertexpos[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
                 vertexpos[k++] = (float) (r * Math.sin(theta));
                 vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
@@ -56,23 +50,23 @@ public class Sphere extends Mesh{
         k = 0;
         for (int i = 0; i < slice - 2; i++) {
             for (int j = 0; j < quarter; j++) {
-                triangles[k++] = (int) (i * (quarter + 1) + j);
-                triangles[k++] = (int) (i * (quarter + 1) + 1 + j);
-                triangles[k++] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k++] = (int) (i * (quarter + 1) + j);
-                triangles[k++] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k++] = (int) (i * (quarter + 1) + quarter + 1 + j);
+                triangles[k++] =  (i * (quarter + 1) + j);
+                triangles[k++] =  (i * (quarter + 1) + 1 + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] =  (i * (quarter + 1) + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 1 + j);
             }
         }
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] = (int) (vertexpos.length / 3 - 1);
-            triangles[k++] = (int) (i + 1);
-            triangles[k++] = (int) i;
+            triangles[k++] =  (vertexpos.length / 3 - 1);
+            triangles[k++] =  (i + 1);
+            triangles[k++] =  i;
         }
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] = (int) (vertexpos.length / 3 - 2);
-            triangles[k++] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
-            triangles[k++] = (int) (i + vertexpos.length / 3 - 2 - quarter);
+            triangles[k++] =  (vertexpos.length / 3 - 2);
+            triangles[k++] =  (i - 1 + vertexpos.length / 3 - 2 - quarter);
+            triangles[k++] =  (i + vertexpos.length / 3 - 2 - quarter);
         }
     }
 
@@ -85,7 +79,7 @@ public class Sphere extends Mesh{
                 0.F, -1.F, 0.F,
                 0.F, 0.F, -1.F
         };
-        nbIndicesV = (int) vertexpos.length;
+        nbIndicesV =  vertexpos.length;
         triangles = new int[]{
                 0, 1, 2,
                 0, 5, 1,
@@ -142,7 +136,7 @@ public class Sphere extends Mesh{
         if (middleVertices.containsKey(key)){
             return middleVertices.get(key);
         } else {
-            int vertex = (int) (nbIndicesV/3);
+            int vertex =  (nbIndicesV/3);
             vertexposIco[nbIndicesV] = x;
             vertexposIco[nbIndicesV + 1] = y;
             vertexposIco[nbIndicesV + 2] = z;

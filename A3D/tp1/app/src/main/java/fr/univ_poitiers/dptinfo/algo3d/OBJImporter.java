@@ -10,8 +10,8 @@ import java.util.List;
 public class OBJImporter {
 
     public static Mesh importOBJ(InputStream stream) {
-        List<Float> verticesList = new ArrayList();
-        List<Integer> trianglesList = new ArrayList();
+        List<Float> verticesList = new ArrayList<>();
+        List<Integer> trianglesList = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String lineText;
         try {

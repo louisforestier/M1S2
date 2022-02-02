@@ -23,18 +23,18 @@ public class Cylinder extends Mesh {
 
         k = 0;
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] = (int) (i * 2 + 1);
-            triangles[k++] = (int) (i * 2 + 2);
-            triangles[k++] = (int) (i * 2 + 3);
-            triangles[k++] = (int) (i * 2 + 1);
-            triangles[k++] = (int) (i * 2);
-            triangles[k++] = (int) (i * 2 + 2);
-            triangles[k++] = (int) (i * 2 + 1);
-            triangles[k++] = (int) (i * 2 + 3);
-            triangles[k++] = (int) (vertexpos.length/3-1);
-            triangles[k++] = (int) (i * 2);
-            triangles[k++] = (int) (vertexpos.length/3-2);
-            triangles[k++] = (int) (i * 2 + 2);
+            triangles[k++] =  (i * 2 + 1);
+            triangles[k++] =  (i * 2 + 2);
+            triangles[k++] =  (i * 2 + 3);
+            triangles[k++] =  (i * 2 + 1);
+            triangles[k++] =  (i * 2);
+            triangles[k++] =  (i * 2 + 2);
+            triangles[k++] =  (i * 2 + 1);
+            triangles[k++] =  (i * 2 + 3);
+            triangles[k++] =  (vertexpos.length/3-1);
+            triangles[k++] =  (i * 2);
+            triangles[k++] =  (vertexpos.length/3-2);
+            triangles[k++] =  (i * 2 + 2);
         }
     }
 }

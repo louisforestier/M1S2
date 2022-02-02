@@ -8,8 +8,6 @@ public class GameObject {
     private Transform transform;
     private float[] color;
 
-    public GameObject() {
-    }
 
     public GameObject(float[] color){
         this.transform = new Transform();

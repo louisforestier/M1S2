@@ -30,6 +30,7 @@ public class Scene {
     private GameObject pyramid;
     private GameObject pipe;
     private GameObject cylinder;
+    private GameObject tictac;
 
     /**
      * An angle used to animate the viewer
@@ -61,14 +62,17 @@ public class Scene {
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
         pyramid = new GameObject(MyGLRenderer.yellow);
-        pyramid.setMesh(new Pyramid(1.f,0.5f,40));
+        pyramid.setMesh(new Pyramid(40));
         pyramid.getTransform().posx(-4).posz(6);
         pipe = new GameObject(MyGLRenderer.white);
-        pipe.setMesh(new Pipe(20,50));
+        pipe.setMesh(new Pipe(50));
         pipe.getTransform().posz(6);
         cylinder = new GameObject(MyGLRenderer.black);
         cylinder.setMesh(new Cylinder(50));
         cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f);
+        tictac = new GameObject(MyGLRenderer.green);
+        tictac.setMesh(new Tictac(50,50));
+        tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.9f);
     }
 
 
@@ -96,6 +100,7 @@ public class Scene {
         pyramid.initGraphics();
         pipe.initGraphics();
         cylinder.initGraphics();
+        tictac.initGraphics();
     }
 
 
@@ -144,6 +149,8 @@ public class Scene {
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
+        tictac.draw(shaders,modelviewmatrix);
+
         //MainActivity.log("Rendering terminated.");
     }
 }

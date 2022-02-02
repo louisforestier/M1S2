@@ -19,12 +19,12 @@ public class Donut extends Mesh{
         k = 0;
         for (int i = 0 ; i < slice ; i++){
             for (int j = 0 ; j < quarter ; j++){
-                triangles[k] = (int) (i * (quarter + 1) + j);
-                triangles[k + 1] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k + 2] = (int) (i * (quarter + 1) + 1 + j);
-                triangles[k + 3] = (int) (i * (quarter + 1) + j);
-                triangles[k + 4] = (int) (i * (quarter + 1) + quarter + 1 + j);
-                triangles[k + 5] = (int) (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k] =  (i * (quarter + 1) + j);
+                triangles[k + 1] =  (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k + 2] =  (i * (quarter + 1) + 1 + j);
+                triangles[k + 3] =  (i * (quarter + 1) + j);
+                triangles[k + 4] =  (i * (quarter + 1) + quarter + 1 + j);
+                triangles[k + 5] =  (i * (quarter + 1) + quarter + 2 + j);
                 k += 6;
             }
         }

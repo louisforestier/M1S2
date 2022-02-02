@@ -3,8 +3,6 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.view.Display;
 import android.view.MotionEvent;
 
 /**
