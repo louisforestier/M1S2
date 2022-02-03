@@ -1,6 +1,5 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-import java.util.Objects;
 
 public class Key implements Comparable<Key> {
 

@@ -52,6 +52,10 @@ public class MainActivity extends Activity
     protected void onPause() {
         super.onPause();
         log("Pausing "+ getString(R.string.app_name) +".");
+        /**
+         * Nécessaire pour garder le contexte opengl et donc les vbos
+         */
+        this.glview.setPreserveEGLContextOnPause(true);
         this.glview.onPause();
     }
 

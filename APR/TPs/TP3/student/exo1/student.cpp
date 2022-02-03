@@ -12,7 +12,7 @@ bool StudentWorkImpl::isImplemented() const {
 
 void StudentWorkImpl::run_square(const std::vector<int>& input, std::vector<int>& output) 
 {
-	// TODO use the std::transform (aka MAP) pattern in parallel mode
+	// use the std::transform (aka MAP) pattern in parallel mode
 	// to do something like ....
 	//for(auto i=input.size() ; i--;)
 	//	output[i] = input[i]*input[i];
@@ -25,7 +25,7 @@ void StudentWorkImpl::run_sum(
 	const std::vector<int>& input_b,
 	std::vector<int>& output
 ) {
-	// TODO: parallel sum using std::transform
+	// parallel sum using std::transform
 	std::transform(std::execution::par_unseq ,input_a.begin(),input_a.end(), input_b.begin(),output.begin(),
 	[](int i,int j){return i+j;});
 }

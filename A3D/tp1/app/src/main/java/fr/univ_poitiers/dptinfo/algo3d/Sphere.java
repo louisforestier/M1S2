@@ -1,80 +1,72 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-import android.opengl.GLES20;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 
 //TODO:
-// - mettre les matrices dans les classes et pas dans room
-// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles
-// - faire un obj importer
+// - mettre les matrices dans les classes et pas dans room DONE
+// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles DONE
+// - faire un obj importer DONE
+// - classe cube paramètre arête DONE
+// - classe pyramide paramètrée par le nombre de face DONE
+// - classe cone (juste une pyramide avec beaucoup de face) DONE
+// - classe cylinder (faire un cercle d'abord) DONE
+// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
+// - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
 // - faire une room avec paramètres (genre nb de portes et sur quel coté)
-// - classe cube paramètre arête
-// - classe pyramide paramètrée par le nombre de face
-// - classe cone (juste une pyramide avec beaucoup de face)
-// - classe cylinder (faire un cercle d'abord)
-// - classe capsule (utiliser le cylindre et la sphère)
-// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles)
-// - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés
+// - classe capsule (utiliser le cylindre et la sphère) DONE
+// - classe plane
+// - classe quad
+// - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
 // - joysticks
 
 
-public class Sphere {
+public class Sphere extends Mesh{
 
-    private int glposbuffer;
-    private int gltrianglesbuffer;
-    private float[] vertexpos;
     private float[] vertexposIco;
-    private int[] triangles;
     private int[] trianglesIco;
     private int nbIndicesV;
     private int nbIndicesT;
     private Map<Key,Integer> middleVertices = new TreeMap<>();
 
     public Sphere(int slice, int quarter) {
-        int r = 1;
+        float r = 1.f;
         vertexpos = new float[((slice - 1) * (quarter + 1) + 2) * 3];
         int k = 0;
         for (int i = 1; i < slice; i++) {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
-                System.out.println((i - 1) * (1 + quarter) * 3 + (j * 3) + " : theta = " + theta + "; phi = " + phi);
+                // formule pour l'indice sans utiliser l'astuce de la variable k, (i - 1) * (1 + quarter) * 3 + (j * 3)
                 vertexpos[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
-                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
                 vertexpos[k++] = (float) (r * Math.sin(theta));
+                vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
             }
         }
-        vertexpos[vertexpos.length - 4] = -1;
-        vertexpos[vertexpos.length - 1] = 1;
+        vertexpos[vertexpos.length - 5] = -1;
+        vertexpos[vertexpos.length - 2] = 1;
 
         triangles = new int[(quarter * (slice - 2) * 2 + quarter * 2) * 3];
         k = 0;
         for (int i = 0; i < slice - 2; i++) {
             for (int j = 0; j < quarter; j++) {
-                triangles[k] = (int) (i * (quarter + 1) + j);
-                triangles[k + 1] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                triangles[k + 2] = (int) (i * (quarter + 1) + 1 + j);
-                triangles[k + 3] = (int) (i * (quarter + 1) + j);
-                triangles[k + 4] = (int) (i * (quarter + 1) + quarter + 1 + j);
-                triangles[k + 5] = (int) (i * (quarter + 1) + quarter + 2 + j);
-                k += 6;
+                triangles[k++] =  (i * (quarter + 1) + j);
+                triangles[k++] =  (i * (quarter + 1) + 1 + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] =  (i * (quarter + 1) + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 2 + j);
+                triangles[k++] =  (i * (quarter + 1) + quarter + 1 + j);
             }
         }
-        for (int i = 0; i < quarter; i++, k+=3) {
-            triangles[k] = (int) (vertexpos.length / 3 - 1);
-            triangles[k + 1] = (int) i;
-            triangles[k + 2] = (int) (i + 1);
+        for (int i = 0; i < quarter; i++) {
+            triangles[k++] =  (vertexpos.length / 3 - 1);
+            triangles[k++] =  (i + 1);
+            triangles[k++] =  i;
         }
-        for (int i = 0; i < quarter; i++,k+=3) {
-            triangles[k] = (int) (vertexpos.length / 3 - 2);
-            triangles[k + 1] = (int) (i + vertexpos.length / 3 - 2 - quarter);
-            triangles[k + 2] = (int) (i - 1 + vertexpos.length / 3 - 2 - quarter);
+        for (int i = 0; i < quarter; i++) {
+            triangles[k++] =  (vertexpos.length / 3 - 2);
+            triangles[k++] =  (i - 1 + vertexpos.length / 3 - 2 - quarter);
+            triangles[k++] =  (i + vertexpos.length / 3 - 2 - quarter);
         }
     }
 
@@ -87,7 +79,7 @@ public class Sphere {
                 0.F, -1.F, 0.F,
                 0.F, 0.F, -1.F
         };
-        nbIndicesV = (int) vertexpos.length;
+        nbIndicesV =  vertexpos.length;
         triangles = new int[]{
                 0, 1, 2,
                 0, 5, 1,
@@ -144,7 +136,7 @@ public class Sphere {
         if (middleVertices.containsKey(key)){
             return middleVertices.get(key);
         } else {
-            int vertex = (int) (nbIndicesV/3);
+            int vertex =  (nbIndicesV/3);
             vertexposIco[nbIndicesV] = x;
             vertexposIco[nbIndicesV + 1] = y;
             vertexposIco[nbIndicesV + 2] = z;
@@ -153,82 +145,6 @@ public class Sphere {
             return vertex;
         }
     }
-
-
-    void initGraphics() {
-
-        /**
-         * Buffer des sommets
-         */
-        ByteBuffer posbytebuf = ByteBuffer.allocateDirect(vertexpos.length * Float.BYTES);
-        posbytebuf.order(ByteOrder.nativeOrder());
-        FloatBuffer posbuffer = posbytebuf.asFloatBuffer();
-        posbuffer.put(vertexpos);
-        posbuffer.position(0);
-
-
-        /**
-         * Buffer du des triangles
-         */
-        ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Integer.BYTES);
-        trianglesbutebuf.order(ByteOrder.nativeOrder());
-        IntBuffer trianglesbuf = trianglesbutebuf.asIntBuffer();
-        trianglesbuf.put(triangles);
-        trianglesbuf.position(0);
-
-        int[] buffers = new int[1];
-        GLES20.glGenBuffers(1, buffers, 0);
-
-        glposbuffer = buffers[0];
-
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexpos.length * Float.BYTES, posbuffer, GLES20.GL_STATIC_DRAW);
-
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-
-        int[] trianglesbuffers = new int[1];
-        GLES20.glGenBuffers(1, trianglesbuffers, 0);
-
-        gltrianglesbuffer = trianglesbuffers[0];
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, triangles.length * Integer.BYTES, trianglesbuf, GLES20.GL_STATIC_DRAW);
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
-
-
-    }
-
-
-    public void draw(final NoLightShaders shaders) {
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
-        shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
-
-        shaders.setColor(MyGLRenderer.black);
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-
-    public void drawWithLines(final NoLightShaders shaders) {
-        GLES20.glPolygonOffset(2.F, 4.F);
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
-        shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
-
-        GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
-        shaders.setColor(MyGLRenderer.black);
-
-        for (int i = 0; i < triangles.length; i += 3)
-            GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);
-
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
-
 
 
 }

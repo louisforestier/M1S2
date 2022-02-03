@@ -20,13 +20,16 @@ namespace OPP {
         const T&& init,
         const MapFunction&& functor // binary functor
     ) {
-        // TODO: 
+
+        int nb_tasks = 4 * OPP::nbThreads;
+        auto fullSize = aEnd - aBegin;
+        auto chunkSize = (fullSize + nb_tasks-1) / nb_tasks;
         OPP::ThreadPool& pool = OPP::getDefaultThreadPool();
         OPP::Semaphore<uint32_t> semaphore(0);
-        int nb_tasks = 4 * OPP::nbThreads;
         std::vector<T> results(nb_tasks);
         for (int i = 0; i < nb_tasks; ++i)
         {
+            //stratégie modulo
             pool.push_task(
                 [i,nb_tasks,&init,&semaphore,&aBegin,&aEnd,&functor,&results](){
                     results[i] = init;
@@ -37,6 +40,19 @@ namespace OPP {
                     semaphore.release();
                 }
             );
+
+            //stratégie par bloc
+            /* auto end = std::min((i+1)*chunkSize, fullSize);
+            pool.push_task(
+                [i,chunkSize,end,&semaphore,&aBegin,&functor,&results](){
+                    for (auto iter = aBegin+i*chunkSize; iter < aBegin+end; iter++)
+                    {
+                        results[i]=functor(results[i],aBegin[iter-aBegin]);
+                    }
+                    semaphore.release();
+                } 
+            ); */
+
         }
         semaphore.acquire(nb_tasks);
         T res = results[0];
