@@ -18,4 +18,8 @@ public class Ball extends GameObject{
             isInitialized = true;
         }
     }
+
+    static public void onPause(){
+        isInitialized = false;
+    }
 }

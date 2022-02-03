@@ -55,7 +55,8 @@ public class MainActivity extends Activity
         /**
          * Nécessaire pour garder le contexte opengl et donc les vbos
          */
-        this.glview.setPreserveEGLContextOnPause(true);
+        Ball.onPause();
+        //this.glview.setPreserveEGLContextOnPause(true); //autre solution, conserver le contexte opengl quand on quitte l'appli
         this.glview.onPause();
     }
 
