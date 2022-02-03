@@ -8,4 +8,7 @@
     <string name="height">Height</string>
     <string name="type">Type</string>
     <string name="stats">Stats</string>
+    <string name="see_in_browser">See in browser</string>
+    <string name="error_no_dom_entity">Error, no Dom Entity</string>
+    <string name="end_request">Request finished</string>
 </resources>

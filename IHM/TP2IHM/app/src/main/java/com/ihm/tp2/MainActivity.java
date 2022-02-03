@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String APP_TAG = "POKESTAT";
     private EditText nameEditText;
 
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TP2IHM</string>
+    <string name="enter_pokemon_name">Entrer un nom de pokémon :</string>
+    <string name="search">Chercher</string>
+    <string name="exit">Quitter</string>
+    <string name="name">Nom</string>
+    <string name="weight">Poids</string>
+    <string name="height">Hauteur</string>
+    <string name="type">Type</string>
+    <string name="stats">Stats</string>
+    <string name="see_in_browser">Regarder sur navigateur</string>
+</resources>
