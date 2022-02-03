@@ -33,7 +33,7 @@ namespace OPP
         for (int i = 0; i < nb_tasks; ++i)
         {
             //stratégie modulo
-            pool.push_task(
+            /* pool.push_task(
                 [i,nb_tasks,&semaphore,&aBegin,&aEnd,&oBegin,&functor](){
                     for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
                     {
@@ -41,10 +41,10 @@ namespace OPP
                     }
                     semaphore.release();
                 }
-            );
+            ); */
 
             //stratégie par bloc
-            /* auto end = std::min((i+1)*chunkSize, fullSize);
+            auto end = std::min((i+1)*chunkSize, fullSize);
             pool.push_task(
                 [i,chunkSize,end,&semaphore,&aBegin,&oBegin,&functor](){
                     for (auto iter = aBegin+i*chunkSize; iter < aBegin+end; iter++)
@@ -53,7 +53,7 @@ namespace OPP
                     }
                     semaphore.release();
                 } 
-            ); */
+            );
         }
         semaphore.acquire(nb_tasks);
     }

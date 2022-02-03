@@ -34,7 +34,7 @@ namespace OPP {
         for (int i = 0; i < nb_tasks; ++i)
         {
             //stratégie modulo
-            poule_de_freud.push_task(
+            /* poule_de_freud.push_task(
                 [i,nb_tasks,&semaphore,&aBegin,&aEnd,&oBegin,&map](){
                     for (auto iter = aBegin+i; iter < aEnd; iter+=nb_tasks)
                     {
@@ -42,10 +42,10 @@ namespace OPP {
                     }
                     semaphore.release();
                 }
-            );
+            ); */
 
             //stratégie par bloc
-            /* auto end = std::min((i+1)*chunkSize, fullSize);
+            auto end = std::min((i+1)*chunkSize, fullSize);
             poule_de_freud.push_task(
                 [i,chunkSize,end,&semaphore,&aBegin,&oBegin,&map](){
                     for (auto iter = aBegin+i*chunkSize; iter < aBegin+end; iter++)
@@ -54,7 +54,7 @@ namespace OPP {
                     }
                     semaphore.release();
                 } 
-            ); */
+            );
 
         }
         semaphore.acquire(nb_tasks);
