@@ -20,7 +20,7 @@ public class Pipe extends Mesh {
         }
 
         k = 0;
-        //faces externes
+        //faces internes
         for (int i = 0; i < quarter; i++) {
             triangles[k++] =  (i * 2 + 1);
             triangles[k++] =  (i * 2 + 2);
@@ -31,7 +31,7 @@ public class Pipe extends Mesh {
 
         }
 
-        //faces internes
+        //faces externes
         for (int i = 0; i < quarter; i++) {
             triangles[k++] =  (i * 2 + 1);
             triangles[k++] =  (i * 2 + 3);

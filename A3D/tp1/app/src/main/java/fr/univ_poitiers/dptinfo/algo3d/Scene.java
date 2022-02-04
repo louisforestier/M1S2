@@ -32,6 +32,7 @@ public class Scene {
     private GameObject cylinder;
     private GameObject tictac;
     private GameObject plane;
+    private GameObject frustum;
 
     /**
      * An angle used to animate the viewer
@@ -77,6 +78,9 @@ public class Scene {
         plane = new GameObject(MyGLRenderer.orange);
         plane.setMesh(new Plane());
         plane.getTransform().posz(-10);
+        frustum = new GameObject(MyGLRenderer.white);
+        frustum.setMesh(new Frustum(1.f,0.5f,50));
+        frustum.getTransform().posz(-10);
     }
 
 
@@ -106,6 +110,7 @@ public class Scene {
         cylinder.initGraphics();
         tictac.initGraphics();
         plane.initGraphics();
+        frustum.initGraphics();
     }
 
 
@@ -156,6 +161,7 @@ public class Scene {
         cylinder.draw(shaders,modelviewmatrix);
         tictac.draw(shaders,modelviewmatrix);
         plane.draw(shaders,modelviewmatrix);
+        frustum.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }
 }

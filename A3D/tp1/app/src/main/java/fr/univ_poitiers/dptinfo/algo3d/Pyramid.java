@@ -25,10 +25,10 @@ public class Pyramid extends Mesh {
 
         for (int i = 1 ; i <= quarter ; i++){
             triangles[k++] = i;
-            triangles[k++] = i+1;
             triangles[k++] = (vertexpos.length-1)/3;
             triangles[k++] = i+1;
             triangles[k++] = i;
+            triangles[k++] = i+1;
             triangles[k++] = 0;
         }
     }

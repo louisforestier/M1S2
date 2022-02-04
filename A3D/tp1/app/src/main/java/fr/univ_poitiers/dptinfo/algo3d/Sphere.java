@@ -15,7 +15,7 @@ import java.util.TreeMap;
 // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
 // - faire une room avec paramètres (genre nb de portes et sur quel coté)
 // - classe capsule (utiliser le cylindre et la sphère) DONE
-// - classe plane
+// - classe plane DONE
 // - classe quad
 // - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
 // - joysticks

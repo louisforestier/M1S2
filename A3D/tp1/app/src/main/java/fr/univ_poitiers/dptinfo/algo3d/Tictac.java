@@ -48,7 +48,7 @@ public class Tictac extends Mesh {
                 vertexpos[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
             }
         }
-        vertexpos[vertexpos.length - 5] = -1;
+        vertexpos[vertexpos.length - 5] = -2;
         vertexpos[vertexpos.length - 2] = 1;
 
         k = 0;
