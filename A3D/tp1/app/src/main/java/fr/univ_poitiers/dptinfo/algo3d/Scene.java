@@ -31,6 +31,7 @@ public class Scene {
     private GameObject pipe;
     private GameObject cylinder;
     private GameObject tictac;
+    private GameObject plane;
 
     /**
      * An angle used to animate the viewer
@@ -73,6 +74,9 @@ public class Scene {
         tictac = new GameObject(MyGLRenderer.green);
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.9f);
+        plane = new GameObject(MyGLRenderer.orange);
+        plane.setMesh(new Plane());
+        plane.getTransform().posz(-10);
     }
 
 
@@ -101,6 +105,7 @@ public class Scene {
         pipe.initGraphics();
         cylinder.initGraphics();
         tictac.initGraphics();
+        plane.initGraphics();
     }
 
 
@@ -150,7 +155,7 @@ public class Scene {
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
         tictac.draw(shaders,modelviewmatrix);
-
+        plane.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }
 }
