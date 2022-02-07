@@ -13,9 +13,11 @@ import java.util.TreeMap;
 // - classe cylinder (faire un cercle d'abord) DONE
 // - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
 // - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
-// - faire une room avec paramètres (genre nb de portes et sur quel coté)
 // - classe capsule (utiliser le cylindre et la sphère) DONE
-// - classe plane
+// - classe plane DONE
+// - faire une room avec paramètres (genre nb de portes et sur quel coté) DONE
+// - faire de room un gameobject avec une mesh ou alors faire de room avec plusieurs gameobjects fils
+// - faire des gameobjects primitives
 // - classe quad
 // - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
 // - joysticks
