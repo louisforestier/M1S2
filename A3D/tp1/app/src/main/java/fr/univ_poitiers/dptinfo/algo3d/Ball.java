@@ -7,10 +7,11 @@ public class Ball extends GameObject{
     static boolean isInitialized = false;
     public Ball(float radius, float posx, float posz, float[] color) {
         super(color);
-        this.setMesh(Ball.sphere);
+        this.setMesh(new Sphere(50,50));
         this.getTransform().posx(posx).posz(posz).posy(radius).scalex(radius).scaley(radius).scalez(radius);
     }
 
+/*
     @Override
     public void initGraphics() {
         if (!isInitialized){
@@ -18,6 +19,7 @@ public class Ball extends GameObject{
             isInitialized = true;
         }
     }
+*/
 
     static public void onPause(){
         isInitialized = false;

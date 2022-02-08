@@ -11,6 +11,7 @@ public class OBJImporter {
 
     public static Mesh importOBJ(InputStream stream) {
         List<Float> verticesList = new ArrayList<>();
+        List<Float> normalsList = new ArrayList<>();
         List<Integer> trianglesList = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String lineText;
@@ -27,6 +28,12 @@ public class OBJImporter {
                             verticesList.add(Float.parseFloat(data[2]));
                             verticesList.add(Float.parseFloat(data[3]));
                             break;
+                        case "vn":
+                            normalsList.add(Float.parseFloat(data[1]));
+                            normalsList.add(Float.parseFloat(data[2]));
+                            normalsList.add(Float.parseFloat(data[3]));
+                            break;
+
                         case "f":
                             trianglesList.add(Integer.parseInt((data[1].split("/"))[0]));
                             trianglesList.add(Integer.parseInt((data[2].split("/"))[0]));
@@ -48,7 +55,11 @@ public class OBJImporter {
         for (int i = 0 ; i < trianglesList.size(); i++){
             triangles[i] = trianglesList.get(i)-1;
         }
-        return new Mesh(vertexpos, triangles);
+        float[] normals = new float[normalsList.size()];
+        for (int i = 0 ; i < normalsList.size() ; i++){
+            normals[i] = normalsList.get(i);
+        }
+        return new Mesh(vertexpos, triangles, normals);
     }
 
 }

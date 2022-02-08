@@ -17,12 +17,14 @@ public class Mesh {
     protected float[] normals;
 
     public Mesh(){
+        this.normals = new float[]{0.f,0.f,0.f};
     }
 
 
     public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
+        this.normals = new float[]{0.f,0.f,0.f};
     }
     public Mesh(float[] vertexpos, int[] triangles, float[] normals) {
         this.vertexpos = vertexpos;
@@ -54,12 +56,12 @@ public class Mesh {
          *
          * Buffer des normals
          */
-     /*   Log.i("INFO","buffer des normals");
+        Log.i("INFO","buffer des normals");
         ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
         posbytebuf.order(ByteOrder.nativeOrder());
         FloatBuffer normalbuffer = normalbytebuf.asFloatBuffer();
-        posbuffer.put(normals);
-        posbuffer.position(0);*/
+        normalbuffer.put(normals);
+        normalbuffer.position(0);
 
 
         int[] buffers = new int[1];
@@ -82,7 +84,6 @@ public class Mesh {
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
-/*        Log.i("INFO","fin init graphics");
         int[] normalsbuffers = new int[1];
         GLES20.glGenBuffers(1, normalsbuffers, 0);
 
@@ -92,7 +93,7 @@ public class Mesh {
         GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normals.length * Float.BYTES, normalbuffer, GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        Log.i("INFO","fin init graphics");*/
+        Log.i("INFO","fin init graphics");
     }
 
     public void draw(final LightingShaders shaders) {
@@ -103,9 +104,9 @@ public class Mesh {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
-        /*GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glnormalbuffer);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, glnormalbuffer);
         shaders.setNormalsPointer(3,GLES20.GL_FLOAT);
-*/
+
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
     }

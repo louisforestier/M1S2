@@ -32,7 +32,14 @@ public class Plane extends Mesh {
             }
         }
 
+
         normals = new float[11*11*3];
+        for (int i = 0 ; i < normals.length ; i+=3) {
+            normals[i] = 0.f;
+            normals[i+1] = 1.f;
+            normals[i+2] = 0.f;
+        }
+/*
         for (int i = 0 ; i < triangles.length ; i+=3) {
             Vec3f p1 = new Vec3f(vertexpos[triangles[i]],vertexpos[triangles[i]+1],vertexpos[triangles[i]+2]);
             Vec3f p2 = new Vec3f(vertexpos[triangles[i+1]],vertexpos[triangles[i+1]+1],vertexpos[triangles[i+1]+2]);
@@ -50,37 +57,8 @@ public class Plane extends Mesh {
             normals[triangles[i+2]+1] = n3.y;
             normals[triangles[i+2]+2] = n3.z;
         }
-/*
-        for (int i = 0 ; i < vertexpos.length ; i+=9){
-            Vec3f p1 = new Vec3f(i,i+1,i+2);
-            Vec3f p2 = new Vec3f(i+3,i+4,i+5);
-            Vec3f p3 = new Vec3f(i+6,i+7,i+8);
-            Vec3f v1 = p2.sub(p1);
-            Vec3f v2 = p3.sub(p1);
-            Vec3f n1 = new Vec3f();
-            n1.setCrossProduct(v1,v2);
-            n1.normalize();
-            v1 = p1.sub(p2);
-            v2 = p3.sub(p2);
-            Vec3f n2 = new Vec3f();
-            n2.setCrossProduct(v1,v2);
-            n2.normalize();
-            v1 = p1.sub(p3);
-            v2 = p2.sub(p3);
-            Vec3f n3 = new Vec3f();
-            n3.setCrossProduct(v1,v2);
-            n3.normalize();
-            normals[i] = n1.x;
-            normals[i+1] = n1.y;
-            normals[i+2] = n1.z;
-            normals[i+3] = n2.x;
-            normals[i+4] = n2.y;
-            normals[i+5] = n2.z;
-            normals[i+6] = n3.x;
-            normals[i+7] = n3.y;
-            normals[i+8] = n3.z;
-        }
 */
+
     }
 
     Vec3f getNormal(Vec3f p1, Vec3f p2, Vec3f p3){

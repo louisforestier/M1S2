@@ -3,24 +3,8 @@ package fr.univ_poitiers.dptinfo.algo3d;
 import java.util.Map;
 import java.util.TreeMap;
 
-//TODO:
-// - mettre les matrices dans les classes et pas dans room DONE
-// - faire une classe vbo / faire une classe objet3d qui a un tableau de sommets et une list de tableaux de triangles DONE
-// - faire un obj importer DONE
-// - classe cube paramètre arête DONE
-// - classe pyramide paramètrée par le nombre de face DONE
-// - classe cone (juste une pyramide avec beaucoup de face) DONE
-// - classe cylinder (faire un cercle d'abord) DONE
-// - demander utilité entre plane et quad (surtout pourquoi le plane est composé de 200 triangles) DONE
-// - classe donut (torus) : dessiner un cercle autour d'un axe avec des carrés DONE
-// - classe capsule (utiliser le cylindre et la sphère) DONE
-// - classe plane DONE
-// - faire une room avec paramètres (genre nb de portes et sur quel coté) DONE
-// - faire de room un gameobject avec une mesh ou alors faire de room avec plusieurs gameobjects fils
-// - faire des gameobjects primitives
-// - classe quad
-// - ajouter des gardes pour avoir une limite basse au nombre de tranches des cercles
-// - joysticks
+//TODO :
+// - ball ne fonctionne plus avec sphere static
 
 
 public class Sphere extends Mesh{

@@ -55,13 +55,13 @@ public class Scene {
         room2.getTransform().posz(6);
         InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
-        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
+        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
         armadillo = new GameObject(MyGLRenderer.lightgray);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
         armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F).posx(6);
         donut = new GameObject(MyGLRenderer.cyan);
-        donut.setMesh(new Donut(1.0f,0.2f,50,20));
-        donut.getTransform().posz(6).posy(0.5f);
+        donut.setMesh(new Donut(1.0f,0.3f,50,20));
+        donut.getTransform().posz(6).posy(1.6f);
         cube = new GameObject(MyGLRenderer.magenta);
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
@@ -102,6 +102,12 @@ public class Scene {
         GLES20.glDepthFunc(GLES20.GL_LESS);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         MainActivity.log("Graphics initialized");
+        renderer.getShaders().setNormalizing(true);
+        renderer.getShaders().setLightPosition(new float[]{0.f,1.f,0.f});
+        renderer.getShaders().setLightColor(new float[]{0.8f,0.8f,0.8f,1.f});
+        renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
+        renderer.getShaders().setLighting(true);
+
         room.initGraphics();
         room2.initGraphics();
         ball.initGraphics();
@@ -138,7 +144,7 @@ public class Scene {
         //MainActivity.log("Starting rendering");
 
         // Get shader to send uniform data
-        NoLightShaders shaders = renderer.getShaders();
+        LightingShaders shaders = renderer.getShaders();
 
 
         // Place viewer in the right position and orientation

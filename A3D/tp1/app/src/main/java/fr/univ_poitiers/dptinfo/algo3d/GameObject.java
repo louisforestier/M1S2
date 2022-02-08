@@ -47,11 +47,11 @@ public class GameObject {
         }
     }
 
-    public void draw(NoLightShaders shaders, final float[] viewmatrix){
+    public void draw(LightingShaders shaders, final float[] viewmatrix){
         float[] modelviewmatrix = new float[16];
         Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
         shaders.setModelViewMatrix(modelviewmatrix);
-        shaders.setColor(color);
+        shaders.setMaterialColor(color);
         if (this.mesh != null)
             mesh.draw(shaders);
         if (this.children.size() > 0){
