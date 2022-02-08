@@ -107,7 +107,7 @@ public class Scene {
         renderer.getShaders().setLightColor(new float[]{0.8f,0.8f,0.8f,1.f});
         renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
         renderer.getShaders().setLighting(true);
-
+        renderer.getShaders().setLightSpecular(new float[]{0.8f,0.8f,0.8f,1.f});
         room.initGraphics();
         room2.initGraphics();
         ball.initGraphics();

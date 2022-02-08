@@ -58,7 +58,7 @@ public class Mesh {
          */
         Log.i("INFO","buffer des normals");
         ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
-        posbytebuf.order(ByteOrder.nativeOrder());
+        normalbytebuf.order(ByteOrder.nativeOrder());
         FloatBuffer normalbuffer = normalbytebuf.asFloatBuffer();
         normalbuffer.put(normals);
         normalbuffer.position(0);

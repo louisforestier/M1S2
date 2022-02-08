@@ -10,11 +10,21 @@ public class GameObject {
     private Mesh mesh;
     private Transform transform;
     private float[] color;
+    private float[] specColor;
+    private float shininess;
     private List<GameObject> children = new ArrayList<>();
     private GameObject parent = null;
 
 
     public GameObject(float[] color){
+        this.specColor = MyGLRenderer.white;
+        this.shininess = 32.f;
+        this.transform = new Transform();
+        this.color = color;
+    }
+    public GameObject(float[] color, float[] specColor, float shininess){
+        this.specColor = specColor;
+        this.shininess = shininess;
         this.transform = new Transform();
         this.color = color;
     }
@@ -22,6 +32,8 @@ public class GameObject {
     public GameObject() {
         this.transform = new Transform();
         this.color = MyGLRenderer.white;
+        this.specColor = MyGLRenderer.white;
+        this.shininess = 32.f;
     }
 
     public void setMesh(Mesh mesh) {
@@ -52,6 +64,8 @@ public class GameObject {
         Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
         shaders.setModelViewMatrix(modelviewmatrix);
         shaders.setMaterialColor(color);
+        shaders.setMaterialSpecular(specColor);
+        shaders.setMaterialShininess(shininess);
         if (this.mesh != null)
             mesh.draw(shaders);
         if (this.children.size() > 0){

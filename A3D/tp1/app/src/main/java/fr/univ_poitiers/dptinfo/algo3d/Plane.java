@@ -35,8 +35,8 @@ public class Plane extends Mesh {
 
         normals = new float[11*11*3];
         for (int i = 0 ; i < normals.length ; i+=3) {
-            normals[i] = 0.f;
-            normals[i+1] = 1.f;
+            normals[i] = 1.f;
+            normals[i+1] = 0.f;
             normals[i+2] = 0.f;
         }
 /*
