@@ -6,6 +6,9 @@ package fr.univ_poitiers.dptinfo.algo3d;
  */
 public class Plane extends Mesh {
 
+    public static final Plane INSTANCE = new Plane();
+
+
     public Plane() {
         vertexpos = new float[11*11*3];
         triangles = new int[200*3];

@@ -20,11 +20,11 @@ public class Scene {
     static final float wallsize = 3.F;
     private Context context;
 
-    private Room room;
-    private Room room2;
+    private GameObject room;
+    private GameObject room2;
     private GameObject armadillo;
-    private Ball ball;
-    private Ball ball2;
+    private GameObject ball;
+    private GameObject ball2;
     private GameObject donut;
     private GameObject cube;
     private GameObject pyramid;
@@ -33,6 +33,7 @@ public class Scene {
     private GameObject tictac;
     private GameObject plane;
     private GameObject frustum;
+    private GameObject room3;
 
     /**
      * An angle used to animate the viewer
@@ -49,14 +50,15 @@ public class Scene {
         this.context = current;
         // Init observer's view angles
         angley = 0.F;
-        room = new Room(6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
-        room2 = new Room(6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray,0,6,180);
+        room = new Room(new boolean[]{false, true, true, false},6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
+        room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray);
+        room2.getTransform().posz(6);
         InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
         armadillo = new GameObject(MyGLRenderer.lightgray);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
-        armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F);
+        armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F).posx(6);
         donut = new GameObject(MyGLRenderer.cyan);
         donut.setMesh(new Donut(1.0f,0.2f,50,20));
         donut.getTransform().posz(6).posy(0.5f);
@@ -81,6 +83,8 @@ public class Scene {
         frustum = new GameObject(MyGLRenderer.white);
         frustum.setMesh(new Frustum(1.f,0.5f,50));
         frustum.getTransform().posz(-10);
+        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.darkgray,MyGLRenderer.cyan,MyGLRenderer.white);
+        room3.getTransform().posx(6);
     }
 
 
@@ -111,6 +115,7 @@ public class Scene {
         tictac.initGraphics();
         plane.initGraphics();
         frustum.initGraphics();
+        room3.initGraphics();
     }
 
 
@@ -149,7 +154,7 @@ public class Scene {
         shaders.setModelViewMatrix(modelviewmatrix);
         room.draw(shaders,modelviewmatrix);
         room2.draw(shaders, modelviewmatrix);
-
+        room3.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
         donut.draw(shaders,modelviewmatrix);
 
