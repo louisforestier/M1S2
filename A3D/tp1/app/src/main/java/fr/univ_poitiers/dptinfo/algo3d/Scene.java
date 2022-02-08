@@ -103,11 +103,11 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         MainActivity.log("Graphics initialized");
         renderer.getShaders().setNormalizing(true);
-        renderer.getShaders().setLightPosition(new float[]{0.f,1.f,0.f});
+        renderer.getShaders().setLightPosition(new float[]{0.f,0.f,0.f});
         renderer.getShaders().setLightColor(new float[]{0.8f,0.8f,0.8f,1.f});
         renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
-        renderer.getShaders().setLighting(true);
         renderer.getShaders().setLightSpecular(new float[]{0.8f,0.8f,0.8f,1.f});
+        renderer.getShaders().setLighting(true);
         room.initGraphics();
         room2.initGraphics();
         ball.initGraphics();
@@ -163,15 +163,15 @@ public class Scene {
         room3.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
         donut.draw(shaders,modelviewmatrix);
+        plane.draw(shaders,modelviewmatrix);
 
-        ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
+        ball.draw(shaders,modelviewmatrix);
         cube.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
         tictac.draw(shaders,modelviewmatrix);
-        plane.draw(shaders,modelviewmatrix);
         frustum.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }

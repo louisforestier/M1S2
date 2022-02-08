@@ -32,7 +32,7 @@ public class PhongShaders extends LightingShaders{
                     +"    vec3 viewdir=normalize(-posf.xyz);\n"
                     +"    vec3 normal = normalize(normalf);"
                     +"    vec3 lightdir=normalize(uLightPos-posf.xyz);\n"
-                    +"    vec3 reflectdir=reflect(-lightdir, normal);\n"
+                    +"    vec3 reflectdir=normalize(reflect(-lightdir, normal));\n"
 
                     +"    float weight = max(dot(normal, lightdir),0.0);\n"
                     +"    vec4 dColor = uMaterialColor*(uAmbiantLight+weight*uLightColor);\n"

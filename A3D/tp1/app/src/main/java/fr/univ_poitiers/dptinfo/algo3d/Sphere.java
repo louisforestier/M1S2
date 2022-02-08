@@ -5,9 +5,11 @@ import java.util.TreeMap;
 
 //TODO :
 // - ball ne fonctionne plus avec sphere static
+// - les shaders semblent prendre la normal de l'objet précédent celui qui est affiché
+// - il se passe des choses étranges lorsqu'on modifie l'ordre d'affichage
 
 
-public class Sphere extends Mesh{
+public class Sphere extends Mesh {
 
     private float[] vertexposIco;
     private int[] trianglesIco;
