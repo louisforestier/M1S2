@@ -25,7 +25,11 @@ public:
 		const T& Tinit,
 		std::function<T(T,T)>& functor
 	) {		
-		// TODO
+		output[0] = Tinit;
+		for (auto iter = input.begin(); iter < input.end()-1; iter++)
+		{
+			output[iter-input.begin()+1] = functor(output[iter-input.begin()],*iter);
+		}
 	}
 	
 	template< typename T>
