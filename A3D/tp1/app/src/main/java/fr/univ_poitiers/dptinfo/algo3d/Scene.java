@@ -4,6 +4,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.io.InputStream;
 
@@ -53,7 +54,7 @@ public class Scene {
         room = new Room(new boolean[]{false, true, true, false},6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
         room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray);
         room2.getTransform().posz(6);
-        InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
+        InputStream stream = context.getResources().openRawResource(R.raw.armadillo_with_normals);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
         armadillo = new GameObject(MyGLRenderer.lightgray);
@@ -155,24 +156,35 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
-
-
         shaders.setModelViewMatrix(modelviewmatrix);
+
         room.draw(shaders,modelviewmatrix);
         room2.draw(shaders, modelviewmatrix);
         room3.draw(shaders,modelviewmatrix);
-        armadillo.draw(shaders,modelviewmatrix);
-        donut.draw(shaders,modelviewmatrix);
-        plane.draw(shaders,modelviewmatrix);
-
         ball2.draw(shaders,modelviewmatrix);
         ball.draw(shaders,modelviewmatrix);
+        plane.draw(shaders,modelviewmatrix);
+        armadillo.draw(shaders,modelviewmatrix);
         cube.draw(shaders,modelviewmatrix);
+
+/*
+        Log.d("DRAW","\n\ndraw donut\n\n");
+        donut.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw cube\n\n");
+        Log.d("DRAW","\n\ndraw pyramid\n\n");
         pyramid.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw pipe\n\n");
         pipe.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw cylinder\n\n");
         cylinder.draw(shaders,modelviewmatrix);
-        tictac.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw frustum\n\n");
         frustum.draw(shaders,modelviewmatrix);
+*/
+
+/*
+        tictac.draw(shaders,modelviewmatrix);
+*/
+
         //MainActivity.log("Rendering terminated.");
     }
 }

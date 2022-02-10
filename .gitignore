@@ -76,7 +76,6 @@ _deps
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -140,3 +139,7 @@ A3D/*/.idea/misc.xml
 A3D/*/.idea/deploymentTargetDropDown.xml
 APR/TPs/TP3/.vscode/settings.json
 IHM/TP2IHM/.idea/gradle.xml
+IHM/TP2IHM/.idea/deploymentTargetDropDown.xml
+settings.json
+/APR/TPs/*/*/*/*/*.obj
+
