@@ -165,12 +165,12 @@ public class Scene {
         ball.draw(shaders,modelviewmatrix);
         plane.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
+        cube.draw(shaders,modelviewmatrix);
 
 /*
         Log.d("DRAW","\n\ndraw donut\n\n");
         donut.draw(shaders,modelviewmatrix);
         Log.d("DRAW","\n\ndraw cube\n\n");
-        cube.draw(shaders,modelviewmatrix);
         Log.d("DRAW","\n\ndraw pyramid\n\n");
         pyramid.draw(shaders,modelviewmatrix);
         Log.d("DRAW","\n\ndraw pipe\n\n");

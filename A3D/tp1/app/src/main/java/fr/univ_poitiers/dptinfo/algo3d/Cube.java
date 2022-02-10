@@ -44,5 +44,7 @@ public class Cube extends Mesh{
                 20, 21, 22,//20-21-22-23
                 23, 20, 22
         };
+
+        this.initNormals();
     }
 }
