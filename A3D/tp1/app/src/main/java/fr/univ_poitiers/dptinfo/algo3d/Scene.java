@@ -31,9 +31,9 @@ public class Scene {
     private GameObject pipe;
     private GameObject cylinder;
     private GameObject tictac;
-    private GameObject plane;
     private GameObject frustum;
     private GameObject room3;
+    private GameObject room4;
 
     /**
      * An angle used to animate the viewer
@@ -54,6 +54,10 @@ public class Scene {
         room = new Room(new boolean[]{false, true, true, false},6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
         room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray);
         room2.getTransform().posz(6);
+        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.darkgray,MyGLRenderer.cyan,MyGLRenderer.white);
+        room3.getTransform().posx(6);
+        room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.darkgray,MyGLRenderer.orange,MyGLRenderer.white);
+        room4.getTransform().posx(6).posz(-6);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
         InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
@@ -78,14 +82,9 @@ public class Scene {
         tictac = new GameObject(MyGLRenderer.green);
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.9f);
-        plane = new GameObject(MyGLRenderer.orange);
-        plane.setMesh(new Plane());
-        plane.getTransform().posz(-10);
-        frustum = new GameObject(MyGLRenderer.white);
+        frustum = new GameObject(MyGLRenderer.magenta);
         frustum.setMesh(new Frustum(1.f,0.5f,50));
-        frustum.getTransform().posz(-10);
-        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.darkgray,MyGLRenderer.cyan,MyGLRenderer.white);
-        room3.getTransform().posx(6);
+        frustum.getTransform().posx(6).posz(-6);
     }
 
 
@@ -105,6 +104,8 @@ public class Scene {
         MainActivity.log("Graphics initialized");
         room.initGraphics();
         room2.initGraphics();
+        room3.initGraphics();
+        room4.initGraphics();
         ball.initGraphics();
         ball2.initGraphics();
         armadillo.initGraphics();
@@ -114,9 +115,7 @@ public class Scene {
         pipe.initGraphics();
         cylinder.initGraphics();
         tictac.initGraphics();
-        plane.initGraphics();
         frustum.initGraphics();
-        room3.initGraphics();
     }
 
 
@@ -166,17 +165,17 @@ public class Scene {
         room.draw(shaders,modelviewmatrix);
         room2.draw(shaders, modelviewmatrix);
         room3.draw(shaders,modelviewmatrix);
+        room4.draw(shaders,modelviewmatrix);
+        ball.draw(shaders,modelviewmatrix);
+        ball2.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
         donut.draw(shaders,modelviewmatrix);
 
-        ball.draw(shaders,modelviewmatrix);
-        ball2.draw(shaders,modelviewmatrix);
         cube.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
         tictac.draw(shaders,modelviewmatrix);
-        plane.draw(shaders,modelviewmatrix);
         frustum.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }
