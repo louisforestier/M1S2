@@ -1,10 +1,16 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
+import static androidx.core.view.MotionEventCompat.getActionMasked;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import androidx.core.view.MotionEventCompat;
 
 /**
  * Class to described the surface view. Mainly based on well-known code.
@@ -12,6 +18,11 @@ import android.view.MotionEvent;
 public class MyGLSurfaceView extends GLSurfaceView {
     private final MyGLRenderer renderer;
     private final Scene scene;
+    private float mLastTouchX;
+    private float mLastTouchY;
+    private float mPosX;
+    private float mPosY;
+
     public MyGLSurfaceView(Context context, Scene scene) {
         super(context);
         this.scene = scene;
@@ -40,6 +51,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private float rightJoystickOriginX;
     private float rightJoystickOriginY;
 
+    private int mActivePointerId = INVALID_POINTER_ID;
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         // MotionEvent reports input details from the touch screen
@@ -64,7 +77,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
             MainActivity.log("Sin :"+Math.sin(scene.angley * Math.PI/180));
             MainActivity.log("Cos :"+Math.cos(scene.angley * Math.PI/180));
 
-            switch (e.getAction()) {
+            switch (e.getActifloaton()) {
                 case MotionEvent.ACTION_MOVE:
                     if (deltax * deltax2 > 0 || deltay * deltay2 > 0) {
                         MainActivity.log("dx :"+(deltax + deltax2) / (2 * 100));
@@ -92,13 +105,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     break;
             }
         }*/
-        /**
-         * Controle avec la moitie  gauche de l'écran qui régit le déplacement et la moitié droite qui régit la rotation.
-         */
         //TODO: https://android-developers.googleblog.com/2010/06/making-sense-of-multitouch.html
         int screenWidth = getWidth();
+
+/*
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                Log.d("JOYSTICK", "action down");
+                Log.d("JOYSTICK", "action point index mask :" + MotionEvent.ACTION_POINTER_INDEX_MASK);
                 if (x > screenWidth /2) {
                     rightJoystickOriginX = e.getX();
                     rightJoystickOriginY = e.getY();
@@ -111,6 +125,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
+                Log.d("JOYSTICK", "action pointer down");
                 if (e.getPointerCount() == 2) {
                     if (x > screenWidth / 2) {
                         rightJoystickOriginX = e.getX();
@@ -124,6 +139,145 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     }
                 }
                 break;
+            case MotionEvent.ACTION_UP:
+                Log.d("JOYSTICK", "action up");
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                Log.d("JOYSTICK", "action pointer up");
+                break;
+        }
+*/
+
+/*
+        switch (e.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+            {
+                Log.d("Controlls", "Action Down "+ pointerId);
+                Log.d("Controlls", "Coordinates "+ e.getX() + " "+ e.getY());
+                break;
+            }
+
+            case MotionEvent.ACTION_UP:
+            {
+                Log.d("Controlls", "Action UP "+ pointerId);
+                Log.d("Controlls", "Coordinates "+ e.getX() + " "+ e.getY());
+                break;
+            }
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+            {
+                Log.d("Controlls", "Action Pointer Down "+ pointerId);
+                Log.d("Controlls", "Coordinates "+ e.getX() + " "+ e.getY());
+                break;
+            }
+
+            case MotionEvent.ACTION_POINTER_UP:
+            {
+                index = (e.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                int pointId = e.getPointerId(index);
+                Log.d("Controlls", "Action Pointer UP "+ pointId);
+                Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+                break;
+            }
+            case MotionEvent.ACTION_MOVE:
+                index = (e.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                int pointId = e.getPointerId(index);
+                Log.d("Controlls", "Action Move "+ pointId);
+                Log.d("Controlls", "Action Move index"+ index);
+                Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+        }
+*/
+
+
+        int action = e.getActionMasked();
+// Get the index of the pointer associated with the action.
+        int index = e.getActionIndex();
+        int xPos = -1;
+        int yPos = -1;
+        int pointerIndex;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                pointerIndex = MotionEventCompat.getActionIndex(e);
+                x = MotionEventCompat.getX(e, pointerIndex);
+                y = MotionEventCompat.getY(e, pointerIndex);
+
+                // Remember where we started (for dragging)
+                mLastTouchX = x;
+                mLastTouchY = y;
+                // Save the ID of this pointer (for dragging)
+                mActivePointerId = MotionEventCompat.getPointerId(e, 0);
+                break;
+            case MotionEvent.ACTION_MOVE: {
+                // Find the index of the active pointer and fetch its position
+                pointerIndex = MotionEventCompat.findPointerIndex(e, mActivePointerId);
+
+                x = MotionEventCompat.getX(e, pointerIndex);
+                y = MotionEventCompat.getY(e, pointerIndex);
+
+                // Calculate the distance moved
+                final float dx = x - mLastTouchX;
+                final float dy = y - mLastTouchY;
+
+                mPosX += dx;
+                mPosY += dy;
+
+                invalidate();
+
+                // Remember this touch position for the next move event
+                mLastTouchX = x;
+                mLastTouchY = y;
+
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+
+            case MotionEvent.ACTION_CANCEL: {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+            case MotionEvent.ACTION_POINTER_UP: {
+
+                pointerIndex = MotionEventCompat.getActionIndex(e);
+                final int pointerId = MotionEventCompat.getPointerId(e, pointerIndex);
+
+                if (pointerId == mActivePointerId) {
+                    // This was our active pointer going up. Choose a new
+                    // active pointer and adjust accordingly.
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    mLastTouchX = MotionEventCompat.getX(e, newPointerIndex);
+                    mLastTouchY = MotionEventCompat.getY(e, newPointerIndex);
+                    mActivePointerId = MotionEventCompat.getPointerId(e, newPointerIndex);
+                }
+                break;
+            }
+
+        }
+        Log.d("DEBUG_TAG","The action is " + actionToString(action));
+
+        if (e.getPointerCount() > 1) {
+            Log.d("DEBUG_TAG","Multitouch event");
+            // The coordinates of the current screen contact, relative to
+            // the responding View or Activity.
+            Log.d("DEBUG_TAG", "Coordinates "+ e.getX() + " "+ e.getY());
+            xPos = (int)e.getX(index);
+            yPos = (int)e.getY(index);
+
+        } else {
+            // Single touch event
+            Log.d("DEBUG_TAG","Single touch event");
+            Log.d("DEBUG_TAG", "Coordinates "+ e.getX() + " "+ e.getY());
+
+            xPos = (int)e.getX(index);
+            yPos = (int)e.getY(index);
+        }
+
+        /**
+         * Controle avec la moitie  gauche de l'écran qui régit le déplacement et la moitié droite qui régit la rotation.
+         *//*
+        switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 if (e.getX() > screenWidth / 2 && previousx > screenWidth /2) {
                     scene.angley += deltax;
@@ -183,12 +337,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                 }
                 break;
-        }
+        }*/
 
         previousx = x;
         previousy = y;
         this.requestRender();
         return true;
+    }
+
+    public static String actionToString(int action) {
+        switch (action) {
+
+            case MotionEvent.ACTION_DOWN: return "Down";
+            case MotionEvent.ACTION_MOVE: return "Move";
+            case MotionEvent.ACTION_POINTER_DOWN: return "Pointer Down";
+            case MotionEvent.ACTION_UP: return "Up";
+            case MotionEvent.ACTION_POINTER_UP: return "Pointer Up";
+            case MotionEvent.ACTION_OUTSIDE: return "Outside";
+            case MotionEvent.ACTION_CANCEL: return "Cancel";
+        }
+        return "";
     }
 
 }
