@@ -47,13 +47,25 @@
         android:id="@+id/exit_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:onClick="exit"
         android:text="@string/exit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/search_button"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/search_button"
+        app:layout_constraintTop_toBottomOf="@+id/historicButton"
+        app:layout_constraintVertical_bias="0.381" />
+
+    <Button
+        android:id="@+id/historicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:onClick="write_historic_in_file"
+        android:text="@string/save_historic"
+        app:layout_constraintEnd_toEndOf="@+id/search_button"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="@+id/search_button"
         app:layout_constraintTop_toBottomOf="@+id/search_button" />
 

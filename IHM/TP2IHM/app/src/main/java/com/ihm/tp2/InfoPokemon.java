@@ -3,11 +3,14 @@ package com.ihm.tp2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,15 +22,22 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 
 public class InfoPokemon extends AppCompatActivity {
 
-    class PokeRequest extends AsyncTask<Void,Integer,Void> {
+    class PokeRequest extends AsyncTask<Void, Integer, Void> {
         private String name;
         private String restype;
         private String resname;
@@ -54,32 +64,30 @@ public class InfoPokemon extends AppCompatActivity {
                 Elements names = tableinfo.select("th.entêtesection");
                 for (Element e : names) {
                     resname = e.ownText();
-                    Log.v(MainActivity.APP_TAG,"Entete section: " + resname);
+                    Log.v(MainActivity.APP_TAG, "Entete section: " + resname);
                 }
 
-                Log.v(MainActivity.APP_TAG,"=====>>>>>  FINAL Entete section: " + resname);
+                Log.v(MainActivity.APP_TAG, "=====>>>>>  FINAL Entete section: " + resname);
 
                 Elements rows = tableinfo.select("tr");
                 for (Element row : rows) {
-                    Log.v(MainActivity.APP_TAG,"=====>>>>>  new line. ");
-                    if(row.select("a[title*=taille]").size() > 0) {
+                    Log.v(MainActivity.APP_TAG, "=====>>>>>  new line. ");
+                    if (row.select("a[title*=taille]").size() > 0) {
                         Element target = row.selectFirst("td");
-                        if(target != null) {
+                        if (target != null) {
                             ressize = target.ownText();
-                            Log.v(MainActivity.APP_TAG,"=====>>>>>  Find a size: " + ressize);
-                        }
-                        else
-                            Toast.makeText(InfoPokemon.this,R.string.error_no_dom_entity, Toast.LENGTH_LONG).show();
+                            Log.v(MainActivity.APP_TAG, "=====>>>>>  Find a size: " + ressize);
+                        } else
+                            Toast.makeText(InfoPokemon.this, R.string.error_no_dom_entity, Toast.LENGTH_LONG).show();
                     }
 
-                    if(row.select("a[title*=poids]").size() > 0) {
+                    if (row.select("a[title*=poids]").size() > 0) {
                         Element target = row.selectFirst("td");
-                        if(target != null) {
+                        if (target != null) {
                             resweight = target.ownText();
-                            Log.v(MainActivity.APP_TAG,"=====>>>>>  Find a weight: " + resweight);
-                        }
-                        else
-                            Toast.makeText(InfoPokemon.this,R.string.error_no_dom_entity, Toast.LENGTH_LONG).show();
+                            Log.v(MainActivity.APP_TAG, "=====>>>>>  Find a weight: " + resweight);
+                        } else
+                            Toast.makeText(InfoPokemon.this, R.string.error_no_dom_entity, Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -87,17 +95,17 @@ public class InfoPokemon extends AppCompatActivity {
 
                 Elements elems = tableinfo.select("a[title*=type]");
                 ArrayList<String> types = new ArrayList<>();
-                for (Element e: elems) {
-                    if(!e.attr("title").equalsIgnoreCase("Type")) {
+                for (Element e : elems) {
+                    if (!e.attr("title").equalsIgnoreCase("Type")) {
                         String rawtype = e.attr("title");
-                        String type = rawtype.replace(" (type)","");
+                        String type = rawtype.replace(" (type)", "");
                         types.add(type);
-                        Log.v(MainActivity.APP_TAG,"\tFind type: " +type);
+                        Log.v(MainActivity.APP_TAG, "\tFind type: " + type);
                     }
                 }
                 restype = types.stream().collect(Collectors.joining(" - "));
             } catch (IOException e) {
-                Log.e(MainActivity.APP_TAG,"Error during connection...",e);
+                Log.e(MainActivity.APP_TAG, "Error during connection...", e);
                 // e.printStackTrace();
             }
 
@@ -122,6 +130,7 @@ public class InfoPokemon extends AppCompatActivity {
             Toast.makeText(InfoPokemon.this, R.string.end_request, Toast.LENGTH_SHORT).show();
 
             // c'est ici que vous devrez ajouter l'écriture de votre fichier en FIN de sujet!!!
+            write_stats_in_file();
         }
     }
 
@@ -134,7 +143,7 @@ public class InfoPokemon extends AppCompatActivity {
 
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
-            Log.i(MainActivity.APP_TAG,urldisplay);
+            Log.i(MainActivity.APP_TAG, urldisplay);
             Bitmap mIcon11 = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
@@ -150,6 +159,8 @@ public class InfoPokemon extends AppCompatActivity {
             bmImage.setImageBitmap(result);
         }
     }
+
+    public static final String APP_TAG = "POKESTAT";
 
     private TextView pokemon_name;
     private TextView pokemon_type;
@@ -169,22 +180,42 @@ public class InfoPokemon extends AppCompatActivity {
         pokemon_weight = findViewById(R.id.pokemon_weight);
         pokemon_size = findViewById(R.id.pokemon_height);
         pokemon_img = findViewById(R.id.imageView);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             pokemon_name.setText((String) savedInstanceState.getSerializable("inputpokemonname"));
-        }
-        else {
+        } else {
             pokemon_name.setText(getIntent().getStringExtra("inputpokemonname"));
         }
-
         new PokeRequest(pokemon_name.getText().toString()).execute();
-
     }
 
-    public void openBrowser(android.view.View v){
+    public void write_stats_in_file() {
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File fileout = new File(folder, "pokestat_"+ pokemon_name.getText().toString() +".txt");
+        try (FileOutputStream fos = new FileOutputStream(fileout)) {
+            PrintStream ps = new PrintStream(fos);
+            ps.println("Name: " + pokemon_name.getText().toString());
+            ps.println("Type: " + pokemon_type.getText().toString());
+            ps.println("Size: " + pokemon_size.getText().toString());
+            ps.println("Weight: " + pokemon_weight.getText().toString());
+            ps.close();
+        } catch (FileNotFoundException e) {
+            Log.e(APP_TAG,"File not found",e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(APP_TAG,"Error I/O",e);
+        }
+    }
+
+
+    public void openBrowser(android.view.View v) {
         Log.i("INFO", "openBrowser");
-        String url = "https://www.pokepedia.fr/"+ pokemon_name.getText().toString();
+        String url = "https://www.pokepedia.fr/" + pokemon_name.getText().toString();
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
     }
+
+
+
 }
