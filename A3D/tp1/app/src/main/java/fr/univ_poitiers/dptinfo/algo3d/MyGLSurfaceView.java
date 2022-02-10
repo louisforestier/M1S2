@@ -3,6 +3,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -11,7 +12,6 @@ import android.view.MotionEvent;
 public class MyGLSurfaceView extends GLSurfaceView {
     private final MyGLRenderer renderer;
     private final Scene scene;
-
     public MyGLSurfaceView(Context context, Scene scene) {
         super(context);
         this.scene = scene;
@@ -28,18 +28,24 @@ public class MyGLSurfaceView extends GLSurfaceView {
         //setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
+
+
     private final float SCALE_FACTOR = 0.005F;
     private float previousx;
     private float previousy;
     private float previousx2;
     private float previousy2;
+    private float leftJoystickOriginX;
+    private float leftJoystickOriginY;
+    private float rightJoystickOriginX;
+    private float rightJoystickOriginY;
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         // MotionEvent reports input details from the touch screen
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
-        MainActivity.log("Event");
+        // MainActivity.log("Event");
 
         float x = e.getX();
         float y = e.getY();
@@ -89,10 +95,37 @@ public class MyGLSurfaceView extends GLSurfaceView {
         /**
          * Controle avec la moitie  gauche de l'écran qui régit le déplacement et la moitié droite qui régit la rotation.
          */
+        //TODO: https://android-developers.googleblog.com/2010/06/making-sense-of-multitouch.html
         int screenWidth = getWidth();
         switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (x > screenWidth /2) {
+                    rightJoystickOriginX = e.getX();
+                    rightJoystickOriginY = e.getY();
+                    Log.d("JOYSTICK", "right joystick");
+                }
+                if (x <= screenWidth /2){
+                    leftJoystickOriginX = x;
+                    leftJoystickOriginY = y;
+                    Log.d("JOYSTICK", "left joystick");
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (e.getPointerCount() == 2) {
+                    if (x > screenWidth / 2) {
+                        rightJoystickOriginX = e.getX();
+                        rightJoystickOriginY = e.getY();
+                        Log.d("JOYSTICK", "right joystick");
+                    }
+                    if (x <= screenWidth / 2) {
+                        leftJoystickOriginX = x;
+                        leftJoystickOriginY = y;
+                        Log.d("JOYSTICK", "left joystick");
+                    }
+                }
+                break;
             case MotionEvent.ACTION_MOVE:
-                if (e.getX() > screenWidth / 2) {
+                if (e.getX() > screenWidth / 2 && previousx > screenWidth /2) {
                     scene.angley += deltax;
                     scene.anglex += deltay;
                     if (scene.anglex > 70)
@@ -100,7 +133,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     else if (scene.anglex < -70)
                         scene.anglex = -70;
                 }
-                if (e.getX() <= screenWidth / 2) {
+                if (e.getX() <= screenWidth / 2 && previousx <= screenWidth/2) {
                     float speedx = deltax / 100;
                     float speedy = deltay / 100;
                     double yRot = Math.toRadians(scene.angley);
