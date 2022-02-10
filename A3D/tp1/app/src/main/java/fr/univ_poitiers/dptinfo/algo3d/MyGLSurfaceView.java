@@ -206,6 +206,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 mLastTouchY = y;
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(e, 0);
+                Log.d("Controlls", "Action DOWN "+ pointerIndex);
+                Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+
                 break;
             case MotionEvent.ACTION_MOVE: {
                 // Find the index of the active pointer and fetch its position
@@ -226,11 +229,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 // Remember this touch position for the next move event
                 mLastTouchX = x;
                 mLastTouchY = y;
+                Log.d("Controlls", "Action MOVE "+ pointerIndex);
+                Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
 
                 break;
             }
             case MotionEvent.ACTION_UP: {
                 mActivePointerId = INVALID_POINTER_ID;
+
                 break;
             }
 
@@ -250,7 +256,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     mLastTouchX = MotionEventCompat.getX(e, newPointerIndex);
                     mLastTouchY = MotionEventCompat.getY(e, newPointerIndex);
                     mActivePointerId = MotionEventCompat.getPointerId(e, newPointerIndex);
+                    Log.d("Controlls", "Action Pointer UP new Pointer Index"+ newPointerIndex);
                 }
+                Log.d("Controlls", "Action Pointer UP id"+ pointerId);
+                Log.d("Controlls", "Action Pointer UP index"+ pointerIndex);
+                Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+
                 break;
             }
 
