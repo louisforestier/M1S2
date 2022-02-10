@@ -18,10 +18,6 @@ import androidx.core.view.MotionEventCompat;
 public class MyGLSurfaceView extends GLSurfaceView {
     private final MyGLRenderer renderer;
     private final Scene scene;
-    private float mLastTouchX;
-    private float mLastTouchY;
-    private float mPosX;
-    private float mPosY;
 
     public MyGLSurfaceView(Context context, Scene scene) {
         super(context);
@@ -50,6 +46,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private float leftJoystickOriginY;
     private float rightJoystickOriginX;
     private float rightJoystickOriginY;
+    private int leftJoystickId=-1;
+    private int rightJoystickId=-1;
+
 
     private int mActivePointerId = INVALID_POINTER_ID;
 
@@ -201,15 +200,44 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 x = MotionEventCompat.getX(e, pointerIndex);
                 y = MotionEventCompat.getY(e, pointerIndex);
 
-                // Remember where we started (for dragging)
-                mLastTouchX = x;
-                mLastTouchY = y;
+                if (x < screenWidth / 2 ){
+                    leftJoystickOriginX = x;
+                    leftJoystickOriginY = y;
+                    leftJoystickId = MotionEventCompat.getPointerId(e, 0);
+                    Log.d("Controlls", "left joystick " + pointerIndex);
+                } else {
+                    rightJoystickOriginX = x;
+                    rightJoystickOriginY = y;
+                    rightJoystickId = MotionEventCompat.getPointerId(e, 0);
+                    Log.d("Controlls", "right joystick " + pointerIndex);
+                }
                 // Save the ID of this pointer (for dragging)
                 mActivePointerId = MotionEventCompat.getPointerId(e, 0);
                 Log.d("Controlls", "Action DOWN "+ pointerIndex);
                 Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
 
                 break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+            {
+                pointerIndex = MotionEventCompat.getActionIndex(e);
+                x = MotionEventCompat.getX(e, pointerIndex);
+                y = MotionEventCompat.getY(e, pointerIndex);
+                if (x < screenWidth / 2 && leftJoystickId ==-1){
+                    leftJoystickOriginX = x;
+                    leftJoystickOriginY = y;
+                    leftJoystickId = pointerIndex;
+                    Log.d("Controlls", "left joystick "+pointerIndex);
+                } else if (x >= screenWidth / 2 && rightJoystickId == -1){
+                    rightJoystickOriginX = x;
+                    rightJoystickOriginY = y;
+                    rightJoystickId = pointerIndex;
+                    Log.d("Controlls", "right joystick " +pointerIndex);
+                }
+                Log.d("Controlls", "Action pointer DOWN "+ pointerIndex);
+                Log.d("Controlls", "Coordinates "+ x + " "+ y);
+                break;
+            }
+
             case MotionEvent.ACTION_MOVE: {
                 // Find the index of the active pointer and fetch its position
                 pointerIndex = MotionEventCompat.findPointerIndex(e, mActivePointerId);
@@ -217,50 +245,89 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 x = MotionEventCompat.getX(e, pointerIndex);
                 y = MotionEventCompat.getY(e, pointerIndex);
 
-                // Calculate the distance moved
-                final float dx = x - mLastTouchX;
-                final float dy = y - mLastTouchY;
-
-                mPosX += dx;
-                mPosY += dy;
-
-                invalidate();
-
-                // Remember this touch position for the next move event
-                mLastTouchX = x;
-                mLastTouchY = y;
                 Log.d("Controlls", "Action MOVE "+ pointerIndex);
                 Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+                int pointerCount = e.getPointerCount();
+                for(int i = 0; i < pointerCount; ++i)
+                {
+                    pointerIndex = i;
+                    x = MotionEventCompat.getX(e, pointerIndex);
+                    y = MotionEventCompat.getY(e, pointerIndex);
+                    int pointerId = e.getPointerId(pointerIndex);
+                    Log.d("pointer id - move",Integer.toString(pointerId));
+                    /*if (pointerId == leftJoystickId){
+                        scene.dx = x - leftJoystickOriginX;
+                        if (Math.abs(scene.dx) > 70)
+                            scene.dx = 70 * scene.dx / Math.abs(scene.dx);
+                        scene.dy = y - leftJoystickOriginY;
+                        if (Math.abs(scene.dy) > 70)
+                            scene.dy = 70 * scene.dy / Math.abs(scene.dy);
+                    } else if (pointerId == rightJoystickId){
+                        scene.dx2 = x - rightJoystickOriginX;
+                        if (Math.abs(scene.dx2) > 20)
+                            scene.dx2 = 20 * scene.dx2 / Math.abs(scene.dx2);
+                        scene.dy2 = y - rightJoystickOriginY;
+                        if (Math.abs(scene.dy2) > 20)
+                            scene.dy2 = 20 * scene.dy2 / Math.abs(scene.dy2);
 
+                    }*/
+                    if (pointerId == leftJoystickId){
+                        scene.dx = (x - leftJoystickOriginX)/2;
+                        scene.dy = (y - leftJoystickOriginY)/2;
+                    } else if (pointerId == rightJoystickId){
+                        scene.dx2 = (x - rightJoystickOriginX)/8;
+                        scene.dy2 = (y - rightJoystickOriginY)/8;
+
+                    }
+                    if(pointerId == 0)
+                    {
+                        Log.d("Controlls", "Coordinates id 0"+ e.getX(pointerIndex) + " "+  e.getY(pointerIndex));
+                    }
+                    if(pointerId == 1)
+                    {
+                        Log.d("Controlls", "Coordinates id 1"+ e.getX(pointerIndex) + " "+  e.getY(pointerIndex));
+                    }
+                }
                 break;
             }
             case MotionEvent.ACTION_UP: {
                 mActivePointerId = INVALID_POINTER_ID;
-
+                leftJoystickId = -1;
+                rightJoystickId = -1;
+                scene.dx=0;
+                scene.dy=0;
+                scene.dx2=0;
+                scene.dy2=0;
                 break;
             }
 
-            case MotionEvent.ACTION_CANCEL: {
-                mActivePointerId = INVALID_POINTER_ID;
-                break;
-            }
             case MotionEvent.ACTION_POINTER_UP: {
 
                 pointerIndex = MotionEventCompat.getActionIndex(e);
                 final int pointerId = MotionEventCompat.getPointerId(e, pointerIndex);
-
+                if (pointerId == leftJoystickId) {
+                    leftJoystickId = -1;
+                    scene.dx=0;
+                    scene.dy=0;
+                } else if (pointerId == rightJoystickId){
+                    rightJoystickId = -1;
+                    scene.dx2=0;
+                    scene.dy2=0;
+                }
                 if (pointerId == mActivePointerId) {
                     // This was our active pointer going up. Choose a new
                     // active pointer and adjust accordingly.
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                    mLastTouchX = MotionEventCompat.getX(e, newPointerIndex);
-                    mLastTouchY = MotionEventCompat.getY(e, newPointerIndex);
+                    if (pointerId == leftJoystickId)
+                        leftJoystickId = newPointerIndex;
+                    else rightJoystickId = newPointerIndex;
                     mActivePointerId = MotionEventCompat.getPointerId(e, newPointerIndex);
                     Log.d("Controlls", "Action Pointer UP new Pointer Index"+ newPointerIndex);
                 }
                 Log.d("Controlls", "Action Pointer UP id"+ pointerId);
                 Log.d("Controlls", "Action Pointer UP index"+ pointerIndex);
                 Log.d("Controlls", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
+                Log.d("Controlls", "Coordinates "+ e.getX(0) + " "+  e.getY(0));
 
                 break;
             }
@@ -284,6 +351,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
             xPos = (int)e.getX(index);
             yPos = (int)e.getY(index);
         }
+
+        Log.d("Controlls", "dx = " + scene.dx);
+        Log.d("Controlls", "dy = " + scene.dy);
+        Log.d("Controlls", "dx2 = " + scene.dx2);
+        Log.d("Controlls", "dy2 = " + scene.dy2);
+
+
 
         /**
          * Controle avec la moitie  gauche de l'écran qui régit le déplacement et la moitié droite qui régit la rotation.

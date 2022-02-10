@@ -41,6 +41,7 @@ public class Scene {
     float anglex, angley;
 
     float posx, posz;
+    float dx,dy,dx2,dy2;
 
 
     /**
@@ -124,7 +125,17 @@ public class Scene {
      * Here, only the viewer rotates
      */
     public void step() {
-        angley += 0.1F;
+        this.angley += dx2/10;
+        this.anglex += dy2/10;
+        if (this.anglex > 70)
+            this.anglex = 70;
+        else if (this.anglex < -70)
+            this.anglex = -70;
+        float speedx = dx / 1000;
+        float speedy = dy / 1000;
+        double yRot = Math.toRadians(this.angley);
+        this.posx += speedx * Math.cos(yRot) - speedy * Math.sin(yRot);
+        this.posz += speedx * Math.sin(yRot) + speedy * Math.cos(yRot);
     }
 
     /**
