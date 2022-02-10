@@ -32,4 +32,22 @@ Ils sont faits comme les setters d'un patron de conception Builder pour retourne
 
 Tous les maillages que j'ai réalisé hérite donc de la classe Mesh.
 Les différentes formes réalisés sont :
-    - la sphère (par longitude et latitude et par subdivision)
+    - la sphère (par longitude et latitude et par subdivision), classe Sphere
+    - le cube, classe Cube
+    - le cylindre "plein", classe Cylinder
+    - le tore, classe Donut
+    - le frustum ou tronc, classe Frustum
+    - le cylindre "vide" avec faces internes et externes, classe Pipe
+    - le plan, rectangle de taille 10x10, classe Plane
+    - la pyramide, classe Pyramid
+    - la capsule, classe Tictac
+
+Pour la sphère par subdivision, j'ai utilisé une treemap avec des clés de la classe Key formé sur les attributs x, y, et z.
+J'aurais aussi pu utliser une hashmap formé sur des paires d'entiers.
+
+Au niveau des pièces, j'ai un objet Room qui me permet de faire des pièces avec des portes dépendantes des paramètres du constructeur.
+Ces pièces sont composés de GameObject avec un Mesh Plane pour le plafond et le sol et de GameObject Wall pour les murs.
+Un Wall est composé de plusieurs Planes.
+J'ai gardé des attributs de longueur, largeur et hauteur pour les pièces car je veux pouvoir conserver la taille des portes, je ne peux donc pas appliquer de mise à l'échelle.
+
+Compostion de la scène :
