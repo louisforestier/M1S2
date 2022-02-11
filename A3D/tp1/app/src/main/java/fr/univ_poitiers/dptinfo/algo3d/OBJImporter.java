@@ -25,9 +25,6 @@ public class OBJImporter {
                 if (!lineText.isEmpty()) {
                     String[] data = lineText.split(" ");
                     switch (data[0]) {
-                        case "#":
-                            System.out.println(lineText);
-                            break;
                         case "v":
                             verticesList.add(Float.parseFloat(data[1]));
                             verticesList.add(Float.parseFloat(data[2]));

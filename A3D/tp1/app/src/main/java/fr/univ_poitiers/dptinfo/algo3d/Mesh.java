@@ -179,4 +179,16 @@ public class Mesh {
 
     }
 
+    public void draw(NoLightShaders shaders, DrawMode drawMode) {
+        switch (drawMode){
+            case TRIANGLES:
+                draw(shaders);
+                break;
+            case WIREFRAME:
+                drawLinesOnly(shaders);
+                break;
+            case TRIANGLES_AND_WIREFRAME:
+                drawWithLines(shaders);
+        }
+    }
 }

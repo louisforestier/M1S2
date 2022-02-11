@@ -110,7 +110,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        //this.scene.step();
+        this.scene.step();
 
         // Display the scene:
         // Drawing the scene is mandatory, since display buffers are swapped in any case.

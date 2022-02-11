@@ -25,7 +25,11 @@ public:
 		std::vector<T>& output,
 		std::function<T(T,T)>& functor
 	) {		
-		// TODO
+		output[0] = input[0];
+		for (auto iter = input.begin()+1; iter < input.end(); iter++)
+		{
+			output[iter-input.begin()] = functor(output[iter-input.begin()-1],*iter);
+		}
 	}
 	
 	template< typename T>
