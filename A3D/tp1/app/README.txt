@@ -11,6 +11,8 @@ Sur la partie gauche de l'écran, on contrôle le déplacement de la caméra, la
 Sur la partie droite de l'écran, on contrôle l'axe de la caméra, la rotation. La rotation est bornée pour éviter de retourner l'angle de vue.
 Bien entendu, il est possible et même conseillé d'utiliser les deux doigts simultanément pour se déplacer et tourner en même temps.
 Par conséquent, ces contrôles sont moins efficaces sur l'émulateur.
+Pour réinitialiser la position de l'utilisateur, il suffit de toucher l'écran avec plus de 2 doigts.
+Cela réinitialise aussi les joysticks à la position actuelle des 2 premiers doigts.
 
 J'ai fini le TP3 et fait quelques ajouts de forme et une modification de la conception globale de ma gestion des objets.
 
