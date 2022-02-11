@@ -17,12 +17,12 @@ public class Scene {
     /**
      * A constant for the size of the wall
      */
-    static final float wallsize = 3.F;
     private Context context;
 
     private GameObject room;
     private GameObject room2;
     private GameObject armadillo;
+    private GameObject dragon;
     private GameObject ball;
     private GameObject ball2;
     private GameObject donut;
@@ -51,19 +51,24 @@ public class Scene {
         this.context = current;
         // Init observer's view angles
         angley = 0.F;
-        room = new Room(new boolean[]{false, true, true, false},6.F,6.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.green);
-        room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.blue, MyGLRenderer.darkgray);
+        room = new Room(new boolean[]{false, false, true, true},6.F,6.F,2.5F, MyGLRenderer.green, MyGLRenderer.darkgray, MyGLRenderer.lightgray);
+        room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.darkgray, MyGLRenderer.lightgray);
         room2.getTransform().posz(6);
-        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.darkgray,MyGLRenderer.cyan,MyGLRenderer.white);
+        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.cyan,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
         room3.getTransform().posx(6);
-        room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.darkgray,MyGLRenderer.orange,MyGLRenderer.white);
-        room4.getTransform().posx(6).posz(-6);
+        room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.orange,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
+        //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
+        room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
-        InputStream stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
-        armadillo = new GameObject(MyGLRenderer.lightgray);
+        InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
+        armadillo = new GameObject(MyGLRenderer.yellow);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
-        armadillo.getTransform().posy(1.F).scalex(0.02F).scaley(0.02F).scalez(0.02F).posx(6);
+        armadillo.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f);
+        stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
+        dragon = new GameObject(MyGLRenderer.white);
+        dragon.setMesh(OBJImporter.importOBJ(stream));
+        dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         donut = new GameObject(MyGLRenderer.cyan);
         donut.setMesh(new Donut(1.0f,0.2f,50,20));
         donut.getTransform().posz(6).posy(0.5f);
@@ -81,10 +86,10 @@ public class Scene {
         cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f);
         tictac = new GameObject(MyGLRenderer.green);
         tictac.setMesh(new Tictac(50,50));
-        tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.9f);
+        tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
         frustum = new GameObject(MyGLRenderer.magenta);
         frustum.setMesh(new Frustum(1.f,0.5f,50));
-        frustum.getTransform().posx(6).posz(-6);
+        frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
     }
 
 
@@ -109,6 +114,7 @@ public class Scene {
         ball.initGraphics();
         ball2.initGraphics();
         armadillo.initGraphics();
+        dragon.initGraphics();
         donut.initGraphics();
         cube.initGraphics();
         pyramid.initGraphics();
@@ -169,13 +175,14 @@ public class Scene {
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
+        dragon.draw(shaders, modelviewmatrix);
         donut.draw(shaders,modelviewmatrix);
 
         cube.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
-        tictac.draw(shaders,modelviewmatrix);
+        tictac.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
         frustum.draw(shaders,modelviewmatrix);
         //MainActivity.log("Rendering terminated.");
     }

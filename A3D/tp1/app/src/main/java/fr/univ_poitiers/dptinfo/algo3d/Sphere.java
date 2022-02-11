@@ -1,7 +1,9 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.util.Pair;
+
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Sphere extends Mesh{
 
@@ -9,7 +11,7 @@ public class Sphere extends Mesh{
     private int[] trianglesIco;
     private int nbIndicesV;
     private int nbIndicesT;
-    private Map<Key,Integer> middleVertices = new TreeMap<>();
+    private Map<Pair<Integer,Integer>,Integer> middleVertices = new HashMap<>();
 
     public Sphere(int slice, int quarter) {
         float r = 1.f;
@@ -114,7 +116,12 @@ public class Sphere extends Mesh{
         x /= norm;
         y /= norm;
         z /= norm;
-        Key key = new Key(x,y,z);
+        Pair<Integer,Integer> key;
+        if (v1 < v2){
+            key = new Pair<>(v1,v2);
+        } else {
+            key = new Pair<>(v2,v1);
+        }
         if (middleVertices.containsKey(key)){
             return middleVertices.get(key);
         } else {

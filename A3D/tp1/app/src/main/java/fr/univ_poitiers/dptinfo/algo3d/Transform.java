@@ -17,10 +17,10 @@ public class Transform {
     public float[] getModelMatrix(){
         float[] modelMatrix = new float[16];
         Matrix.setIdentityM(modelMatrix,0);
+        Matrix.translateM(modelMatrix,0,pos.x,pos.y,pos.z);
+        Matrix.rotateM(modelMatrix, 0, rot.z, 0.0F, 0.0F, 1.0F);
         Matrix.rotateM(modelMatrix, 0, rot.x, 1.0F, 0.0F, 0.0F);
         Matrix.rotateM(modelMatrix, 0, rot.y, 0.0F, 1.0F, 0.0F);
-        Matrix.rotateM(modelMatrix, 0, rot.z, 0.0F, 0.0F, 1.0F);
-        Matrix.translateM(modelMatrix,0,pos.x,pos.y,pos.z);
         Matrix.scaleM(modelMatrix,0,scale.x,scale.y,scale.z);
         return modelMatrix;
     }
