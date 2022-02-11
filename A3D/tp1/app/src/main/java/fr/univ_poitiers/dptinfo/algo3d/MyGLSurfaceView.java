@@ -52,113 +52,129 @@ public class MyGLSurfaceView extends GLSurfaceView {
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
         // MainActivity.log("Event");
+        if(e.getPointerCount() > 2){
+            if (leftJoystickId != -1) {
+                leftJoystickOriginX = e.getX(leftJoystickId);
+                leftJoystickOriginY = e.getY(leftJoystickId);
+            }
+            if (rightJoystickId != -1) {
+                rightJoystickOriginX = e.getX(rightJoystickId);
+                rightJoystickOriginY = e.getY(rightJoystickId);
+            }
+            scene.dx = 0;
+            scene.dy = 0;
+            scene.dx2 = 0;
+            scene.dy2 = 0;
+            scene.anglex = 0;
+            scene.angley = 0;
+            scene.posx = 0;
+            scene.posz = 0;
+        } else {
 
+            int screenWidth = getWidth();
 
-        int screenWidth = getWidth();
+            float x;
+            float y;
 
-        float x;
-        float y;
-
-        int action = e.getActionMasked();
+            int action = e.getActionMasked();
 // Get the index of the pointer associated with the action.
-        int pointerIndex;
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                pointerIndex = e.getActionIndex();
-                x = e.getX(pointerIndex);
-                y = e.getY(pointerIndex);
+            int pointerIndex;
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    pointerIndex = e.getActionIndex();
+                    x = e.getX(pointerIndex);
+                    y = e.getY(pointerIndex);
 
-                if (x < screenWidth / 2 ){
-                    leftJoystickOriginX = x;
-                    leftJoystickOriginY = y;
-                    leftJoystickId = e.getPointerId(0);
+                    if (x < screenWidth / 2) {
+                        leftJoystickOriginX = x;
+                        leftJoystickOriginY = y;
+                        leftJoystickId = e.getPointerId(0);
 //                    Log.d("JOYSTICKS", "left joystick " + pointerIndex);
-                } else {
-                    rightJoystickOriginX = x;
-                    rightJoystickOriginY = y;
-                    rightJoystickId = e.getPointerId(0);
+                    } else {
+                        rightJoystickOriginX = x;
+                        rightJoystickOriginY = y;
+                        rightJoystickId = e.getPointerId(0);
 //                    Log.d("JOYSTICKS", "right joystick " + pointerIndex);
-                }
-                // Save the ID of this pointer (for dragging)
-                activePointerId = e.getPointerId(0);
+                    }
+                    // Save the ID of this pointer (for dragging)
+                    activePointerId = e.getPointerId(0);
 //                Log.d("JOYSTICKS", "Action DOWN "+ pointerIndex);
 //                Log.d("JOYSTICKS", "Coordinates "+ e.getX(index) + " "+  e.getY(index));
 
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-            {
-                pointerIndex = e.getActionIndex();
-                x = e.getX(pointerIndex);
-                y = e.getY(pointerIndex);
-                if (x < screenWidth / 2 && leftJoystickId ==-1){
-                    leftJoystickOriginX = x;
-                    leftJoystickOriginY = y;
-                    leftJoystickId = pointerIndex;
-//                    Log.d("JOYSTICKS", "left joystick "+pointerIndex);
-                } else if (x >= screenWidth / 2 && rightJoystickId == -1){
-                    rightJoystickOriginX = x;
-                    rightJoystickOriginY = y;
-                    rightJoystickId = pointerIndex;
-//                    Log.d("JOYSTICKS", "right joystick " +pointerIndex);
-                }
-//                Log.d("JOYSTICKS", "Action pointer DOWN "+ pointerIndex);
-//                Log.d("JOYSTICKS", "Coordinates "+ x + " "+ y);
-                break;
-            }
-            case MotionEvent.ACTION_MOVE: {
-                int pointerCount = e.getPointerCount();
-                for(int i = 0; i < pointerCount; ++i)
-                {
-                    pointerIndex = i;
+                    break;
+                case MotionEvent.ACTION_POINTER_DOWN: {
+                    pointerIndex = e.getActionIndex();
                     x = e.getX(pointerIndex);
                     y = e.getY(pointerIndex);
-                    int pointerId = e.getPointerId(pointerIndex);
-                    if (pointerId == leftJoystickId){
-                        scene.dx = (x - leftJoystickOriginX)/2;
-                        scene.dy = (y - leftJoystickOriginY)/2;
-                    } else if (pointerId == rightJoystickId){
-                        scene.dx2 = (x - rightJoystickOriginX)/8;
-                        scene.dy2 = (y - rightJoystickOriginY)/8;
-
+                    if (x < screenWidth / 2 && leftJoystickId == -1) {
+                        leftJoystickOriginX = x;
+                        leftJoystickOriginY = y;
+                        leftJoystickId = pointerIndex;
+//                    Log.d("JOYSTICKS", "left joystick "+pointerIndex);
+                    } else if (x >= screenWidth / 2 && rightJoystickId == -1) {
+                        rightJoystickOriginX = x;
+                        rightJoystickOriginY = y;
+                        rightJoystickId = pointerIndex;
+//                    Log.d("JOYSTICKS", "right joystick " +pointerIndex);
                     }
+//                Log.d("JOYSTICKS", "Action pointer DOWN "+ pointerIndex);
+//                Log.d("JOYSTICKS", "Coordinates "+ x + " "+ y);
+                    break;
                 }
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                activePointerId = INVALID_POINTER_ID;
-                leftJoystickId = -1;
-                rightJoystickId = -1;
-                scene.dx=0;
-                scene.dy=0;
-                scene.dx2=0;
-                scene.dy2=0;
-                break;
-            }
+                case MotionEvent.ACTION_MOVE: {
+                    int pointerCount = e.getPointerCount();
+                    for (int i = 0; i < pointerCount; ++i) {
+                        pointerIndex = i;
+                        x = e.getX(pointerIndex);
+                        y = e.getY(pointerIndex);
+                        int pointerId = e.getPointerId(pointerIndex);
+                        if (pointerId == leftJoystickId) {
+                            scene.dx = (x - leftJoystickOriginX) / 2;
+                            scene.dy = (y - leftJoystickOriginY) / 2;
+                        } else if (pointerId == rightJoystickId) {
+                            scene.dx2 = (x - rightJoystickOriginX) / 8;
+                            scene.dy2 = (y - rightJoystickOriginY) / 8;
 
-            case MotionEvent.ACTION_POINTER_UP: {
-
-                pointerIndex = e.getActionIndex();
-                final int pointerId = e.getPointerId(pointerIndex);
-                if (pointerId == leftJoystickId) {
+                        }
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_UP: {
+                    activePointerId = INVALID_POINTER_ID;
                     leftJoystickId = -1;
-                    scene.dx=0;
-                    scene.dy=0;
-                } else if (pointerId == rightJoystickId){
                     rightJoystickId = -1;
-                    scene.dx2=0;
-                    scene.dy2=0;
+                    scene.dx = 0;
+                    scene.dy = 0;
+                    scene.dx2 = 0;
+                    scene.dy2 = 0;
+                    break;
                 }
-                if (pointerId == activePointerId) {
-                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                    if (pointerId == leftJoystickId)
-                        leftJoystickId = newPointerIndex;
-                    else rightJoystickId = newPointerIndex;
-                    activePointerId = e.getPointerId(newPointerIndex);
+
+                case MotionEvent.ACTION_POINTER_UP: {
+
+                    pointerIndex = e.getActionIndex();
+                    final int pointerId = e.getPointerId(pointerIndex);
+                    if (pointerId == leftJoystickId) {
+                        leftJoystickId = -1;
+                        scene.dx = 0;
+                        scene.dy = 0;
+                    } else if (pointerId == rightJoystickId) {
+                        rightJoystickId = -1;
+                        scene.dx2 = 0;
+                        scene.dy2 = 0;
+                    }
+                    if (pointerId == activePointerId) {
+                        final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                        if (pointerId == leftJoystickId)
+                            leftJoystickId = newPointerIndex;
+                        else rightJoystickId = newPointerIndex;
+                        activePointerId = e.getPointerId(newPointerIndex);
 //                    Log.d("JOYSTICKS", "Action Pointer UP new Pointer Index"+ newPointerIndex);
-                }
+                    }
 //                Log.d("JOYSTICKS", "Action Pointer UP id"+ pointerId);
 //                Log.d("JOYSTICKS", "Action Pointer UP index"+ pointerIndex);
-                break;
+                    break;
+                }
             }
         }
 //        Log.d("JOYSTICKS", "dx = " + scene.dx);
