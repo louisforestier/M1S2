@@ -35,33 +35,33 @@ public class Mesh {
     public void initNormals(){
         normals = new float[vertexpos.length];
         for (int i = 0 ; i < triangles.length ; i+=3) {
-            Vec3f p1 = new Vec3f(vertexpos[triangles[i]],vertexpos[triangles[i]+1],vertexpos[triangles[i]+2]);
-            Vec3f p2 = new Vec3f(vertexpos[triangles[i+1]],vertexpos[triangles[i+1]+1],vertexpos[triangles[i+1]+2]);
-            Vec3f p3 = new Vec3f(vertexpos[triangles[i+2]],vertexpos[triangles[i+2]+1],vertexpos[triangles[i+2]+2]);
-            Vec3f n1 = getNormal(p1,p2,p3);
-            Vec3f n2 = getNormal(p2,p1,p3);
-            Vec3f n3 = getNormal(p3,p1,p2);
-            normals[triangles[i]] = n1.x;
-            normals[triangles[i]+1] = n1.y;
-            normals[triangles[i]+2] = n1.z;
-            normals[triangles[i+1]] = n2.x;
-            normals[triangles[i+1]+1] = n2.y;
-            normals[triangles[i+1]+2] = n2.z;
-            normals[triangles[i+2]] = n3.x;
-            normals[triangles[i+2]+1] = n3.y;
-            normals[triangles[i+2]+2] = n3.z;
+            Vec3f p1 = new Vec3f(vertexpos[triangles[i]*3],vertexpos[triangles[i]*3+1],vertexpos[triangles[i]*3+2]);
+            Vec3f p2 = new Vec3f(vertexpos[triangles[i+1]*3],vertexpos[triangles[i+1]*3+1],vertexpos[triangles[i+1]*3+2]);
+            Vec3f p3 = new Vec3f(vertexpos[triangles[i+2]*3],vertexpos[triangles[i+2]*3+1],vertexpos[triangles[i+2]*3+2]);
+            Vec3f n = getNormal(p1,p2,p3);
+            normals[triangles[i]*3] = n.x;
+            normals[triangles[i]*3+1] = n.y;
+            normals[triangles[i]*3+2] = n.z;
+            normals[triangles[i+1]*3] = n.x;
+            normals[triangles[i+1]*3+1] = n.y;
+            normals[triangles[i+1]*3+2] = n.z;
+            normals[triangles[i+2]*3] = n.x;
+            normals[triangles[i+2]*3+1] = n.y;
+            normals[triangles[i+2]*3+2] = n.z;
         }
     }
 
 
 
     Vec3f getNormal(Vec3f p1, Vec3f p2, Vec3f p3){
-        Vec3f v1 = p2.sub(p1);
-        Vec3f v2 = p3.sub(p1);
-        Vec3f n1 = new Vec3f();
-        n1.setCrossProduct(v1,v2);
-        n1.normalize();
-        return n1;
+        Vec3f v1 = new Vec3f();
+        v1.setSub(p3,p1);
+        Vec3f v2 = new Vec3f();
+        v2.setSub(p3,p2);
+        Vec3f n = new Vec3f();
+        n.setCrossProduct(v1,v2);
+        n.normalize();
+        return n;
     }
 
 
@@ -146,40 +146,47 @@ public class Mesh {
 
     }
 
-    public void drawWithLines(final NoLightShaders shaders) {
+    public void drawWithLines(final LightingShaders shaders) {
         GLES20.glPolygonOffset(2.F, 4.F);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+        shaders.setNormalsPointer(3,GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
         GLES20.glDisable(GLES20.GL_POLYGON_OFFSET_FILL);
-        shaders.setColor(MyGLRenderer.black);
+        shaders.setMaterialColor(MyGLRenderer.black);
 
         for (int i = 0; i < triangles.length; i += 3)
             GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
 
     }
-    public void drawLinesOnly(final NoLightShaders shaders) {
+    public void drawLinesOnly(final LightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+        shaders.setNormalsPointer(3,GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
 
-        shaders.setColor(MyGLRenderer.black);
+        shaders.setMaterialColor(MyGLRenderer.black);
 
         for (int i = 0; i < triangles.length; i += 3)
             GLES20.glDrawElements(GLES20.GL_LINE_LOOP, 3, GLES20.GL_UNSIGNED_INT, i * Integer.BYTES);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
 
     }
 
-    public void draw(NoLightShaders shaders, DrawMode drawMode) {
+    public void draw(LightingShaders shaders, DrawMode drawMode) {
         switch (drawMode){
             case TRIANGLES:
                 draw(shaders);

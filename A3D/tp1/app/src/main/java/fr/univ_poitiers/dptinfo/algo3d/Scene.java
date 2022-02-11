@@ -185,22 +185,13 @@ public class Scene {
         dragon.draw(shaders, modelviewmatrix);
 
         cube.draw(shaders,modelviewmatrix);
-
-/*
-        Log.d("DRAW","\n\ndraw donut\n\n");
         donut.draw(shaders,modelviewmatrix);
-        Log.d("DRAW","\n\ndraw cube\n\n");
-        Log.d("DRAW","\n\ndraw pyramid\n\n");
         pyramid.draw(shaders,modelviewmatrix);
-        Log.d("DRAW","\n\ndraw pipe\n\n");
         pipe.draw(shaders,modelviewmatrix);
-        Log.d("DRAW","\n\ndraw cylinder\n\n");
         cylinder.draw(shaders,modelviewmatrix);
-        Log.d("DRAW","\n\ndraw tictac\n\n");
         tictac.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
-        Log.d("DRAW","\n\ndraw frustum\n\n");
         frustum.draw(shaders,modelviewmatrix);
-*/
+
 
 
         //MainActivity.log("Rendering terminated.");

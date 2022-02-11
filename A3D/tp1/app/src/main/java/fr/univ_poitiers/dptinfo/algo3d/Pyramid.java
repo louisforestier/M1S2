@@ -31,5 +31,6 @@ public class Pyramid extends Mesh {
             triangles[k++] = i+1;
             triangles[k++] = 0;
         }
+        this.initNormals();
     }
 }

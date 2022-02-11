@@ -41,6 +41,6 @@ public class Pipe extends Mesh {
             triangles[k++] =  (i * 2);
         }
 
-
+        this.initNormals();
     }
 }

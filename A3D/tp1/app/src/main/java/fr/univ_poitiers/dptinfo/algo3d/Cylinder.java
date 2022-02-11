@@ -36,5 +36,6 @@ public class Cylinder extends Mesh {
             triangles[k++] =  (i * 2 + 2);
             triangles[k++] =  (vertexpos.length/3-2);
         }
+        this.initNormals();
     }
 }

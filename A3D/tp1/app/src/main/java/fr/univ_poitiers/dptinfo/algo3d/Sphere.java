@@ -2,7 +2,10 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 
 //TODO :
-// - faire les normals maps pour les figures restantes
+// - dupliquer les sommets pour donut, cylindre, pipe, pyramid et frustum
+// - faire l'atténuation
+// - extraire le GLSL
+
 import android.util.Pair;
 
 import java.util.HashMap;

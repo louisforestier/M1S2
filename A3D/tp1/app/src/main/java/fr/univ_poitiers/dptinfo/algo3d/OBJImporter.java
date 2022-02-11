@@ -30,12 +30,14 @@ public class OBJImporter {
                             verticesList.add(Float.parseFloat(data[2]));
                             verticesList.add(Float.parseFloat(data[3]));
                             break;
+/*
                         case "vn":
                             normalsList.add(Float.parseFloat(data[1]));
                             normalsList.add(Float.parseFloat(data[2]));
                             normalsList.add(Float.parseFloat(data[3]));
                             break;
 
+*/
                         case "f":
                             trianglesList.add(Integer.parseInt((data[1].split("/"))[0]));
                             trianglesList.add(Integer.parseInt((data[2].split("/"))[0]));
@@ -62,20 +64,9 @@ public class OBJImporter {
             triangles[i] = trianglesList.get(i)-1;
         }
 
-        float[] normals;
-        /*if (normalsList.size()>0) {
-            Log.d("OBJIMPORT","normalslist size"+normalsList.size());
-            Log.d("OBJIMPORT","trianglesnormalslist size"+trianglesNormalsSet.size());
-            normals = new float[normalsList.size()];
-            int i = 0;
-            for(Integer integer : trianglesNormalsSet){
-                normals[3*i] = normalsList.get((integer-1)*3);
-                normals[3*i+1] = normalsList.get((integer-1)*3+1);
-                normals[3*i+2] = normalsList.get((integer-1)*3+2);
-            }
-
-        } else*/ normals = vertexpos;
-        return new Mesh(vertexpos, triangles, normals);
+        Mesh mesh = new Mesh(vertexpos, triangles);
+        mesh.initNormals();
+        return mesh;
     }
 
 }

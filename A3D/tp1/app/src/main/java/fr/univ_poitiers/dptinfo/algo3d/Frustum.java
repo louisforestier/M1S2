@@ -38,6 +38,6 @@ public class Frustum extends Mesh {
             triangles[k++] =  (vertexpos.length/3-2);
 
         }
-
+        this.initNormals();
     }
 }

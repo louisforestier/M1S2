@@ -1,6 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-public class Cube extends Mesh{
+public class Cube extends Mesh {
 
     public Cube(float length) {
         float x = length / 2;
@@ -46,5 +46,10 @@ public class Cube extends Mesh{
         };
 
         this.initNormals();
+        try {
+            throw new RuntimeException();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
