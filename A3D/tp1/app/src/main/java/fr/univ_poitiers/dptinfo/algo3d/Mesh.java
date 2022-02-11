@@ -1,6 +1,7 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,17 +11,59 @@ import java.nio.IntBuffer;
 public class Mesh {
     private int glposbuffer;
     private int gltrianglesbuffer;
+    private int glnormalbuffer;
     protected float[] vertexpos;
     protected int[] triangles;
+    protected float[] normals;
 
     public Mesh(){
+        this.normals = new float[]{0.f,0.f,0.f};
     }
 
 
     public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
+        this.normals = new float[]{0.f,0.f,0.f};
     }
+    public Mesh(float[] vertexpos, int[] triangles, float[] normals) {
+        this.vertexpos = vertexpos;
+        this.triangles = triangles;
+        this.normals = normals;
+    }
+
+    public void initNormals(){
+        normals = new float[vertexpos.length];
+        for (int i = 0 ; i < triangles.length ; i+=3) {
+            Vec3f p1 = new Vec3f(vertexpos[triangles[i]],vertexpos[triangles[i]+1],vertexpos[triangles[i]+2]);
+            Vec3f p2 = new Vec3f(vertexpos[triangles[i+1]],vertexpos[triangles[i+1]+1],vertexpos[triangles[i+1]+2]);
+            Vec3f p3 = new Vec3f(vertexpos[triangles[i+2]],vertexpos[triangles[i+2]+1],vertexpos[triangles[i+2]+2]);
+            Vec3f n1 = getNormal(p1,p2,p3);
+            Vec3f n2 = getNormal(p2,p1,p3);
+            Vec3f n3 = getNormal(p3,p1,p2);
+            normals[triangles[i]] = n1.x;
+            normals[triangles[i]+1] = n1.y;
+            normals[triangles[i]+2] = n1.z;
+            normals[triangles[i+1]] = n2.x;
+            normals[triangles[i+1]+1] = n2.y;
+            normals[triangles[i+1]+2] = n2.z;
+            normals[triangles[i+2]] = n3.x;
+            normals[triangles[i+2]+1] = n3.y;
+            normals[triangles[i+2]+2] = n3.z;
+        }
+    }
+
+
+
+    Vec3f getNormal(Vec3f p1, Vec3f p2, Vec3f p3){
+        Vec3f v1 = p2.sub(p1);
+        Vec3f v2 = p3.sub(p1);
+        Vec3f n1 = new Vec3f();
+        n1.setCrossProduct(v1,v2);
+        n1.normalize();
+        return n1;
+    }
+
 
     void initGraphics() {
         /**
@@ -41,6 +84,19 @@ public class Mesh {
         IntBuffer trianglesbuf = trianglesbutebuf.asIntBuffer();
         trianglesbuf.put(triangles);
         trianglesbuf.position(0);
+
+        /**
+         *
+         * Buffer des normals
+         */
+        Log.i("INFO","buffer des normals");
+        ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
+        normalbytebuf.order(ByteOrder.nativeOrder());
+        FloatBuffer normalbuffer = normalbytebuf.asFloatBuffer();
+        normalbuffer.put(normals);
+        normalbuffer.position(0);
+
+
         int[] buffers = new int[1];
         GLES20.glGenBuffers(1, buffers, 0);
 
@@ -61,17 +117,33 @@ public class Mesh {
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
+        int[] normalsbuffers = new int[1];
+        GLES20.glGenBuffers(1, normalsbuffers, 0);
+
+        glnormalbuffer = normalsbuffers[0];
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normals.length * Float.BYTES, normalbuffer, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+        Log.i("INFO","fin init graphics");
     }
 
-    public void draw(final NoLightShaders shaders) {
+    public void draw(final LightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+        shaders.setNormalsPointer(3,GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 
+
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
+
     }
 
     public void drawWithLines(final NoLightShaders shaders) {

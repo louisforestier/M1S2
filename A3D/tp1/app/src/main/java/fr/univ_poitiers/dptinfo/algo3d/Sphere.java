@@ -1,11 +1,14 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+
+//TODO :
+// - faire les normals maps pour les figures restantes
 import android.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Sphere extends Mesh{
+public class Sphere extends Mesh {
 
     private float[] vertexposIco;
     private int[] trianglesIco;
@@ -52,6 +55,7 @@ public class Sphere extends Mesh{
             triangles[k++] =  (i - 1 + vertexpos.length / 3 - 2 - quarter);
             triangles[k++] =  (i + vertexpos.length / 3 - 2 - quarter);
         }
+        normals = vertexpos;
     }
 
     public Sphere(int nbDiv) {
@@ -87,6 +91,7 @@ public class Sphere extends Mesh{
             }
             vertexpos = vertexposIco;
             triangles = trianglesIco;
+            normals = vertexpos;
         }
 
     }

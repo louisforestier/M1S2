@@ -11,6 +11,7 @@ public class Ball extends GameObject{
         this.getTransform().posx(posx).posz(posz).posy(radius).scalex(radius).scaley(radius).scalez(radius);
     }
 
+
     @Override
     public void initGraphics() {
         if (!isInitialized){
@@ -18,6 +19,7 @@ public class Ball extends GameObject{
             isInitialized = true;
         }
     }
+
 
     static public void onPause(){
         isInitialized = false;

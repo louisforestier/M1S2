@@ -4,6 +4,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.io.InputStream;
 
@@ -59,10 +60,10 @@ public class Scene {
         room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.orange,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
         //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
         room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
+        InputStream stream = context.getResources().openRawResource(R.raw.armadillo_with_normals);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
-        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.white);
-        InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
-        armadillo = new GameObject(MyGLRenderer.yellow);
+        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
+        armadillo = new GameObject(MyGLRenderer.lightgray);
         armadillo.setMesh(OBJImporter.importOBJ(stream));
         armadillo.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f);
         stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
@@ -70,8 +71,8 @@ public class Scene {
         dragon.setMesh(OBJImporter.importOBJ(stream));
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         donut = new GameObject(MyGLRenderer.cyan);
-        donut.setMesh(new Donut(1.0f,0.2f,50,20));
-        donut.getTransform().posz(6).posy(0.5f);
+        donut.setMesh(new Donut(1.0f,0.3f,50,20));
+        donut.getTransform().posz(6).posy(1.6f);
         cube = new GameObject(MyGLRenderer.magenta);
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
@@ -107,6 +108,12 @@ public class Scene {
         GLES20.glDepthFunc(GLES20.GL_LESS);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         MainActivity.log("Graphics initialized");
+        renderer.getShaders().setNormalizing(true);
+        renderer.getShaders().setLightPosition(new float[]{0.f,0.f,0.f});
+        renderer.getShaders().setLightColor(new float[]{0.8f,0.8f,0.8f,1.f});
+        renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
+        renderer.getShaders().setLightSpecular(new float[]{0.8f,0.8f,0.8f,1.f});
+        renderer.getShaders().setLighting(true);
         room.initGraphics();
         room2.initGraphics();
         room3.initGraphics();
@@ -154,7 +161,7 @@ public class Scene {
         //MainActivity.log("Starting rendering");
 
         // Get shader to send uniform data
-        NoLightShaders shaders = renderer.getShaders();
+        LightingShaders shaders = renderer.getShaders();
 
 
         // Place viewer in the right position and orientation
@@ -165,25 +172,37 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
-
-
         shaders.setModelViewMatrix(modelviewmatrix);
+
         room.draw(shaders,modelviewmatrix);
         room2.draw(shaders, modelviewmatrix);
         room3.draw(shaders,modelviewmatrix);
         room4.draw(shaders,modelviewmatrix);
+
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
         dragon.draw(shaders, modelviewmatrix);
-        donut.draw(shaders,modelviewmatrix);
 
         cube.draw(shaders,modelviewmatrix);
+
+/*
+        Log.d("DRAW","\n\ndraw donut\n\n");
+        donut.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw cube\n\n");
+        Log.d("DRAW","\n\ndraw pyramid\n\n");
         pyramid.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw pipe\n\n");
         pipe.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw cylinder\n\n");
         cylinder.draw(shaders,modelviewmatrix);
+        Log.d("DRAW","\n\ndraw tictac\n\n");
         tictac.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
+        Log.d("DRAW","\n\ndraw frustum\n\n");
         frustum.draw(shaders,modelviewmatrix);
+*/
+
+
         //MainActivity.log("Rendering terminated.");
     }
 }

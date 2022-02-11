@@ -46,7 +46,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     /**
      * Shaders
      */
-    private NoLightShaders shaders;
+    private LightingShaders shaders;
     /**
      * Projection matrix to provide to the shader
      */
@@ -55,7 +55,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     /**
      * @return the current Shader
      */
-    public NoLightShaders getShaders()
+    public LightingShaders getShaders()
     {
         return this.shaders;
     }
@@ -96,7 +96,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Create shader
-        this.shaders=new NoLightShaders(this); // or other shaders
+        this.shaders=new PhongShaders(this); // or other shaders
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);
