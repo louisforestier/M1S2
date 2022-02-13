@@ -11,6 +11,9 @@ public class PhongShaders extends LightingShaders{
                     +"uniform mat4 uProjectionMatrix;\n"
                     +"uniform mat3 uNormalMatrix;\n"
                     // Light source definition
+                    +"uniform float uConstantAttenuation;\n"
+                    +"uniform float uLinearAttenuation;\n"
+                    +"uniform float uQuadraticAttenuation;\n"
                     +"uniform vec4 uAmbiantLight;\n"
                     +"uniform bool uLighting;\n"
                     +"uniform vec3 uLightPos;\n"
@@ -29,6 +32,8 @@ public class PhongShaders extends LightingShaders{
                     +"void main(void) {\n"
                     +"  if (uLighting)\n"
                     +"  {\n"
+                    +"    float distance = length(uLightPos-posf.xyz);\n"
+                    +"    float attenuation = 1.0 /(uConstantAttenuation + uLinearAttenuation* distance + uQuadraticAttenuation * (distance * distance)) ;\n"
                     +"    vec3 viewdir=normalize(-posf.xyz);\n"
                     +"    vec3 normal = normalize(normalf);"
                     +"    vec3 lightdir=normalize(uLightPos-posf.xyz);\n"
@@ -40,6 +45,8 @@ public class PhongShaders extends LightingShaders{
                     +"    float spec = pow(max(dot(viewdir, reflectdir), 0.0), uMaterialShininess);\n"
                     +"    vec4 specColor = uMaterialSpecular*uLightSpecular*spec;\n"
 
+                    +"    dColor *= attenuation;\n"
+                    +"    specColor *= attenuation;\n"
                     +"    gl_FragColor = dColor + specColor;\n"
                     +"  }\n"
                     +"  else gl_FragColor = uMaterialColor;\n"

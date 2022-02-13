@@ -114,6 +114,7 @@ public class Scene {
         renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
         renderer.getShaders().setLightSpecular(new float[]{0.8f,0.8f,0.8f,1.f});
         renderer.getShaders().setLighting(true);
+        renderer.getShaders().setLightAttenuation(1.f,0.09f, 0.032f);
         room.initGraphics();
         room2.initGraphics();
         room3.initGraphics();
