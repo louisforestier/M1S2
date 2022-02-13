@@ -36,6 +36,22 @@ public class Cylinder extends Mesh {
             triangles[k++] =  (i * 2 + 2);
             triangles[k++] =  (vertexpos.length/3-2);
         }
-        this.initNormals();
+
+        k=0;
+        normals = new float[((2) * (quarter + 1)+2) * 3];
+
+        for (int i = 0; i <= quarter; i++) {
+            double theta = Math.toRadians((360.0 / quarter) * i);
+            float x = (float) (r * Math.cos(theta));
+            float z = (float) (r * Math.sin(theta));
+            normals[k++] = x;
+            normals[k++] = 0.f;
+            normals[k++] = z;
+            normals[k++] = x;
+            normals[k++] = 0.f;
+            normals[k++] = z;
+        }
+        normals[normals.length - 5] = -1.f;
+        normals[normals.length - 2] = 1.f;
     }
 }

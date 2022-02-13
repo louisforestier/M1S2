@@ -82,7 +82,7 @@ public class Scene {
         pipe = new GameObject(MyGLRenderer.white);
         pipe.setMesh(new Pipe(50));
         pipe.getTransform().posz(6);
-        cylinder = new GameObject(MyGLRenderer.black);
+        cylinder = new GameObject(MyGLRenderer.blue);
         cylinder.setMesh(new Cylinder(50));
         cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f);
         tictac = new GameObject(MyGLRenderer.green);
