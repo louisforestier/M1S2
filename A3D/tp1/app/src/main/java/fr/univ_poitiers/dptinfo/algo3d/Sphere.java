@@ -5,7 +5,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - dupliquer les sommets pour donut, cylindre, pipe, pyramid et frustum
 // - faire l'atténuation DONE
 // - extraire le GLSL
-// - implanter le modèle blinn phong
+// - implanter le modèle blinn phong DONE
 // - implanter des ombres
 // - implanter une lumière fixe
 // - implanter plusieurs types de lumières
