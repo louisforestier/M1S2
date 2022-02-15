@@ -12,7 +12,8 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - implanter une lumière fixe
 // - implanter plusieurs types de lumières
 // - implanter plusieurs lumières
-
+// - implanter les collisions
+// - implanter des animations
 
 import android.util.Pair;
 
