@@ -1,6 +1,7 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-public class PhongShaders extends LightingShaders{
+public class BlinnPhongShaders extends LightingShaders{
+
 
     /**
      * Fragment shader
@@ -37,12 +38,13 @@ public class PhongShaders extends LightingShaders{
                     +"    vec3 viewdir=normalize(-posf.xyz);\n"
                     +"    vec3 normal = normalize(normalf);"
                     +"    vec3 lightdir=normalize(uLightPos-posf.xyz);\n"
-                    +"    vec3 reflectdir=normalize(reflect(-lightdir, normal));\n"
+
+                    +"    vec3 halfdir = normalize(lightdir + viewdir);\n"
 
                     +"    float weight = max(dot(normal, lightdir),0.0);\n"
                     +"    vec4 dColor = uMaterialColor*(uAmbiantLight+weight*uLightColor);\n"
 
-                    +"    float spec = pow(max(dot(viewdir, reflectdir), 0.0), uMaterialShininess);\n"
+                    +"    float spec = pow(max(dot(halfdir, normal), 0.0), uMaterialShininess*4.0);\n"
                     +"    vec4 specColor = uMaterialSpecular*uLightSpecular*spec;\n"
 
                     +"    dColor *= attenuation;\n"
@@ -89,7 +91,7 @@ public class PhongShaders extends LightingShaders{
      *
      * @param renderer
      */
-    public PhongShaders(MyGLRenderer renderer) {
+    public BlinnPhongShaders(MyGLRenderer renderer) {
         super(renderer);
     }
 
@@ -97,4 +99,5 @@ public class PhongShaders extends LightingShaders{
     public int createProgram() {
         return initializeShaders(VERTSRC,FRAGSRC);
     }
+
 }

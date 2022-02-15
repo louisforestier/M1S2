@@ -26,7 +26,8 @@ namespace OPP {
 
         OPP::ThreadPool &pool = OPP::getDefaultThreadPool();
         OPP::Semaphore<uint32_t> semaphore(0);
-
+        
+        //1ere etape
         for (int i = 0; i < nb_tasks; ++i)
         {
             pool.push_task(
@@ -36,9 +37,11 @@ namespace OPP {
                     {
                         oBegin[blockStart] = Tinit;
                         for (int j = 1; j < blockSize; j++)
-                        {                            
+                        {
+                            if (blockStart+j < fullSize)
+                            {
                                 oBegin[blockStart+j] = functor(oBegin[blockStart+j-1],aBegin[blockStart+j-1]);
-                            
+                            }
                         }
                     }
                     semaphore.release();
@@ -46,6 +49,8 @@ namespace OPP {
             ); 
         }
         semaphore.acquire(nb_tasks);
+         
+        //2eme etape
         std::vector<T>aux(nb_tasks-1);
         aux[0] = functor(oBegin[blockSize-1],aBegin[blockSize-1]);
         for (int i = 1; i < nb_tasks && blockSize * i < fullSize; i++)
@@ -53,6 +58,7 @@ namespace OPP {
             aux[i] = functor(functor(aux[i-1],oBegin[blockSize*(i+1)-1]),aBegin[blockSize*(i+1)-1]);
         }
 
+        //3eme etape
         for (int i = 0; i < nb_tasks-1; i++)
         {
             pool.push_task(

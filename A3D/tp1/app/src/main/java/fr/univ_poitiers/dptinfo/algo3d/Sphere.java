@@ -3,14 +3,17 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 //TODO :
 // - dupliquer les sommets pour donut, cylindre, pipe, pyramid et frustum
-// - faire l'atténuation
+// - normales pas vraiment bonnes pour frustum car pas colinéaires à y, doit calculer la normale selon l'inclinaison provoqué par les différences de rayon
+// - normales pas bonnes non plus pour les faces hautes et basses du frustum et cylindre
+// - faire l'atténuation DONE
 // - extraire le GLSL
-// - implanter le modèle blinn phong
+// - implanter le modèle blinn phong DONE
 // - implanter des ombres
 // - implanter une lumière fixe
 // - implanter plusieurs types de lumières
 // - implanter plusieurs lumières
-
+// - implanter les collisions
+// - implanter des animations
 
 import android.util.Pair;
 

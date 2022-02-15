@@ -3,7 +3,6 @@ package fr.univ_poitiers.dptinfo.algo3d;
 public class Frustum extends Mesh {
 
     public Frustum(float r1, float r2, int quarter) {
-
         vertexpos = new float[((2) * (quarter + 1)+2) * 3];
         triangles = new int[quarter * 4 * 3];
 
@@ -38,6 +37,21 @@ public class Frustum extends Mesh {
             triangles[k++] =  (vertexpos.length/3-2);
 
         }
-        this.initNormals();
+        k=0;
+        normals = new float[((2) * (quarter + 1)+2) * 3];
+
+        for (int i = 0; i <= quarter; i++) {
+            double theta = Math.toRadians((360.0 / quarter) * i);
+            normals[k++] = (float) (r1 * Math.cos(theta));
+            normals[k++] = 0.f;
+            normals[k++] = (float) (r1 * Math.sin(theta));
+            normals[k++] = (float) (r2 * Math.cos(theta));
+            normals[k++] = 0.f;
+            normals[k++] = (float) (r2 * Math.sin(theta));
+        }
+
+        normals[normals.length - 5] = -1.f;
+        normals[normals.length - 2] = 1.f;
+
     }
 }

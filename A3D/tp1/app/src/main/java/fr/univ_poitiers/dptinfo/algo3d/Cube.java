@@ -46,10 +46,5 @@ public class Cube extends Mesh {
         };
 
         this.initNormals();
-        try {
-            throw new RuntimeException();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
