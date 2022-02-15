@@ -10,29 +10,80 @@
 #include <previous/exclusive_scan.h>
 #include <previous/scatter.h>
 
-
-
-class StudentWorkImpl: public StudentWork
+class StudentWorkImpl : public StudentWork
 {
 public:
+	bool isImplemented() const;
 
-	bool isImplemented() const ;
-
-	StudentWorkImpl() = default; 
-	StudentWorkImpl(const StudentWorkImpl&) = default;
+	StudentWorkImpl() = default;
+	StudentWorkImpl(const StudentWorkImpl &) = default;
 	~StudentWorkImpl() = default;
-	StudentWorkImpl& operator=(const StudentWorkImpl&) = default;
+	StudentWorkImpl &operator=(const StudentWorkImpl &) = default;
+
+	template <typename T>
+	inline unsigned extract(T value, unsigned bit)
+	{
+		if (bit == 0)
+		{
+			return 1 - (value & 0x1);
+		}
+		return 1 - ((value >> bit) & 0x1);
+	}
 
 	template<typename T>
-	void run_radixSort_parallel(
-		std::vector<T>& input,
-		std::vector<T>& output
-	) {
-		// TODO
+	void partition(std::vector<T>& input, std::vector<T>& output, std::vector<unsigned>& predicate)
+	{
+		unsigned j = 0;
+		std::vector<unsigned> head_position(predicate.size());
+		std::vector<unsigned> tail_position(predicate.size());
+		std::vector<unsigned> not_predicate(predicate.size());
+		OPP::transform(predicate.begin(),predicate.end(),not_predicate.begin(),[](unsigned u){ return !u;});
+		OPP::exclusive_scan(not_predicate.begin(),not_predicate.end(),head_position.begin(),std::plus<>(),unsigned(0));
+		std::vector<unsigned> reverse_predicate(predicate.size());
+		std::copy(predicate.begin(),predicate.end(),reverse_predicate.begin());
+		std::reverse(reverse_predicate.begin(),reverse_predicate.end());
+		OPP::inclusive_scan(reverse_predicate.begin(),reverse_predicate.end(),tail_position.begin(),std::plus<>());
+		std::reverse(tail_position.begin(),tail_position.end());
+		OPP::scatter(input.begin(),input.end(),head_position.begin(),output.begin());
+		OPP::scatter(input.begin(),input.end(),tail_position.begin(),output.begin());
 	}
-	
-	// Illustration de l'utilisation des itérateurs "counting" et "transform" définis dans OPP.h
-	// Ils sont encore expérimental, mais bon ils font le boulot ;-)
+
+	template <typename T>
+	void run_radixSort_parallel(
+		std::vector<T> &input,
+		std::vector<T> &output)
+	{
+		// TODO
+		using wrapper = std::reference_wrapper<std::vector<unsigned>>;
+		std::vector<unsigned> temp(input.size());
+		wrapper W[2] = {wrapper(output), wrapper(temp)};
+		std::vector<unsigned> predicate(input.size());
+		std::copy(input.begin(), input.end(), output.begin());
+		for (unsigned numeroBit = 0; numeroBit < sizeof(unsigned) * 8; ++numeroBit)
+		{
+
+			const int ping = numeroBit & 1;
+			const int pong = 1 - ping;
+			std::vector<unsigned> nbits(predicate.size());
+			std::fill(nbits.begin(), nbits.end(), numeroBit);
+			std::vector<unsigned> &src = W[ping].get();
+			OPP::transform(src.begin(), src.end(), nbits.begin(), predicate.begin(),
+				[](T value, unsigned bit) -> unsigned
+				{
+					if (bit == 0)
+					{
+						return 1 - (value & 0x1);
+					}
+					return 1 - ((value >> bit) & 0x1);
+				}
+			);
+			this->partition(W[ping].get(),W[pong].get(),predicate);
+		}
+		
+	}
+
+	// Illustration de l'utilisation des itï¿½rateurs "counting" et "transform" dï¿½finis dans OPP.h
+	// Ils sont encore expï¿½rimental, mais bon ils font le boulot ;-)
 	// TODO : acheter un antihistaminique
-	void check() ;
+	void check();
 };
