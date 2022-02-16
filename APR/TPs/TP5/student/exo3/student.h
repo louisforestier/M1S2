@@ -38,8 +38,7 @@ public:
 		std::vector<unsigned> tail_position(predicate.size());
 		std::vector<unsigned> not_predicate(predicate.size());
 		std::vector<unsigned> map(predicate.size());
-		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u)
-					   { return !u; });
+		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u){ return !u; });
 		OPP::exclusive_scan(not_predicate.begin(), not_predicate.end(), head_position.begin(), std::plus<>(), unsigned(0));
 		std::vector<unsigned> reverse_predicate(predicate.size());
 		std::copy(predicate.begin(), predicate.end(), reverse_predicate.begin());
