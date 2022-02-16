@@ -33,11 +33,20 @@ public:
 	template <typename T>
 	void partition(std::vector<T> &input, std::vector<T> &output, std::vector<unsigned> &predicate)
 	{
+		//TODO: utiliser les transforms iterator pour eviter le map sur le predicat
+		// - utiliser les reverse iterator pour faire le scan inclusif à l'envers sans faire reverse avant
 		unsigned j = 0;
 		std::vector<unsigned> head_position(predicate.size());
 		std::vector<unsigned> tail_position(predicate.size());
 		std::vector<unsigned> not_predicate(predicate.size());
 		std::vector<unsigned> map(predicate.size());
+		auto transformIterator =
+			OPP::make_transform_iterator(
+				OPP::CountingIterator(0l),
+				std::function([](long a) -> int
+							  { return a; }));
+		int n = predicate.size();
+		
 		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u){ return !u; });
 		OPP::exclusive_scan(not_predicate.begin(), not_predicate.end(), head_position.begin(), std::plus<>(), unsigned(0));
 		std::vector<unsigned> reverse_predicate(predicate.size());
@@ -45,12 +54,6 @@ public:
 		std::reverse(reverse_predicate.begin(), reverse_predicate.end());
 		OPP::inclusive_scan(reverse_predicate.begin(), reverse_predicate.end(), tail_position.begin(), std::plus<>());
 		std::reverse(tail_position.begin(), tail_position.end());
-		auto transformIterator =
-			OPP::make_transform_iterator(
-				OPP::CountingIterator(0l),
-				std::function([](long a) -> int
-							  { return a; }));
-		int n = predicate.size();
 		OPP::transform(
 			transformIterator + 0,
 			transformIterator + n,
