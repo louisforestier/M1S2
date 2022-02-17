@@ -72,7 +72,7 @@ public class Scene {
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         donut = new GameObject(MyGLRenderer.cyan);
         donut.setMesh(new Donut(1.0f,0.3f,50,20));
-        donut.getTransform().posz(6).posy(1.6f);
+        donut.getTransform().posz(6).posy(0.6f);
         cube = new GameObject(MyGLRenderer.magenta);
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
