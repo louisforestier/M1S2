@@ -77,7 +77,7 @@ public class Scene {
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
         pyramid = new GameObject(MyGLRenderer.yellow);
-        pyramid.setMesh(new Pyramid(40));
+        pyramid.setMesh(new Pyramid(80));
         pyramid.getTransform().posx(-4).posz(6);
         pipe = new GameObject(MyGLRenderer.white);
         pipe.setMesh(new Pipe(50));
@@ -89,7 +89,7 @@ public class Scene {
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
         frustum = new GameObject(MyGLRenderer.magenta);
-        frustum.setMesh(new Frustum(1.f,0.5f,50));
+        frustum.setMesh(new Frustum(1.f,0.001f,50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
     }
 
