@@ -3,7 +3,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 public class Pipe extends Mesh {
     public Pipe(int quarter) {
 
-        vertexpos = new float[((2) * (quarter + 1)) * 3*2];
+        vertexpos = new float[((2*2) * (quarter + 1)) * 3];
         triangles = new int[quarter * 2 * 3 * 2];
         int k = 0;
         float r = 0.5f;
@@ -42,7 +42,7 @@ public class Pipe extends Mesh {
         }
 
         //faces externes
-        for (int i = quarter; i < quarter*2; i++) {
+        for (int i = quarter+1; i < quarter*2+1; i++) {
             triangles[k++] =  (i * 2 + 1);
             triangles[k++] =  (i * 2 + 3);
             triangles[k++] =  (i * 2 + 2);
@@ -52,7 +52,20 @@ public class Pipe extends Mesh {
         }
 
         k=0;
+
         normals = new float[((2) * (quarter + 1)) * 3*2];
+
+        for (int i = 0; i <= quarter; i++) {
+            double theta = Math.toRadians((360.0 / quarter) * i);
+            float x = (float) (r * Math.cos(theta));
+            float z = (float) (r * Math.sin(theta));
+            normals[k++] = -x;
+            normals[k++] = 0.f;
+            normals[k++] = -z;
+            normals[k++] = -x;
+            normals[k++] = 0.f;
+            normals[k++] = -z;
+        }
 
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);
@@ -65,17 +78,7 @@ public class Pipe extends Mesh {
             normals[k++] = 0.f;
             normals[k++] = z;
         }
-        for (int i = 0; i <= quarter; i++) {
-            double theta = Math.toRadians((360.0 / quarter) * i);
-            float x = (float) (r * Math.cos(theta));
-            float z = (float) (r * Math.sin(theta));
-            normals[k++] = -x;
-            normals[k++] = 0.f;
-            normals[k++] = -z;
-            normals[k++] = -x;
-            normals[k++] = 0.f;
-            normals[k++] = -z;
-        }
+
 
     }
 }
