@@ -6,7 +6,7 @@ public class Pipe extends Mesh {
         vertexpos = new float[((2*2) * (quarter + 1)) * 3];
         triangles = new int[quarter * 2 * 3 * 2];
         int k = 0;
-        float r = 0.5f;
+        float r = 1.f;
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);
             float x = (float) (r * Math.cos(theta));
