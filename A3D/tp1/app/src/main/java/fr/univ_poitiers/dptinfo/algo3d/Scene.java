@@ -81,10 +81,10 @@ public class Scene {
         pyramid.getTransform().posx(-4).posz(6);
         pipe = new GameObject(MyGLRenderer.white);
         pipe.setMesh(new Pipe(50));
-        pipe.getTransform().posz(6);
+        pipe.getTransform().posz(6).scalex(0.5f).scalez(0.5f);
         cylinder = new GameObject(MyGLRenderer.blue);
         cylinder.setMesh(new Cylinder(50));
-        cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f);
+        cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f).scalex(0.5f).scalez(0.5f);
         tictac = new GameObject(MyGLRenderer.green);
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
