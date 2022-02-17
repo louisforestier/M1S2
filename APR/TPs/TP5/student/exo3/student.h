@@ -73,19 +73,19 @@ void run_radixSort_parallel(
 	std::vector<T> &output)
 {
 	// TODO
-	using wrapper = std::reference_wrapper<std::vector<unsigned>>;
-	std::vector<unsigned> temp(input.size());
+	using wrapper = std::reference_wrapper<std::vector<T>>;
+	std::vector<T> temp(input.size());
 	wrapper W[2] = {wrapper(output), wrapper(temp)};
 	std::vector<unsigned> predicate(input.size());
 	std::copy(input.begin(), input.end(), output.begin());
-	for (unsigned numeroBit = 0; numeroBit < sizeof(unsigned) * 8; ++numeroBit)
+	for (unsigned numeroBit = 0; numeroBit < sizeof(T) * 8; ++numeroBit)
 	{
 
 		const int ping = numeroBit & 1;
 		const int pong = 1 - ping;
 		std::vector<unsigned> nbits(predicate.size());
 		std::fill(nbits.begin(), nbits.end(), numeroBit);
-		std::vector<unsigned> &src = W[ping].get();
+		std::vector<T> &src = W[ping].get();
 		OPP::transform(src.begin(), src.end(), nbits.begin(), predicate.begin(),
 					   [](T value, unsigned bit) -> unsigned
 					   {
