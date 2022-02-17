@@ -49,7 +49,7 @@ public class Cylinder extends Mesh {
         }
 
         k=0;
-        normals = new float[((2*2) * (quarter + 1)+2) * 3];
+        normals = new float[vertexpos.length];
 
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);
