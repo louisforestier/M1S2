@@ -32,6 +32,12 @@ public class Mesh {
         this.normals = normals;
     }
 
+    public Mesh(float[] vertexpos, int[] triangles, float[] normals, float[] textures) {
+        this.vertexpos = vertexpos;
+        this.triangles = triangles;
+        this.normals = normals;
+    }
+
     public void initNormals(){
         normals = new float[vertexpos.length];
         for (int i = 0 ; i < triangles.length ; i+=3) {
