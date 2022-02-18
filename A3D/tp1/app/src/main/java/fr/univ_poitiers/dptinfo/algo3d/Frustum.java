@@ -56,12 +56,16 @@ public class Frustum extends Mesh {
 
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);
-            normals[k++] = (float) (r1 * Math.cos(theta));
-            normals[k++] = n.y;
-            normals[k++] = (float) (r1 * Math.sin(theta));
-            normals[k++] = (float) (r2 * Math.cos(theta));
-            normals[k++] = n.y;
-            normals[k++] = (float) (r2 * Math.sin(theta));
+            Vec3f n1 = new Vec3f((float) (r1 * Math.cos(theta)),n.y, (float) (r1 * Math.sin(theta)));
+            Vec3f n2 = new Vec3f((float) (r2 * Math.cos(theta)),n.y, (float) (r2 * Math.sin(theta)));
+            n1.normalize();
+            n2.normalize();
+            normals[k++] = n1.x;
+            normals[k++] = n1.y;
+            normals[k++] = n1.z;
+            normals[k++] = n2.x;
+            normals[k++] = n2.y;
+            normals[k++] = n2.z;
         }
         for (int i = 0; i <= quarter; i++) {
             normals[k++] = 0.f;
