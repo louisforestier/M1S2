@@ -9,6 +9,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - modifier l'importeur d'obj pour ne construire les sommets qu'à la fin avec les coordonnées spatiales, les coordonnées de normales et les coordonnées de textures DONE
 // - faire l'atténuation DONE
 // - implanter le modèle blinn phong DONE
+// - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness
 // - extraire le GLSL
 // - implanter des ombres
 // - implanter une lumière fixe
