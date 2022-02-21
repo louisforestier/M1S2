@@ -192,12 +192,12 @@ public class Scene {
         armadillo2.draw(shaders,modelviewmatrix);
         dragon.draw(shaders, modelviewmatrix);
 
-        cube.draw(shaders,modelviewmatrix);
+        cube.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
         donut.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);
         cylinder.draw(shaders,modelviewmatrix);
-        tictac.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
+        tictac.draw(shaders,modelviewmatrix);
         frustum.draw(shaders,modelviewmatrix);
 
 

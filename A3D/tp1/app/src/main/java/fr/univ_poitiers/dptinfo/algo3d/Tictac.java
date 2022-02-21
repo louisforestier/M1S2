@@ -72,7 +72,36 @@ public class Tictac extends Mesh {
             triangles[k++] = i - 1 + vertexpos.length / 3 - 2 - quarter;
             triangles[k++] = i + vertexpos.length / 3 - 2 - quarter;
         }
-        this.calculateFlatShadingNormals();
+        normals = new float[vertexpos.length];
+        k = 0;
+        for (int i = 1; i <= slice/2; i++) {
+            double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
+            for (int j = 0; j <= quarter; j++) {
+                double phi = Math.toRadians((360.0 / quarter) * j);
+                normals[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
+                normals[k++] = (float) (r * Math.sin(theta));
+                normals[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
+            }
+        }
+
+        for (int j = 0; j <= quarter; j++) {
+            double phi = Math.toRadians((360.0 / quarter) * j);
+            normals[k++] = (float) (r * Math.cos(tmptheta) * Math.cos(phi));
+            normals[k++] = (float) (r * Math.sin(tmptheta));
+            normals[k++] = (float) (r * Math.cos(tmptheta) * Math.sin(phi));
+        }
+
+        for (int i = step+1; i < slice; i++) {
+            double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
+            for (int j = 0; j <= quarter; j++) {
+                double phi = Math.toRadians((360.0 / quarter) * j);
+                normals[k++] = (float) (r * Math.cos(theta) * Math.cos(phi));
+                normals[k++] = (float) (r * Math.sin(theta));
+                normals[k++] = (float) (r * Math.cos(theta) * Math.sin(phi));
+            }
+        }
+        normals[normals.length - 5] = -1.f;
+        normals[normals.length - 2] = 1.f;
 
     }
 }
