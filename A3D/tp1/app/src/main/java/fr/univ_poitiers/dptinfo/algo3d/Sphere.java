@@ -15,6 +15,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - implanter plusieurs types de lumières
 // - implanter plusieurs lumières
 // - implanter des ombres
+// - implanter le smooth shading with hard edges https://stackoverflow.com/questions/13205226/most-efficient-algorithm-to-calculate-vertex-normals-from-set-of-triangles-for-g
 // - implanter les collisions
 // - implanter des animations
 
