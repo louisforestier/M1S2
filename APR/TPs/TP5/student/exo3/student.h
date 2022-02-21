@@ -49,10 +49,11 @@ public:
 		
 		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u){ return !u; });
 		OPP::exclusive_scan(not_predicate.begin(), not_predicate.end(), head_position.begin(), std::plus<>(), unsigned(0));
-		std::vector<unsigned> reverse_predicate(predicate.size());
-		std::copy(predicate.begin(), predicate.end(), reverse_predicate.begin());
-		std::reverse(reverse_predicate.begin(), reverse_predicate.end());
-		OPP::inclusive_scan(reverse_predicate.begin(), reverse_predicate.end(), tail_position.begin(), std::plus<>());
+		//std::vector<unsigned> reverse_predicate(predicate.size());
+		//std::copy(predicate.begin(), predicate.end(), reverse_predicate.begin());
+		//std::reverse(reverse_predicate.begin(), reverse_predicate.end());
+		//ne fonctionne pas avec tail_position.rbegin()
+		OPP::inclusive_scan(predicate.rbegin(), predicate.rend(), tail_position.begin(), std::plus<>());
 		std::reverse(tail_position.begin(), tail_position.end());
 		OPP::transform(
 			transformIterator + 0,
@@ -86,17 +87,15 @@ void run_radixSort_parallel(
 
 		const int ping = numeroBit & 1;
 		const int pong = 1 - ping;
-		std::vector<unsigned> nbits(predicate.size());
-		std::fill(nbits.begin(), nbits.end(), numeroBit);
 		std::vector<T> &src = W[ping].get();
-		OPP::transform(src.begin(), src.end(), nbits.begin(), predicate.begin(),
-					   [](T value, unsigned bit) -> unsigned
+		OPP::transform(src.begin(), src.end(), predicate.begin(),
+					   [numeroBit](T value) -> unsigned
 					   {
-						   if (bit == 0)
+						   if (numeroBit == 0)
 						   {
 							   return (value & 0x1);
 						   }
-						   return ((value >> bit) & 0x1);
+						   return ((value >> numeroBit) & 0x1);
 					   });
 		this->partition(W[ping].get(), W[pong].get(), predicate);
 	}
