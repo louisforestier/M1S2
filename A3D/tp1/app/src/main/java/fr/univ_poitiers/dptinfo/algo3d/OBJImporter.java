@@ -9,7 +9,7 @@ import java.util.List;
 
 public class OBJImporter {
 
-    public static Mesh importOBJ(InputStream stream) {
+    public static Mesh importOBJ(InputStream stream, ShadingMode shadingMode) {
         List<Float> verticesList = new ArrayList<>();
         List<Float> normalsList = new ArrayList<>();
         List<Float> texturesList = new ArrayList<>();
@@ -47,85 +47,102 @@ public class OBJImporter {
             e.printStackTrace();
         }
         Mesh mesh;
-        float[] vertexpos = new float[trianglesList.size()*9];
-        int[] triangles = new int[trianglesList.size()*3];
+        float[] vertexpos;
+        int[] triangles = new int[trianglesList.size() * 3];
+        vertexpos = new float[trianglesList.size() * 9];
         if (normalsList.isEmpty() && texturesList.isEmpty()) {
-            for (int i = 0 ; i < trianglesList.size() ; i++){
-                vertexpos[i*9] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3);
-                vertexpos[i*9+1] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+1);
-                vertexpos[i*9+2] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+2);
-                vertexpos[i*9+3] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3);
-                vertexpos[i*9+4] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+1);
-                vertexpos[i*9+5] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+2);
-                vertexpos[i*9+6] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3);
-                vertexpos[i*9+7] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+1);
-                vertexpos[i*9+8] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+2);
-                triangles[i*3] = i*3;
-                triangles[i*3+1] = i*3+1;
-                triangles[i*3+2] = i*3+2;
+            if (shadingMode == ShadingMode.SMOOTH_SHADING) {
+                vertexpos = new float[verticesList.size()];
+                for (int i = 0; i < verticesList.size(); i++) {
+                    vertexpos[i] = verticesList.get(i);
+                }
+                for (int i = 0; i < trianglesList.size(); i ++) {
+                    triangles[i*3] = trianglesList.get(i).getV1().getV() - 1;
+                    triangles[i*3 + 1] = trianglesList.get(i).getV2().getV() - 1;
+                    triangles[i*3 + 2] = trianglesList.get(i).getV3().getV() - 1;
+                }
+                mesh = new Mesh(vertexpos, triangles);
+                mesh.calculateSmoothShadingNormals();
+
+            } else {
+                for (int i = 0; i < trianglesList.size(); i++) {
+                    vertexpos[i * 9] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3);
+                    vertexpos[i * 9 + 1] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 1);
+                    vertexpos[i * 9 + 2] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 2);
+                    vertexpos[i * 9 + 3] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3);
+                    vertexpos[i * 9 + 4] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 1);
+                    vertexpos[i * 9 + 5] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 2);
+                    vertexpos[i * 9 + 6] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3);
+                    vertexpos[i * 9 + 7] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 1);
+                    vertexpos[i * 9 + 8] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 2);
+                    triangles[i * 3] = i * 3;
+                    triangles[i * 3 + 1] = i * 3 + 1;
+                    triangles[i * 3 + 2] = i * 3 + 2;
+                }
+                mesh = new Mesh(vertexpos, triangles);
+                mesh.calculateFlatShadingNormals();
             }
-            mesh = new Mesh(vertexpos, triangles);
-            mesh.initNormals();
-        } else if (texturesList.isEmpty()){
+        } else if (texturesList.isEmpty()) {
             float[] normals = new float[vertexpos.length];
-            for (int i = 0 ; i < trianglesList.size() ; i++){
-                vertexpos[i*9] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3);
-                vertexpos[i*9+1] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+1);
-                vertexpos[i*9+2] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+2);
-                vertexpos[i*9+3] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3);
-                vertexpos[i*9+4] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+1);
-                vertexpos[i*9+5] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+2);
-                vertexpos[i*9+6] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3);
-                vertexpos[i*9+7] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+1);
-                vertexpos[i*9+8] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+2);
-                normals[i*9] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3);
-                normals[i*9+1] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3+1);
-                normals[i*9+2] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3+2);
-                normals[i*9+3] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3);
-                normals[i*9+4] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3+1);
-                normals[i*9+5] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3+2);
-                normals[i*9+6] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3);
-                normals[i*9+7] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3+1);
-                normals[i*9+8] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3+2);
-                triangles[i*3] = i*3;
-                triangles[i*3+1] = i*3+1;
-                triangles[i*3+2] = i*3+2;
+            for (int i = 0; i < trianglesList.size(); i++) {
+                vertexpos[i * 9] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3);
+                vertexpos[i * 9 + 1] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 2] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 2);
+                vertexpos[i * 9 + 3] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3);
+                vertexpos[i * 9 + 4] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 5] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 2);
+                vertexpos[i * 9 + 6] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3);
+                vertexpos[i * 9 + 7] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 8] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 2);
+                normals[i * 9] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3);
+                normals[i * 9 + 1] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 2] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3 + 2);
+                normals[i * 9 + 3] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3);
+                normals[i * 9 + 4] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 5] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3 + 2);
+                normals[i * 9 + 6] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3);
+                normals[i * 9 + 7] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 8] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3 + 2);
+                triangles[i * 3] = i * 3;
+                triangles[i * 3 + 1] = i * 3 + 1;
+                triangles[i * 3 + 2] = i * 3 + 2;
             }
-            mesh = new Mesh(vertexpos,triangles,normals);
+            mesh = new Mesh(vertexpos, triangles, normals);
         } else {
             float[] normals = new float[vertexpos.length];
-            float[] textures = new float[vertexpos.length/3*2];
-            for (int i = 0 ; i < trianglesList.size() ; i++){
-                vertexpos[i*9] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3);
-                vertexpos[i*9+1] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+1);
-                vertexpos[i*9+2] = verticesList.get((trianglesList.get(i).getV1().getV()-1)*3+2);
-                vertexpos[i*9+3] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3);
-                vertexpos[i*9+4] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+1);
-                vertexpos[i*9+5] = verticesList.get((trianglesList.get(i).getV2().getV()-1)*3+2);
-                vertexpos[i*9+6] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3);
-                vertexpos[i*9+7] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+1);
-                vertexpos[i*9+8] = verticesList.get((trianglesList.get(i).getV3().getV()-1)*3+2);
-                textures[i*6] = texturesList.get((trianglesList.get(i).getV1().getVt()-1)*2);
-                textures[i*6+1] = texturesList.get((trianglesList.get(i).getV1().getVt()-1)*2+1);
-                textures[i*6+2] = texturesList.get((trianglesList.get(i).getV2().getVt()-1)*2);
-                textures[i*6+3] = texturesList.get((trianglesList.get(i).getV2().getVt()-1)*2+1);
-                textures[i*6+4] = texturesList.get((trianglesList.get(i).getV3().getVt()-1)*2);
-                textures[i*6+5] = texturesList.get((trianglesList.get(i).getV3().getVt()-1)*2+1);
-                normals[i*9] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3);
-                normals[i*9+1] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3+1);
-                normals[i*9+2] = normalsList.get((trianglesList.get(i).getV1().getVn()-1)*3+2);
-                normals[i*9+3] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3);
-                normals[i*9+4] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3+1);
-                normals[i*9+5] = normalsList.get((trianglesList.get(i).getV2().getVn()-1)*3+2);
-                normals[i*9+6] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3);
-                normals[i*9+7] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3+1);
-                normals[i*9+8] = normalsList.get((trianglesList.get(i).getV3().getVn()-1)*3+2);
-                triangles[i*3] = i*3;
-                triangles[i*3+1] = i*3+1;
-                triangles[i*3+2] = i*3+2;
+            float[] textures = new float[vertexpos.length / 3 * 2];
+            for (int i = 0; i < trianglesList.size(); i++) {
+                vertexpos[i * 9] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3);
+                vertexpos[i * 9 + 1] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 2] = verticesList.get((trianglesList.get(i).getV1().getV() - 1) * 3 + 2);
+                vertexpos[i * 9 + 3] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3);
+                vertexpos[i * 9 + 4] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 5] = verticesList.get((trianglesList.get(i).getV2().getV() - 1) * 3 + 2);
+                vertexpos[i * 9 + 6] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3);
+                vertexpos[i * 9 + 7] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 1);
+                vertexpos[i * 9 + 8] = verticesList.get((trianglesList.get(i).getV3().getV() - 1) * 3 + 2);
+                textures[i * 6] = texturesList.get((trianglesList.get(i).getV1().getVt() - 1) * 2);
+                textures[i * 6 + 1] = texturesList.get((trianglesList.get(i).getV1().getVt() - 1) * 2 + 1);
+                textures[i * 6 + 2] = texturesList.get((trianglesList.get(i).getV2().getVt() - 1) * 2);
+                textures[i * 6 + 3] = texturesList.get((trianglesList.get(i).getV2().getVt() - 1) * 2 + 1);
+                textures[i * 6 + 4] = texturesList.get((trianglesList.get(i).getV3().getVt() - 1) * 2);
+                textures[i * 6 + 5] = texturesList.get((trianglesList.get(i).getV3().getVt() - 1) * 2 + 1);
+                normals[i * 9] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3);
+                normals[i * 9 + 1] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 2] = normalsList.get((trianglesList.get(i).getV1().getVn() - 1) * 3 + 2);
+                normals[i * 9 + 3] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3);
+                normals[i * 9 + 4] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 5] = normalsList.get((trianglesList.get(i).getV2().getVn() - 1) * 3 + 2);
+                normals[i * 9 + 6] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3);
+                normals[i * 9 + 7] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3 + 1);
+                normals[i * 9 + 8] = normalsList.get((trianglesList.get(i).getV3().getVn() - 1) * 3 + 2);
+                triangles[i * 3] = i * 3;
+                triangles[i * 3 + 1] = i * 3 + 1;
+                triangles[i * 3 + 2] = i * 3 + 2;
             }
-            mesh = new Mesh(vertexpos,triangles,normals,textures);
+            mesh = new Mesh(vertexpos, triangles, normals, textures);
         }
+
         return mesh;
     }
 

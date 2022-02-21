@@ -28,6 +28,6 @@ public class Donut extends Mesh{
                 k += 6;
             }
         }
-        this.initNormals();
+        this.calculateFlatShadingNormals();
     }
 }

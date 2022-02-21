@@ -77,6 +77,6 @@ public class Pyramid extends Mesh {
         normals[k++] = 0.f;
         normals[k++] = -1.f;
         normals[k++] = 0.f;
-        this.initNormals();
+        this.calculateFlatShadingNormals();
     }
 }

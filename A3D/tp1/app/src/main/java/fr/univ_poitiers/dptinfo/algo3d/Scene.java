@@ -23,6 +23,7 @@ public class Scene {
     private GameObject room;
     private GameObject room2;
     private GameObject armadillo;
+    private GameObject armadillo2;
     private GameObject dragon;
     private GameObject ball;
     private GameObject ball2;
@@ -60,15 +61,19 @@ public class Scene {
         room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.orange,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
         //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
         room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
-        InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
         ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
         armadillo = new GameObject(MyGLRenderer.lightgray);
-        armadillo.setMesh(OBJImporter.importOBJ(stream));
+        InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
+        armadillo.setMesh(OBJImporter.importOBJ(stream,ShadingMode.SMOOTH_SHADING));
         armadillo.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f);
+        armadillo2 = new GameObject(MyGLRenderer.lightgray);
+        stream = context.getResources().openRawResource(R.raw.armadillo_with_normals);
+        armadillo2.setMesh(OBJImporter.importOBJ(stream,ShadingMode.SMOOTH_SHADING));
+        armadillo2.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f).posz(1.f);
         stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
         dragon = new GameObject(MyGLRenderer.white);
-        dragon.setMesh(OBJImporter.importOBJ(stream));
+        dragon.setMesh(OBJImporter.importOBJ(stream, ShadingMode.FLAT_SHADING));
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         donut = new GameObject(MyGLRenderer.cyan);
         donut.setMesh(new Donut(1.0f,0.3f,50,20));
@@ -122,6 +127,7 @@ public class Scene {
         ball.initGraphics();
         ball2.initGraphics();
         armadillo.initGraphics();
+        armadillo2.initGraphics();
         dragon.initGraphics();
         donut.initGraphics();
         cube.initGraphics();
@@ -183,6 +189,7 @@ public class Scene {
         ball.draw(shaders,modelviewmatrix);
         ball2.draw(shaders,modelviewmatrix);
         armadillo.draw(shaders,modelviewmatrix);
+        armadillo2.draw(shaders,modelviewmatrix);
         dragon.draw(shaders, modelviewmatrix);
 
         cube.draw(shaders,modelviewmatrix);

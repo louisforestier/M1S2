@@ -72,7 +72,7 @@ public class Tictac extends Mesh {
             triangles[k++] = i - 1 + vertexpos.length / 3 - 2 - quarter;
             triangles[k++] = i + vertexpos.length / 3 - 2 - quarter;
         }
-        this.initNormals();
+        this.calculateFlatShadingNormals();
 
     }
 }

@@ -45,6 +45,6 @@ public class Cube extends Mesh {
                 23, 20, 22
         };
 
-        this.initNormals();
+        this.calculateFlatShadingNormals();
     }
 }
