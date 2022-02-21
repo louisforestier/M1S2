@@ -2,19 +2,19 @@ package fr.univ_poitiers.dptinfo.algo3d;
 
 
 //TODO :
-// - dupliquer les sommets pour donut, cylindre, pipe, pyramid et frustum
+// - dupliquer les sommets pour donut, cylindre, pipe, pyramid et frustum DONE
 // - normales pas vraiment bonnes pour frustum car pas colinéaires à y, doit calculer la normale selon l'inclinaison provoqué par les différences de rayon DONE
 // - normales pas bonnes non plus pour les faces hautes et basses du frustum et cylindre DONE
 // - attention normals du frustum pas forcément bonne car un des rayons peu ne pas être de rayon 1 donc il faut normaliser le vecteur DONE
 // - modifier l'importeur d'obj pour ne construire les sommets qu'à la fin avec les coordonnées spatiales, les coordonnées de normales et les coordonnées de textures DONE
 // - faire l'atténuation DONE
 // - implanter le modèle blinn phong DONE
-// - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness
+// - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness DONE
 // - extraire le GLSL
-// - implanter des ombres
 // - implanter une lumière fixe
 // - implanter plusieurs types de lumières
 // - implanter plusieurs lumières
+// - implanter des ombres
 // - implanter les collisions
 // - implanter des animations
 
