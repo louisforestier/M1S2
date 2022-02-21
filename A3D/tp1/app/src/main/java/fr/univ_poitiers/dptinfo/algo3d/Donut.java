@@ -28,6 +28,16 @@ public class Donut extends Mesh{
                 k += 6;
             }
         }
-        this.calculateFlatShadingNormals();
+        normals = new float[vertexpos.length];
+        k = 0;
+        for (int i = 0 ; i <= slice ; i++){
+            double theta = Math.toRadians((360.0 / slice) * i);
+            for (int j = 0 ; j <= quarter ; j++){
+                double phi = Math.toRadians((360.0 / quarter) * j);
+                normals[k++] = (float) (r2 * Math.cos(phi)*Math.cos(theta));
+                normals[k++] = (float) (r2 * Math.sin(phi));
+                normals[k++] = (float) (r2 * Math.cos(phi)*Math.sin(theta));
+            }
+        }
     }
 }
