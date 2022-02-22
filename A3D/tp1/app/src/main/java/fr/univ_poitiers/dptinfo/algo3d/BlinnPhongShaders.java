@@ -99,7 +99,7 @@ public class BlinnPhongShaders extends LightingShaders{
 
     @Override
     public int createProgram(Context context) {
-        return initializeShaders(VERTSRC,FRAGSRC);
+        return initializeShadersFromResources(context,"blinn_phong_vert.glsl","blinn_phong_frag.glsl");
     }
 
 }
