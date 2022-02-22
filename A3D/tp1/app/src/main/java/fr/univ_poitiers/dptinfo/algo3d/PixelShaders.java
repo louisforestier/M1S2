@@ -81,6 +81,6 @@ public class PixelShaders extends LightingShaders{
 
     @Override
     public int createProgram(Context context) {
-        return initializeShaders(VERTSRC,FRAGSRC);
+        return initializeShadersFromResources(context,"pixel_vert.glsl","pixel_frag.glsl");
     }
 }
