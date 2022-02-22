@@ -12,9 +12,9 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness DONE
 // - extraire le GLSL DONE
 // - implanter une lumière fixe
-// - implanter plusieurs types de lumières
-// - implanter plusieurs lumières
-// - implanter des ombres
+// - implanter plusieurs types de lumières https://learnopengl.com/Lighting/Light-casters
+// - implanter plusieurs lumières https://learnopengl.com/Lighting/Multiple-lights
+// - implanter des ombres https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
 // - implanter le smooth shading with hard edges https://stackoverflow.com/questions/13205226/most-efficient-algorithm-to-calculate-vertex-normals-from-set-of-triangles-for-g
 // - implanter les collisions
 // - implanter des animations
