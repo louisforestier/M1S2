@@ -10,7 +10,7 @@ package fr.univ_poitiers.dptinfo.algo3d;
 // - faire l'atténuation DONE
 // - implanter le modèle blinn phong DONE
 // - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness DONE
-// - extraire le GLSL
+// - extraire le GLSL DONE
 // - implanter une lumière fixe
 // - implanter plusieurs types de lumières
 // - implanter plusieurs lumières
