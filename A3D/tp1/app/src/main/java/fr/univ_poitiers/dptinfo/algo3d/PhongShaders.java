@@ -97,6 +97,6 @@ public class PhongShaders extends LightingShaders{
 
     @Override
     public int createProgram(Context context) {
-        return initializeShaders(VERTSRC,FRAGSRC);
+        return initializeShadersFromResources(context,"phong_vert.glsl","phong_frag.glsl");
     }
 }
