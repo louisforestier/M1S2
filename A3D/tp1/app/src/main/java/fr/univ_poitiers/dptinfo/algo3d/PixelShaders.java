@@ -1,5 +1,7 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.content.Context;
+
 public class PixelShaders extends LightingShaders{
 
     /**
@@ -70,15 +72,15 @@ public class PixelShaders extends LightingShaders{
     /**
      * Constructor. nothing to do, everything is done in the super class...
      *
-     * @param renderer
+     * @param context
      */
-    public PixelShaders(MyGLRenderer renderer) {
-        super(renderer);
+    public PixelShaders(Context context) {
+        super(context);
     }
 
 
     @Override
-    public int createProgram() {
+    public int createProgram(Context context) {
         return initializeShaders(VERTSRC,FRAGSRC);
     }
 }

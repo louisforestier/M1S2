@@ -1,5 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.content.Context;
 import android.opengl.GLES20;
 
 import java.nio.FloatBuffer;
@@ -45,13 +46,13 @@ public class NoLightShaders extends BasicShaders
     /**
      * Constructor of the complete rendering Shader programs
      */
-    public NoLightShaders(final MyGLRenderer renderer)
+    public NoLightShaders(final Context context)
     {
-        super(renderer);
+        super(context);
     }
 
     @Override
-    public int createProgram()
+    public int createProgram(Context context)
     {
         // First approach : get shader sources as String stored in the object
         // return initializeShaders(gl,VERTSRC,FRAGSRC);

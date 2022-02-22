@@ -96,7 +96,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Create shader
-        this.shaders=new BlinnPhongShaders(this); // or other shaders
+        this.shaders=new GouraudShaders(this.view.getContext()); // or other shaders
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);

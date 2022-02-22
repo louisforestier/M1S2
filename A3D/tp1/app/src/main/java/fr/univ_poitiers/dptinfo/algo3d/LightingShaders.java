@@ -1,5 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.content.Context;
 import android.opengl.GLES20;
 
 /**
@@ -83,9 +84,9 @@ public abstract class LightingShaders extends BasicShaders
     /**
      * Constructor. nothing to do, everything is done in the super class...
      */
-    public LightingShaders(final MyGLRenderer renderer)
+    public LightingShaders(Context context)
     {
-        super(renderer); // not really usefull, indeed...
+        super(context);
     }
 
 
@@ -98,25 +99,47 @@ public abstract class LightingShaders extends BasicShaders
         super.findVariables();
         // Variables for matrices
         this.uNormalMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "uNormalMatrix");
+        if (this.uNormalMatrix==-1) throw new RuntimeException("uNormalMatrix not found in shaders");
 
         // Variables for light source
         this.uLighting = GLES20.glGetUniformLocation(this.shaderprogram, "uLighting");
+        if (this.uLighting==-1) MainActivity.log("uLighting not found in shaders...");
+
         this.uLightPosition = GLES20.glGetUniformLocation(this.shaderprogram, "uLightPos");
+        if (this.uLightPosition==-1) throw new RuntimeException("uLightPosition not found in shaders");
+
         this.uAmbiantLight = GLES20.glGetUniformLocation(this.shaderprogram, "uAmbiantLight");
+        if (this.uAmbiantLight==-1) throw new RuntimeException("uAmbiantLight not found in shaders");
+
         this.uLightColor = GLES20.glGetUniformLocation(this.shaderprogram, "uLightColor");
+        if (this.uLightColor==-1) throw new RuntimeException("uLightColor not found in shaders");
+
         this.uLightSpecular = GLES20.glGetUniformLocation(this.shaderprogram, "uLightSpecular");
+        if (this.uLightSpecular==-1) MainActivity.log("Warning: uLightSpecular not found in shaders");
+
         this.uConstantAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uConstantAttenuation");
+        if (this.uConstantAttenuation==-1) MainActivity.log("Warning:  uConstantAttenuation not found in shaders...");
         this.uLinearAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uLinearAttenuation");
+        if (this.uLinearAttenuation==-1) MainActivity.log("Warning:  uLinearAttenuation not found in shaders...");
         this.uQuadraticAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uQuadraticAttenuation");
+        if (this.uQuadraticAttenuation==-1) MainActivity.log("Warning: uQuadraticAttenuation not found in shaders...");
 
         // Variables for material
         this.uNormalizing = GLES20.glGetUniformLocation(this.shaderprogram, "uNormalizing");
+        if (this.uNormalizing==-1) MainActivity.log("uNormalizing not found in shaders...");
+
         this.uMaterialColor = GLES20.glGetUniformLocation(this.shaderprogram, "uMaterialColor");
+        if (this.uMaterialColor==-1) throw new RuntimeException("uMaterialColor not found in shaders");
+
         this.uMaterialSpecular = GLES20.glGetUniformLocation(this.shaderprogram, "uMaterialSpecular");
+        if (this.uMaterialSpecular==-1) MainActivity.log("Warning: uMaterialSpecular not found in shaders");
+
         this.uMaterialShininess = GLES20.glGetUniformLocation(this.shaderprogram, "uMaterialShininess");
+        if (this.uMaterialShininess==-1) MainActivity.log("Warning: uMaterialShininess not found in shaders");
 
         // vertex attributes
         this.aVertexNormal = GLES20.glGetAttribLocation(this.shaderprogram, "aVertexNormal");
+        if (this.aVertexNormal==-1) throw new RuntimeException("aVertexNormal not found in shaders");
         GLES20.glEnableVertexAttribArray(this.aVertexNormal);
     }
 
@@ -172,7 +195,7 @@ public abstract class LightingShaders extends BasicShaders
      */
     public void setLighting(final boolean state)
     {
-        GLES20.glUniform1i(this.uLighting,state?1:0);
+        if (this.uLighting!=-1) GLES20.glUniform1i(this.uLighting,state?1:0);
     }
 
     /**
@@ -232,7 +255,8 @@ public abstract class LightingShaders extends BasicShaders
      */
     public void setNormalizing(final boolean state)
     {
-        GLES20.glUniform1i(this.uNormalizing,state?1:0);
+        if (this.uNormalizing!=-1)
+            GLES20.glUniform1i(this.uNormalizing,state?1:0);
     }
 
     /**

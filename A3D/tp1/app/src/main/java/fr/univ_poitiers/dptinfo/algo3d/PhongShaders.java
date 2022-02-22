@@ -1,5 +1,7 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.content.Context;
+
 public class PhongShaders extends LightingShaders{
 
     /**
@@ -87,14 +89,14 @@ public class PhongShaders extends LightingShaders{
     /**
      * Constructor. nothing to do, everything is done in the super class...
      *
-     * @param renderer
+     * @param context
      */
-    public PhongShaders(MyGLRenderer renderer) {
-        super(renderer);
+    public PhongShaders(Context context) {
+        super(context);
     }
 
     @Override
-    public int createProgram() {
+    public int createProgram(Context context) {
         return initializeShaders(VERTSRC,FRAGSRC);
     }
 }

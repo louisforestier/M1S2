@@ -1,5 +1,7 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import android.content.Context;
+
 public class BlinnPhongShaders extends LightingShaders{
 
 
@@ -89,14 +91,14 @@ public class BlinnPhongShaders extends LightingShaders{
     /**
      * Constructor. nothing to do, everything is done in the super class...
      *
-     * @param renderer
+     * @param context
      */
-    public BlinnPhongShaders(MyGLRenderer renderer) {
-        super(renderer);
+    public BlinnPhongShaders(Context context) {
+        super(context);
     }
 
     @Override
-    public int createProgram() {
+    public int createProgram(Context context) {
         return initializeShaders(VERTSRC,FRAGSRC);
     }
 
