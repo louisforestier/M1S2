@@ -21,16 +21,6 @@ public:
 	StudentWorkImpl &operator=(const StudentWorkImpl &) = default;
 
 	template <typename T>
-	inline unsigned extract(T value, unsigned bit)
-	{
-		if (bit == 0)
-		{
-			return 1 - (value & 0x1);
-		}
-		return 1 - ((value >> bit) & 0x1);
-	}
-
-	template <typename T>
 	void partition(std::vector<T> &input, std::vector<T> &output, std::vector<unsigned> &predicate)
 	{
 		//TODO: utiliser les transforms iterator pour eviter le map sur le predicat
@@ -49,9 +39,6 @@ public:
 		
 		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u){ return !u; });
 		OPP::exclusive_scan(not_predicate.begin(), not_predicate.end(), head_position.begin(), std::plus<>(), unsigned(0));
-		//std::vector<unsigned> reverse_predicate(predicate.size());
-		//std::copy(predicate.begin(), predicate.end(), reverse_predicate.begin());
-		//std::reverse(reverse_predicate.begin(), reverse_predicate.end());
 		//ne fonctionne pas avec tail_position.rbegin()
 		OPP::inclusive_scan(predicate.rbegin(), predicate.rend(), tail_position.begin(), std::plus<>());
 		std::reverse(tail_position.begin(), tail_position.end());
