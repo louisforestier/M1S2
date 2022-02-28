@@ -48,14 +48,12 @@ namespace OPP
             std::unique_lock<std::mutex> lock(mutex);
             -- nbExpectedThreads;
             if( nbExpectedThreads > 0 )
-                cv.wait(lock, [=]() {
-                    return nbExpectedThreads == nbThreadsInBarrier;
-                });
+                cv.wait(lock);
             else {
                 nbExpectedThreads = nbThreadsInBarrier; // reset
                 cv.notify_all();
             }
-        }
+            lock.unlock();        }
     };
 
     /** 
