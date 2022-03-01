@@ -23,8 +23,6 @@ public:
 	template <typename T>
 	void partition(std::vector<T> &input, std::vector<T> &output, std::vector<unsigned> &predicate)
 	{
-		//TODO: utiliser les transforms iterator pour eviter le map sur le predicat
-		// - utiliser les reverse iterator pour faire le scan inclusif à l'envers sans faire reverse avant
 		unsigned j = 0;
 		std::vector<unsigned> head_position(predicate.size());
 		std::vector<unsigned> tail_position(predicate.size());
@@ -36,7 +34,6 @@ public:
 				std::function([](long a) -> int
 							  { return a; }));
 		int n = predicate.size();
-		
 		OPP::transform(predicate.begin(), predicate.end(), not_predicate.begin(), [](unsigned u){ return !u; });
 		OPP::exclusive_scan(not_predicate.begin(), not_predicate.end(), head_position.begin(), std::plus<>(), unsigned(0));
 		//ne fonctionne pas avec tail_position.rbegin()
