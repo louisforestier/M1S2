@@ -4,9 +4,23 @@ package fr.univ_poitiers.dptinfo.algo3d;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import java.io.InputStream;
+
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Ball;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Room;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Cube;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Cylinder;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Donut;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.DrawMode;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Frustum;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Pipe;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
+import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
  * Class to represent the scene. It includes all the objects to display, in this case a room
@@ -65,7 +79,7 @@ public class Scene {
         ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
         armadillo = new GameObject(MyGLRenderer.lightgray);
         InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
-        armadillo.setMesh(OBJImporter.importOBJ(stream,ShadingMode.SMOOTH_SHADING));
+        armadillo.setMesh(OBJImporter.importOBJ(stream, ShadingMode.SMOOTH_SHADING));
         armadillo.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f);
         armadillo2 = new GameObject(MyGLRenderer.lightgray);
         stream = context.getResources().openRawResource(R.raw.armadillo_with_normals);
@@ -192,7 +206,7 @@ public class Scene {
         armadillo2.draw(shaders,modelviewmatrix);
         dragon.draw(shaders, modelviewmatrix);
 
-        cube.draw(shaders,modelviewmatrix,DrawMode.TRIANGLES_AND_WIREFRAME);
+        cube.draw(shaders,modelviewmatrix, DrawMode.TRIANGLES_AND_WIREFRAME);
         donut.draw(shaders,modelviewmatrix);
         pyramid.draw(shaders,modelviewmatrix);
         pipe.draw(shaders,modelviewmatrix);

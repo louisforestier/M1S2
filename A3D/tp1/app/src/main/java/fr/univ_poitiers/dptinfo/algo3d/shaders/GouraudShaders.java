@@ -1,7 +1,6 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
-import android.opengl.GLES20;
 
 /**
  * Implementation class of shaders to compute diffuse lighting using Gouraud interpolation.

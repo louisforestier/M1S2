@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 
-import fr.univ_poitiers.dptinfo.algo3d.R;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Ball;
 
 /**
  * Class to described the only activity of the application

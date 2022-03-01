@@ -1,9 +1,14 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 
 import android.opengl.Matrix;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.DrawMode;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 
 public class GameObject {
 

@@ -8,6 +8,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import fr.univ_poitiers.dptinfo.algo3d.shaders.NoLightShaders;
+
 public class OldRoom {
 
     private int glposbuffer;

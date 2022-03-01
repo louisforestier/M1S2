@@ -10,7 +10,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.util.Log;
+
+import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 
 
 /**

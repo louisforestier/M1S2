@@ -1,7 +1,9 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.opengl.GLES20;
+
+import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
 
 /**
  * Abstract class to represent shaders (vertex and fragment ones) that allow a

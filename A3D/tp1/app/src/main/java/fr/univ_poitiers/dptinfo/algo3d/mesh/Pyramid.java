@@ -1,4 +1,6 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.mesh;
+
+import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
 public class Pyramid extends Mesh {
 

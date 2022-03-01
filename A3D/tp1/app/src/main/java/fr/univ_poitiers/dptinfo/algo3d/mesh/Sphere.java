@@ -1,4 +1,4 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 
 //TODO :

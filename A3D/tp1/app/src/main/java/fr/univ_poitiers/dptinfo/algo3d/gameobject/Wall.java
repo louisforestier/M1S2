@@ -1,4 +1,6 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.gameobject;
+
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Plane;
 
 public class Wall extends GameObject {
 

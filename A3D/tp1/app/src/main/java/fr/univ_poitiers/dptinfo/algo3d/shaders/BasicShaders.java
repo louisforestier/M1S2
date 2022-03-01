@@ -1,4 +1,4 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
+
+import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
+import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 
 /**
  * Abstract class to manipulate any shaders. Only position of vertices and their tranformation

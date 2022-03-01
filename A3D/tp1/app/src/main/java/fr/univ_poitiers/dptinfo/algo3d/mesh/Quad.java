@@ -1,10 +1,14 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
+import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.NoLightShaders;
 
 /**
  * Creation of graphics quad composed of triangles, stored in a vertex array

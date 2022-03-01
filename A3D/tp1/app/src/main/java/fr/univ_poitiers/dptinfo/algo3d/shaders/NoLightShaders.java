@@ -1,9 +1,7 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.opengl.GLES20;
-
-import java.nio.FloatBuffer;
 
 /**
  * Implementation class to manipulate shaders for non-lighted objects (uniform color).

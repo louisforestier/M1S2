@@ -1,4 +1,4 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.objimporter;
 
 public class OBJVertex {
     private int v;

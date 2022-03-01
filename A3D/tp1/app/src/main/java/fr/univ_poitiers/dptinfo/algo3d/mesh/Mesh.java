@@ -1,4 +1,4 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import android.opengl.GLES20;
 import android.util.Log;
@@ -7,11 +7,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
+import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 
 public class Mesh {
     private int glposbuffer;
@@ -169,7 +171,7 @@ public class Mesh {
     }
 
 
-    void initGraphics() {
+    public void initGraphics() {
         /**
          * Buffer des sommets
          */

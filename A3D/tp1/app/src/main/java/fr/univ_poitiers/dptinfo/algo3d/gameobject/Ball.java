@@ -1,5 +1,8 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 
+
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Sphere;
 
 public class Ball extends GameObject{
 

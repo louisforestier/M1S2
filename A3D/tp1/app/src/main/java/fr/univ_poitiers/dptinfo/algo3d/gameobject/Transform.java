@@ -1,6 +1,8 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 
 import android.opengl.Matrix;
+
+import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
 public class Transform {
 
