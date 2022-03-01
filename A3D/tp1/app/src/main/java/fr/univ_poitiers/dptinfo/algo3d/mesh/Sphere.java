@@ -18,6 +18,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - implanter le smooth shading with hard edges https://stackoverflow.com/questions/13205226/most-efficient-algorithm-to-calculate-vertex-normals-from-set-of-triangles-for-g
 // - implanter les collisions
 // - implanter des animations
+// - tuto lancer de rayon https://www.scratchapixel.com/
 
 import android.util.Pair;
 
