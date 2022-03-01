@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Ball;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.LightGameObject;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Room;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Cube;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Cylinder;
@@ -51,6 +52,7 @@ public class Scene {
     private GameObject room3;
     private GameObject room4;
 
+    private LightGameObject light;
     /**
      * An angle used to animate the viewer
      */
@@ -103,13 +105,16 @@ public class Scene {
         pipe.getTransform().posz(6).scalex(0.5f).scalez(0.5f);
         cylinder = new GameObject(MyGLRenderer.blue);
         cylinder.setMesh(new Cylinder(50));
-        cylinder.getTransform().posz(6).scalez(0.5f).scalex(0.5f).scalex(0.5f).scalez(0.5f);
+        cylinder.getTransform().posz(6).scalez(0.2f).scalex(0.2f);
         tictac = new GameObject(MyGLRenderer.green);
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
         frustum = new GameObject(MyGLRenderer.magenta);
         frustum.setMesh(new Frustum(1.f,0.001f,50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
+
+        light = new LightGameObject(new Light(new float[]{0.2f,0.2f,0.2f,1.f},new float[]{0.8f,0.8f,0.8f,1.f},new float[]{0.8f,0.8f,0.8f,1.f},1.f,0.09f,0.032f));
+        light.getTransform().posy(1.6f).posz(6.f);
     }
 
 
@@ -128,12 +133,7 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         MainActivity.log("Graphics initialized");
         renderer.getShaders().setNormalizing(true);
-        renderer.getShaders().setLightPosition(new float[]{0.f,0.f,0.f});
-        renderer.getShaders().setLightColor(new float[]{0.8f,0.8f,0.8f,1.f});
-        renderer.getShaders().setAmbiantLight(new float[]{0.2f,0.2f,0.2f,1.f});
-        renderer.getShaders().setLightSpecular(new float[]{0.8f,0.8f,0.8f,1.f});
         renderer.getShaders().setLighting(true);
-        renderer.getShaders().setLightAttenuation(1.f,0.09f, 0.032f);
         room.initGraphics();
         room2.initGraphics();
         room3.initGraphics();
@@ -185,6 +185,7 @@ public class Scene {
         LightingShaders shaders = renderer.getShaders();
 
 
+
         // Place viewer in the right position and orientation
         Matrix.setIdentityM(modelviewmatrix, 0);
         // setRotateM instead of rotateM in the next instruction would avoid this initialization...
@@ -192,6 +193,12 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
+
+        renderer.getShaders().setLightPosition(light.getPos(modelviewmatrix));
+        renderer.getShaders().setLightColor(light.getLight().getDiffuse());
+        renderer.getShaders().setAmbiantLight(light.getLight().getAmbient());
+        renderer.getShaders().setLightSpecular(light.getLight().getSpecular());
+        renderer.getShaders().setLightAttenuation(light.getLight().getConstant(),light.getLight().getLinear(), light.getLight().getQuadratic());
 
         shaders.setModelViewMatrix(modelviewmatrix);
 

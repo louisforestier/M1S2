@@ -11,7 +11,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - implanter le modèle blinn phong DONE
 // - implanter smmoth shading https://stackoverflow.com/questions/45477806/general-method-for-calculating-smooth-vertex-normals-with-100-smoothness DONE
 // - extraire le GLSL DONE
-// - implanter une lumière fixe
+// - implanter une lumière fixe DONE
 // - implanter plusieurs types de lumières https://learnopengl.com/Lighting/Light-casters
 // - implanter plusieurs lumières https://learnopengl.com/Lighting/Multiple-lights
 // - implanter des ombres https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
