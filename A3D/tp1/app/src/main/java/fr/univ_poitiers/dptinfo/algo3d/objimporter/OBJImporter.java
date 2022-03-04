@@ -49,6 +49,11 @@ public class OBJImporter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Mesh mesh;
         float[] vertexpos;
         int[] triangles = new int[trianglesList.size() * 3];

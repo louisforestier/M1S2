@@ -6,6 +6,12 @@ import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
 public class Transform {
 
+    public Vec3f getWorldDirection(float[] viewmatrix){
+        float[] modelviewmatrix = new float[16];
+        Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,this.getModelMatrix(),0);
+        return new Vec3f();
+    }
+
     private Vec3f pos;
     private Vec3f rot;
     private Vec3f scale;

@@ -12,6 +12,7 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongTypeLightShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 
 
@@ -98,7 +99,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Create shader
-        this.shaders=new BlinnPhongShaders(this.view.getContext()); // or other shaders
+        this.shaders=new BlinnPhongTypeLightShaders(this.view.getContext()); // or other shaders
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);

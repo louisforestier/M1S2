@@ -163,6 +163,9 @@ public abstract class BasicShaders
      */
     private int aVertexPosition;
 
+    public boolean useTypeLight() {
+        return false;
+    }
 
     /**
      * Constructor of the complete rendering Shader programs

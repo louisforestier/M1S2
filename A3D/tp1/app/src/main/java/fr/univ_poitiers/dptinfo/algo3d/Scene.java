@@ -113,7 +113,7 @@ public class Scene {
         frustum.setMesh(new Frustum(1.f,0.001f,50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
 
-        light = new LightGameObject(new Light(new float[]{0.2f,0.2f,0.2f,1.f},new float[]{0.8f,0.8f,0.8f,1.f},new float[]{0.8f,0.8f,0.8f,1.f},1.f,0.09f,0.032f));
+        light = new LightGameObject(LightType.DIRECTIONAL);
         light.getTransform().posy(1.6f).posz(6.f);
     }
 
@@ -193,13 +193,7 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
-
-        renderer.getShaders().setLightPosition(light.getPos(modelviewmatrix));
-        renderer.getShaders().setLightColor(light.getLight().getDiffuse());
-        renderer.getShaders().setAmbiantLight(light.getLight().getAmbient());
-        renderer.getShaders().setLightSpecular(light.getLight().getSpecular());
-        renderer.getShaders().setLightAttenuation(light.getLight().getConstant(),light.getLight().getLinear(), light.getLight().getQuadratic());
-
+        light.initLighting(shaders,modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
 
         room.draw(shaders,modelviewmatrix);
