@@ -11,7 +11,7 @@ import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
  * @author Philippe Meseure
  * @version 1.0
  */
-public abstract class LightingShaders extends BasicShaders
+public abstract class MultipleLightingShaders extends BasicShaders
 {
     // ==============================
     // Uniform variables for matrices
@@ -27,34 +27,6 @@ public abstract class LightingShaders extends BasicShaders
      * GLSL uniform boolean value to turn lighting on/off
      */
     protected int uLighting;
-    /**
-     * GLSL uniform light position
-     */
-    protected int uLightPosition;
-    /**
-     * GLSL  ambient light color
-     */
-    protected int uAmbiantLight;
-    /**
-     * GLSL uniform light color
-     */
-    protected int uLightColor;
-    /**
-     * GLSL uniform specular light color
-     */
-    protected int uLightSpecular;
-    /**
-     * GLSL uniform constant (non distance-dependant) attenuation of the light
-     */
-    protected int uConstantAttenuation;
-    /**
-     * GLSL uniform linear attenuation with respect to the distance between light and lighted point
-     */
-    protected int uLinearAttenuation;
-    /**
-     * GLSL uniform quadratic attenuation (see linear attenuation)
-     */
-    protected int uQuadraticAttenuation;
     // =====================================
     // Uniform variables for object material
     // =====================================
@@ -86,7 +58,7 @@ public abstract class LightingShaders extends BasicShaders
     /**
      * Constructor. nothing to do, everything is done in the super class...
      */
-    public LightingShaders(Context context)
+    public MultipleLightingShaders(Context context)
     {
         super(context);
     }
@@ -107,24 +79,6 @@ public abstract class LightingShaders extends BasicShaders
         this.uLighting = GLES20.glGetUniformLocation(this.shaderprogram, "uLighting");
         if (this.uLighting==-1) MainActivity.log("uLighting not found in shaders...");
 
-        this.uLightPosition = GLES20.glGetUniformLocation(this.shaderprogram, "uLightPos");
-        if (this.uLightPosition==-1) throw new RuntimeException("uLightPos not found in shaders");
-
-        this.uAmbiantLight = GLES20.glGetUniformLocation(this.shaderprogram, "uAmbiantLight");
-        if (this.uAmbiantLight==-1) throw new RuntimeException("uAmbiantLight not found in shaders");
-
-        this.uLightColor = GLES20.glGetUniformLocation(this.shaderprogram, "uLightColor");
-        if (this.uLightColor==-1) throw new RuntimeException("uLightColor not found in shaders");
-
-        this.uLightSpecular = GLES20.glGetUniformLocation(this.shaderprogram, "uLightSpecular");
-        if (this.uLightSpecular==-1) MainActivity.log("Warning: uLightSpecular not found in shaders");
-
-        this.uConstantAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uConstantAttenuation");
-        if (this.uConstantAttenuation==-1) MainActivity.log("Warning:  uConstantAttenuation not found in shaders...");
-        this.uLinearAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uLinearAttenuation");
-        if (this.uLinearAttenuation==-1) MainActivity.log("Warning:  uLinearAttenuation not found in shaders...");
-        this.uQuadraticAttenuation = GLES20.glGetUniformLocation(this.shaderprogram, "uQuadraticAttenuation");
-        if (this.uQuadraticAttenuation==-1) MainActivity.log("Warning: uQuadraticAttenuation not found in shaders...");
 
         // Variables for material
         this.uNormalizing = GLES20.glGetUniformLocation(this.shaderprogram, "uNormalizing");
@@ -200,52 +154,6 @@ public abstract class LightingShaders extends BasicShaders
         if (this.uLighting!=-1) GLES20.glUniform1i(this.uLighting,state?1:0);
     }
 
-    /**
-     * Set the light position
-     * @param lightpos position of the light
-     */
-    public void setLightPosition(final float[] lightpos)
-    {
-        GLES20.glUniform3fv(this.uLightPosition,1,lightpos,0);
-    }
-
-    /**
-     * Set the ambient light color
-     * @param amblight color of light
-     */
-    public void setAmbiantLight(final float[] amblight)
-    {
-        GLES20.glUniform4fv(this.uAmbiantLight,1,amblight,0);
-    }
-
-    /**
-     * Set the (diffuse) light color
-     * @param lightcolor color of the diffuse light component
-     */
-    public void setLightColor(final float[] lightcolor)
-    {
-        GLES20.glUniform4fv(this.uLightColor,1,lightcolor,0);
-    }
-
-    /**
-     * Set the specular light color
-     * @param lightspec specular light component
-     */
-    public void setLightSpecular(final float[] lightspec)
-    {
-        GLES20.glUniform4fv(this.uLightSpecular,1,lightspec,0);
-    }
-
-    /**
-     * Set light attenuation parameters
-     * @param constant,linear,quadratic constant, linear and quadratic light attenuation
-     */
-    public void setLightAttenuation(final float constant,final float linear,final float quadratic)
-    {
-        GLES20.glUniform1f(this.uConstantAttenuation,constant);
-        GLES20.glUniform1f(this.uLinearAttenuation,linear);
-        GLES20.glUniform1f(this.uQuadraticAttenuation,quadratic);
-    }
 
     // ==================
     // Material functions

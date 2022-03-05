@@ -21,6 +21,7 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
 import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
@@ -30,6 +31,8 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
  * @version 1.0
  */
 public class Scene {
+    private final LightGameObject light2;
+    private final LightGameObject light3;
     /**
      * A constant for the size of the wall
      */
@@ -113,8 +116,11 @@ public class Scene {
         frustum.setMesh(new Frustum(1.f,0.001f,50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
 
-        light = new LightGameObject(LightType.DIRECTIONAL);
-        light.getTransform().posy(1.6f).posz(6.f);
+        light = new LightGameObject(LightType.SPOT);
+        light.getTransform().roty(-90.0f).posy(1.f);
+        light2 = new LightGameObject(LightType.DIRECTIONAL);
+        light3 = new LightGameObject(LightType.POINT);
+        light3.getTransform().posy(1.f).posz(6.f);
     }
 
 
@@ -182,7 +188,7 @@ public class Scene {
         //MainActivity.log("Starting rendering");
 
         // Get shader to send uniform data
-        LightingShaders shaders = renderer.getShaders();
+        MultipleLightingShaders shaders = renderer.getShaders();
 
 
 
@@ -194,6 +200,8 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
         light.initLighting(shaders,modelviewmatrix);
+        light2.initLighting(shaders,modelviewmatrix);
+        light3.initLighting(shaders,modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
 
         room.draw(shaders,modelviewmatrix);

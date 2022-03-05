@@ -1,0 +1,130 @@
+#version 100
+#define POINT_LIGHT 0
+#define DIRECTIONAL_LIGHT 1
+#define SPOT_LIGHT 2
+precision mediump float;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat3 uNormalMatrix;
+// Light source definition
+uniform float uConstantAttenuation;
+uniform float uLinearAttenuation;
+uniform float uQuadraticAttenuation;
+uniform vec4 uAmbiantLight;
+uniform int uLightType;
+uniform bool uLighting;
+uniform vec3 uLightPos;
+uniform vec3 uSpotDir;
+uniform float uCutOff;
+uniform float uOuterCutOff;
+uniform vec4 uLightColor;
+// Material definition
+uniform bool uNormalizing;
+uniform vec4 uMaterialColor;
+//Specular effect
+uniform float uMaterialShininess;
+uniform vec4 uLightSpecular;
+uniform vec4 uMaterialSpecular;
+
+varying vec4 posf;
+varying vec3 normalf;
+
+
+struct DirLight {
+  vec3 direction;
+
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+};
+
+struct PointLight {
+  vec3 position;
+
+  float constant;
+  float linear;
+  float quadratic;
+
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+};
+
+struct SpotLight {
+  vec3 position;
+  vec3 direction;
+  float cutOff;
+  float outerCutOff;
+
+  float constant;
+  float linear;
+  float quadratic;
+
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+};
+
+#define NB_DIR_LIGHTS 1
+#define NB_SPOT_LIGHTS 1
+#define NB_POINT_LIGHTS 1
+
+uniform DirLight dirLight;
+uniform PointLight pointLight;
+uniform SpotLight spotLight;
+
+vec4 calcPointLight(PointLight light, vec3 normal, vec3 posf, vec3 viewdir)
+{
+  float distance = length(light.position-posf);
+  float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+  vec3 lightdir = normalize(light.position-posf);
+  vec3 halfdir = normalize(lightdir + viewdir);
+  float weight = max(dot(normal,lightdir),0.0);
+  vec4 dColor = uMaterialColor * (light.ambient + weight*light.diffuse);
+  float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
+  vec4 specColor = uMaterialSpecular * light.specular * spec;
+  dColor *= attenuation;
+  specColor *= attenuation;
+  return dColor+specColor;
+}
+
+vec4 calcDirLight(DirLight light, vec3 normal, vec3 viewdir)
+{
+  vec3 lightdir = normalize(-light.direction);
+  vec3 halfdir = normalize(lightdir + viewdir);
+  float weight = max(dot(normal,lightdir),0.0);
+  vec4 dColor = uMaterialColor * (light.ambient + weight*light.diffuse);
+  float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
+  vec4 specColor = uMaterialSpecular * light.specular * spec;
+  return dColor+specColor;
+}
+
+vec4 calcSpotLight(SpotLight light, vec3 normal, vec3 posf, vec3 viewdir)
+{
+  float distance = length(light.position-posf);
+  float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+  vec3 lightdir = normalize(light.position-posf);
+  float theta = dot(lightdir,normalize(-light.direction));
+  float epsilon = light.cutOff - light.outerCutOff;
+  float intensity = clamp((theta - light.outerCutOff) / epsilon,0.0,1.0);
+  vec3 halfdir = normalize(lightdir + viewdir);
+  float weight = max(dot(normal,lightdir),0.0);
+  vec4 dColor = uMaterialColor * (light.ambient + weight*light.diffuse*intensity);
+  float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
+  vec4 specColor = uMaterialSpecular * light.specular * spec;
+  dColor *= attenuation;
+  specColor *= attenuation * intensity;
+  return dColor+specColor;
+}
+
+
+void main(void) {
+  if (uLighting)
+  {
+    vec3 normal = normalize(normalf);
+    vec3 viewdir=normalize(-posf.xyz);
+
+    gl_FragColor = calcPointLight(pointLight,normal,posf.xyz,viewdir)+calcDirLight(dirLight,normal,viewdir)+calcSpotLight(spotLight,normal,posf.xyz,viewdir);
+  }
+  else gl_FragColor = uMaterialColor;
+}

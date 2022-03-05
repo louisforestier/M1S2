@@ -8,7 +8,9 @@ import java.util.List;
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.DrawMode;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
 public class GameObject {
 
@@ -64,7 +66,7 @@ public class GameObject {
         }
     }
 
-    public void draw(LightingShaders shaders, final float[] viewmatrix){
+    public void draw(MultipleLightingShaders shaders, final float[] viewmatrix){
         float[] modelviewmatrix = new float[16];
         Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
         shaders.setModelViewMatrix(modelviewmatrix);
@@ -79,7 +81,7 @@ public class GameObject {
             }
         }
     }
-    public void draw(LightingShaders shaders, final float[] viewmatrix, DrawMode drawMode){
+    public void draw(MultipleLightingShaders shaders, final float[] viewmatrix, DrawMode drawMode){
         float[] modelviewmatrix = new float[16];
         Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
         shaders.setModelViewMatrix(modelviewmatrix);

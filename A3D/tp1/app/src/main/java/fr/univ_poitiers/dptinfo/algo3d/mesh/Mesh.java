@@ -14,6 +14,7 @@ import java.util.Map;
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
 public class Mesh {
     private int glposbuffer;
@@ -235,7 +236,7 @@ public class Mesh {
         Log.i("INFO", "fin init graphics");
     }
 
-    public void draw(final LightingShaders shaders) {
+    public void draw(final MultipleLightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
@@ -252,7 +253,7 @@ public class Mesh {
 
     }
 
-    public void drawWithLines(final LightingShaders shaders) {
+    public void drawWithLines(final MultipleLightingShaders shaders) {
         GLES20.glPolygonOffset(2.F, 4.F);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
@@ -274,7 +275,7 @@ public class Mesh {
 
     }
 
-    public void drawLinesOnly(final LightingShaders shaders) {
+    public void drawLinesOnly(final MultipleLightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
@@ -293,7 +294,7 @@ public class Mesh {
 
     }
 
-    public void draw(LightingShaders shaders, DrawMode drawMode) {
+    public void draw(MultipleLightingShaders shaders, DrawMode drawMode) {
         switch (drawMode) {
             case TRIANGLES:
                 draw(shaders);
