@@ -69,9 +69,9 @@ struct SpotLight {
 #define NB_SPOT_LIGHTS 1
 #define NB_POINT_LIGHTS 1
 
-uniform DirLight dirLight;
-uniform PointLight pointLight;
-uniform SpotLight spotLight;
+uniform DirLight dirLights[NB_DIR_LIGHTS];
+uniform PointLight pointLights[NB_DIR_LIGHTS];
+uniform SpotLight spotLights[NB_DIR_LIGHTS];
 
 vec4 calcPointLight(PointLight light, vec3 normal, vec3 posf, vec3 viewdir)
 {
@@ -123,8 +123,21 @@ void main(void) {
   {
     vec3 normal = normalize(normalf);
     vec3 viewdir=normalize(-posf.xyz);
+    vec4 result;
 
-    gl_FragColor = calcPointLight(pointLight,normal,posf.xyz,viewdir)+calcDirLight(dirLight,normal,viewdir)+calcSpotLight(spotLight,normal,posf.xyz,viewdir);
+    for(int i = 0 ; i < NB_DIR_LIGHTS ; i++)
+    {
+      result += calcDirLight(dirLights[i],normal,viewdir);
+    }
+    for(int i = 0 ; i < NB_POINT_LIGHTS ; i++)
+    {
+      result += calcPointLight(pointLights[i],normal,posf.xyz,viewdir);
+    }
+    for(int i = 0 ; i < NB_SPOT_LIGHTS ; i++)
+    {
+      result += calcSpotLight(spotLights[i],normal,posf.xyz,viewdir);
+    }
+    gl_FragColor = result;
   }
   else gl_FragColor = uMaterialColor;
 }

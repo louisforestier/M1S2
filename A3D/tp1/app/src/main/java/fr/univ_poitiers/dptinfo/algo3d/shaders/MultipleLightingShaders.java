@@ -3,6 +3,7 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import fr.univ_poitiers.dptinfo.algo3d.Light;
 import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
 
 /**
@@ -53,6 +54,15 @@ public abstract class MultipleLightingShaders extends BasicShaders
      * GLSL attribute for vertex normal arrays
      */
     protected int aVertexNormal;
+
+
+    private final int NB_DIR_LIGHTS = 1;
+    private final int NB_POINT_LIGHTS = 1;
+    private final int NB_SPOT_LIGHTS = 1;
+    private int curr_dir = 0;
+    private int curr_point = 0;
+    private int curr_spot = 0;
+
 
 
     /**
@@ -207,6 +217,53 @@ public abstract class MultipleLightingShaders extends BasicShaders
     public void setNormalsPointer(int size,int dtype)
     {
         GLES20.glVertexAttribPointer(this.aVertexNormal, size, dtype, false, 0, 0);
+    }
+
+
+    public void setDirLight(Light light){
+        if (curr_dir < NB_DIR_LIGHTS) {
+            GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "dirLights["+curr_dir+"].direction"), 1, light.getDirection(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "dirLights["+curr_dir+"].ambient"), 1, light.getAmbient(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "dirLights["+curr_dir+"].diffuse"), 1, light.getDiffuse(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "dirLights["+curr_dir+"].specular"), 1, light.getSpecular(), 0);
+            curr_dir++;
+        } else MainActivity.log("More directional lights in Scene than in shaders, modify the shaders to take this light in account.");
+    }
+
+    public void setPointLight(Light light) {
+        if (curr_point < NB_POINT_LIGHTS) {
+            GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].position"), 1, light.getPosition(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].ambient"), 1, light.getAmbient(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].diffuse"), 1, light.getDiffuse(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].specular"), 1, light.getSpecular(), 0);
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].constant"), light.getConstant());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].linear"), light.getLinear());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights["+curr_point+"].quadratic"), light.getQuadratic());
+            curr_point++;
+        } else MainActivity.log("More point lights in Scene than in shaders, modify the shaders to take this light in account.");
+
+    }
+
+    public void setSpotLight(Light light) {
+        if (curr_spot < NB_SPOT_LIGHTS) {
+            GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].position"), 1, light.getPosition(), 0);
+            GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].direction"), 1, light.getDirection(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].ambient"), 1, light.getAmbient(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].diffuse"), 1, light.getDiffuse(), 0);
+            GLES20.glUniform4fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].specular"), 1, light.getSpecular(), 0);
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].cutOff"), light.getCutOff());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].outerCutOff"), light.getOuterCutOff());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].constant"), light.getConstant());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].linear"), light.getLinear());
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights["+curr_spot+"].quadratic"), light.getQuadratic());
+            curr_spot++;
+        } else MainActivity.log("More spot lights in Scene than in shaders, modify the shaders to take this light in account.");
+    }
+
+    public void resetLights(){
+        curr_dir = 0;
+        curr_point = 0;
+        curr_spot = 0;
     }
 
 

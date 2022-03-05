@@ -189,8 +189,7 @@ public class Scene {
 
         // Get shader to send uniform data
         MultipleLightingShaders shaders = renderer.getShaders();
-
-
+        shaders.resetLights();
 
         // Place viewer in the right position and orientation
         Matrix.setIdentityM(modelviewmatrix, 0);
@@ -199,6 +198,7 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
+
         light.initLighting(shaders,modelviewmatrix);
         light2.initLighting(shaders,modelviewmatrix);
         light3.initLighting(shaders,modelviewmatrix);
