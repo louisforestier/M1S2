@@ -8,13 +8,6 @@ import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
 
 public class BlinnPhongMultipleLightShaders extends MultipleLightingShaders{
 
-    protected int uLightType;
-    protected int uDirLight;
-
-    protected int uSpotDirection;
-    private int uCutOff;
-    private int uOuterCutOff;
-
     /**
      * Constructor. nothing to do, everything is done in the super class...
      *
