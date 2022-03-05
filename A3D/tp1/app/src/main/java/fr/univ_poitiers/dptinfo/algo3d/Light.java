@@ -1,13 +1,19 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+
 public class Light {
     private LightType type;
+    private float[] position;
+    private float[] direction;
     private float[] ambient;
     private float[] diffuse;
     private float[] specular;
     private float constant;
     private float linear;
     private float quadratic;
+    private float cutOff;
+    private float outerCutOff;
 
     public Light(LightType type) {
         this.type = type;
@@ -17,6 +23,8 @@ public class Light {
         constant = 1.f ;
         linear = 0.09f;
         quadratic = 0.032f;
+        cutOff = 12.5f;
+        outerCutOff = 17.5f;
     }
 
     public Light(float[] ambient, float[] diffuse, float[] specular, float constant, float linear, float quadratic) {
@@ -34,6 +42,22 @@ public class Light {
 
     public void setType(LightType type) {
         this.type = type;
+    }
+
+    public float[] getPosition() {
+        return position;
+    }
+
+    public void setPosition(float[] position) {
+        this.position = position;
+    }
+
+    public float[] getDirection() {
+        return direction;
+    }
+
+    public void setDirection(float[] direction) {
+        this.direction = direction;
     }
 
     public float[] getAmbient() {
@@ -82,5 +106,21 @@ public class Light {
 
     public void setQuadratic(float quadratic) {
         this.quadratic = quadratic;
+    }
+
+    public float getCutOff() {
+        return (float) Math.cos(Math.toRadians(cutOff));
+    }
+
+    public void setCutOff(float cutOff) {
+        this.cutOff = cutOff;
+    }
+
+    public float getOuterCutOff() {
+        return (float) Math.cos(Math.toRadians(outerCutOff));
+    }
+
+    public void setOuterCutOff(float outerCutOff) {
+        this.outerCutOff = outerCutOff;
     }
 }

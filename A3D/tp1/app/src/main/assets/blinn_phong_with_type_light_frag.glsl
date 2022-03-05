@@ -15,6 +15,8 @@ uniform int uLightType;
 uniform bool uLighting;
 uniform vec3 uLightPos;
 uniform vec3 uSpotDir;
+uniform float uCutOff;
+uniform float uOuterCutOff;
 uniform vec4 uLightColor;
 // Material definition
 uniform bool uNormalizing;
@@ -26,6 +28,7 @@ uniform vec4 uMaterialSpecular;
 
 varying vec4 posf;
 varying vec3 normalf;
+
 
 vec4 calcPointLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, float constant, float linear, float quadratic, vec3 normal, vec3 posf, vec3 viewdir)
 {
@@ -44,7 +47,7 @@ vec4 calcPointLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, fl
 
 vec4 calcDirLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, vec3 normal, vec3 viewdir)
 {
-  vec3 lightdir = normalize(-lightPos);
+  vec3 lightdir = normalize(-uSpotDir);
   vec3 halfdir = normalize(lightdir + viewdir);
   float weight = max(dot(normal,lightdir),0.0);
   vec4 dColor = uMaterialColor * (ambient + weight*diffuse);
@@ -53,11 +56,50 @@ vec4 calcDirLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, vec3
   return dColor+specColor;
 }
 
-vec4 calcSpotLight()
+//spotlight sans intensité
+/*
+vec4 calcSpotLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, float constant, float linear, float quadratic, vec3 normal, vec3 posf, vec3 viewdir, float cutoff, float outerCutOff)
 {
-
-  return uMaterialColor;
+  float distance = length(lightPos-posf);
+  float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+  vec3 lightdir = normalize(lightPos-posf);
+  float theta = dot(lightdir,normalize(-uSpotDir));
+  if(theta > cutoff)
+  {
+    vec3 halfdir = normalize(lightdir + viewdir);
+    float weight = max(dot(normal,lightdir),0.0);
+    vec4 dColor = uMaterialColor * (ambient + weight*diffuse);
+    float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
+    vec4 specColor = uMaterialSpecular * specular * spec;
+    dColor *= attenuation;
+    specColor *= attenuation;
+    return dColor+specColor;
+  }
+  else
+  {
+    return vec4(ambient * uMaterialColor);
+  }
 }
+*/
+
+vec4 calcSpotLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, float constant, float linear, float quadratic, vec3 normal, vec3 posf, vec3 viewdir, float cutoff, float outerCutOff)
+{
+  float distance = length(lightPos-posf);
+  float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+  vec3 lightdir = normalize(lightPos-posf);
+  float theta = dot(lightdir,normalize(-uSpotDir));
+  float epsilon = cutoff - outerCutOff;
+  float intensity = clamp((theta - outerCutOff) / epsilon,0.0,1.0);
+  vec3 halfdir = normalize(lightdir + viewdir);
+  float weight = max(dot(normal,lightdir),0.0);
+  vec4 dColor = uMaterialColor * (ambient + weight*diffuse*intensity);
+  float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
+  vec4 specColor = uMaterialSpecular * specular * spec;
+  dColor *= attenuation;
+  specColor *= attenuation * intensity;
+  return dColor+specColor;
+}
+
 
 void main(void) {
   if (uLighting)
@@ -74,7 +116,7 @@ void main(void) {
     }
     else if (uLightType == SPOT_LIGHT)
     {
-      gl_FragColor = uMaterialColor;
+      gl_FragColor = calcSpotLight(uLightPos,uLightColor,uAmbiantLight,uLightSpecular,uConstantAttenuation,uLinearAttenuation,uQuadraticAttenuation,normal,posf.xyz,viewdir,uCutOff,uOuterCutOff);
     }
   }
   else gl_FragColor = uMaterialColor;
