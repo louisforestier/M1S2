@@ -60,8 +60,8 @@ struct SpotLight {
 #define NB_POINT_LIGHTS 1
 
 uniform DirLight dirLights[NB_DIR_LIGHTS];
-uniform PointLight pointLights[NB_DIR_LIGHTS];
-uniform SpotLight spotLights[NB_DIR_LIGHTS];
+uniform PointLight pointLights[NB_POINT_LIGHTS];
+uniform SpotLight spotLights[NB_SPOT_LIGHTS];
 
 vec4 calcPointLight(PointLight light, vec3 normal, vec3 posf, vec3 viewdir)
 {
