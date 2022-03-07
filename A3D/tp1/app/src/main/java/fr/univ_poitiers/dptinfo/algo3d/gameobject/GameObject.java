@@ -1,51 +1,59 @@
 package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 
-import android.opengl.Matrix;
-
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
-import fr.univ_poitiers.dptinfo.algo3d.mesh.DrawMode;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.MeshFilter;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.MeshRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
 public class GameObject {
 
-    private Mesh mesh;
     private Transform transform;
-    private float[] color;
-    private float[] specColor;
-    private float shininess;
     private List<GameObject> children = new ArrayList<>();
+    private List<Component> components = new ArrayList<>();
     private GameObject parent = null;
 
 
-    public GameObject(float[] color){
-        this.specColor = MyGLRenderer.white;
-        this.shininess = 32.f;
-        this.transform = new Transform();
-        this.color = color;
-    }
-    public GameObject(float[] color, float[] specColor, float shininess){
-        this.specColor = specColor;
-        this.shininess = shininess;
-        this.transform = new Transform();
-        this.color = color;
-    }
-
-    public GameObject() {
-        this.transform = new Transform();
-        this.color = MyGLRenderer.white;
-        this.specColor = MyGLRenderer.white;
-        this.shininess = 32.f;
+    public GameObject(){
+        this.transform = new Transform(this);
     }
 
     public void setMesh(Mesh mesh) {
-        this.mesh = mesh;
+        addComponent(MeshFilter.class);
+        getCompotent(MeshFilter.class).setMesh(mesh);
     }
+
+    public void addMeshRenderer( Material material) {
+        addComponent(MeshRenderer.class);
+        getCompotent(MeshRenderer.class).setMaterial(material);
+    }
+
+    public <T extends Component> void addComponent(Class<T> type){
+        try {
+            components.add(type.getDeclaredConstructor(GameObject.class,Transform.class).newInstance(this,transform));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <T extends Component> T getCompotent(Class<T> type){
+        for (Component c : components){
+            if (type.isInstance(c))
+                return type.cast(c);
+        }
+        return null;
+    }
+
 
     public Transform getTransform() {
         return transform;
@@ -56,45 +64,39 @@ public class GameObject {
         child.parent = this;
     }
 
-    public void initGraphics(){
-        if (this.mesh != null)
-            this.mesh.initGraphics();
+    public GameObject getParent() {
+        return parent;
+    }
+
+    public void start(){
+        for (Component c : components)
+            c.start();
         if (this.children.size() > 0){
             for (GameObject go : this.children) {
-                go.initGraphics();
+                go.start();
             }
         }
     }
 
-    public void draw(MultipleLightingShaders shaders, final float[] viewmatrix){
-        float[] modelviewmatrix = new float[16];
-        Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
-        shaders.setModelViewMatrix(modelviewmatrix);
-        shaders.setMaterialColor(color);
-        shaders.setMaterialSpecular(specColor);
-        shaders.setMaterialShininess(shininess);
-        if (this.mesh != null)
-            mesh.draw(shaders);
-        if (this.children.size() > 0){
-            for (GameObject go : this.children) {
-                go.draw(shaders,modelviewmatrix);
-            }
+    public void update(){
+        for (Component c : components) {
+            c.update();
         }
-    }
-    public void draw(MultipleLightingShaders shaders, final float[] viewmatrix, DrawMode drawMode){
-        float[] modelviewmatrix = new float[16];
-        Matrix.multiplyMM(modelviewmatrix,0,viewmatrix,0,transform.getModelMatrix(),0);
-        shaders.setModelViewMatrix(modelviewmatrix);
-        shaders.setMaterialColor(color);
-        shaders.setMaterialSpecular(specColor);
-        shaders.setMaterialShininess(shininess);
-        if (this.mesh != null)
-            mesh.draw(shaders,drawMode);
         if (this.children.size() > 0){
             for (GameObject go : this.children) {
-                go.draw(shaders,modelviewmatrix,drawMode);
+                go.update();
             }
         }
     }
 
+    public void lateUpdate(){
+        for (Component c : components){
+            c.lateUpdate();
+        }
+        if (this.children.size() > 0){
+            for (GameObject go : this.children) {
+                go.lateUpdate();
+            }
+        }
+    }
 }

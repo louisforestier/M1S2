@@ -7,17 +7,7 @@ uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat3 uNormalMatrix;
 // Light source definition
-uniform float uConstantAttenuation;
-uniform float uLinearAttenuation;
-uniform float uQuadraticAttenuation;
-uniform vec4 uAmbiantLight;
-uniform int uLightType;
 uniform bool uLighting;
-uniform vec3 uLightPos;
-uniform vec3 uSpotDir;
-uniform float uCutOff;
-uniform float uOuterCutOff;
-uniform vec4 uLightColor;
 // Material definition
 uniform bool uNormalizing;
 uniform vec4 uMaterialColor;

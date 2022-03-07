@@ -13,6 +13,7 @@ import java.util.Map;
 
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
@@ -24,15 +25,14 @@ public class Mesh {
     protected int[] triangles;
     protected float[] normals;
 
-    public Mesh() {
-        this.normals = new float[]{0.f, 0.f, 0.f};
+    protected Mesh() {
     }
 
 
     public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
-        this.normals = new float[]{0.f, 0.f, 0.f};
+        this.normals = new float[vertexpos.length];
     }
 
     public Mesh(float[] vertexpos, int[] triangles, float[] normals) {
@@ -45,6 +45,18 @@ public class Mesh {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
         this.normals = normals;
+    }
+
+    public final float[] getVertexpos() {
+        return vertexpos;
+    }
+
+    public final int[] getTriangles() {
+        return triangles;
+    }
+
+    public final float[] getNormals() {
+        return normals;
     }
 
     public void calculateFlatShadingNormals() {
@@ -151,7 +163,7 @@ public class Mesh {
         }
     }
 
-    float calcAngle(Vec3f p1, Vec3f p2, Vec3f p3){
+    float calcAngle(Vec3f p1, Vec3f p2, Vec3f p3) {
         Vec3f v1 = new Vec3f();
         v1.setSub(p2, p1);
         Vec3f v2 = new Vec3f();
@@ -196,7 +208,6 @@ public class Mesh {
          *
          * Buffer des normals
          */
-        Log.i("INFO", "buffer des normals");
         ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
         normalbytebuf.order(ByteOrder.nativeOrder());
         FloatBuffer normalbuffer = normalbytebuf.asFloatBuffer();
@@ -233,7 +244,6 @@ public class Mesh {
         GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normals.length * Float.BYTES, normalbuffer, GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        Log.i("INFO", "fin init graphics");
     }
 
     public void draw(final MultipleLightingShaders shaders) {
@@ -292,18 +302,5 @@ public class Mesh {
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
 
-    }
-
-    public void draw(MultipleLightingShaders shaders, DrawMode drawMode) {
-        switch (drawMode) {
-            case TRIANGLES:
-                draw(shaders);
-                break;
-            case WIREFRAME:
-                drawLinesOnly(shaders);
-                break;
-            case TRIANGLES_AND_WIREFRAME:
-                drawWithLines(shaders);
-        }
     }
 }

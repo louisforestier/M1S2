@@ -16,6 +16,7 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongTypeLightShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 
 /**
@@ -102,6 +103,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     {
         // Create shader
         this.shaders=new BlinnPhongMultipleLightShaders(this.view.getContext()); // or other shaders
+        ShaderManager.getInstance().addShaders(this.shaders);
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);

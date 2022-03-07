@@ -6,21 +6,21 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Ball;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.LightGameObject;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Room;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Cube;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Cylinder;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Donut;
-import fr.univ_poitiers.dptinfo.algo3d.mesh.DrawMode;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Frustum;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Pipe;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
 import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
@@ -31,31 +31,13 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
  * @version 1.0
  */
 public class Scene {
-    private final LightGameObject light2;
-    private final LightGameObject light3;
-    /**
-     * A constant for the size of the wall
-     */
-    private Context context;
+    private final GameObject light2;
+    private final GameObject light3;
 
-    private GameObject room;
-    private GameObject room2;
-    private GameObject armadillo;
-    private GameObject armadillo2;
-    private GameObject dragon;
-    private GameObject ball;
-    private GameObject ball2;
-    private GameObject donut;
-    private GameObject cube;
-    private GameObject pyramid;
-    private GameObject pipe;
-    private GameObject cylinder;
-    private GameObject tictac;
-    private GameObject frustum;
-    private GameObject room3;
-    private GameObject room4;
+    private List<GameObject> gameObjects = new ArrayList<>();
+    private List<GameObject> lights = new ArrayList<GameObject>();
 
-    private LightGameObject light;
+    private GameObject light;
     /**
      * An angle used to animate the viewer
      */
@@ -69,59 +51,114 @@ public class Scene {
      * Constructor : build each wall, the floor and the ceiling as quads
      */
     public Scene(Context current) {
-        this.context = current;
+        /**
+         * A constant for the size of the wall
+         */
         // Init observer's view angles
         angley = 0.F;
-        room = new Room(new boolean[]{false, false, true, true},6.F,6.F,2.5F, MyGLRenderer.green, MyGLRenderer.darkgray, MyGLRenderer.lightgray);
-        room2 = new Room(new boolean[]{true, false, false, false},6.F,16.F,2.5F, MyGLRenderer.red, MyGLRenderer.darkgray, MyGLRenderer.lightgray);
+        Material ceilingMaterial = new Material(MyGLRenderer.darkgray);
+        Material wallMaterial = new Material(MyGLRenderer.lightgray);
+        GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, new Material(MyGLRenderer.green), ceilingMaterial,wallMaterial);
+        gameObjects.add(room);
+        GameObject room2 = new Room(new boolean[]{true, false, false, false}, 6.F, 16.F, 2.5F, new Material(MyGLRenderer.red), ceilingMaterial,wallMaterial);
         room2.getTransform().posz(6);
-        room3 = new Room(new boolean[]{true, true, true, true},6.f,6.f,2.5f,MyGLRenderer.cyan,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
+        gameObjects.add(room2);
+        GameObject room3 = new Room(new boolean[]{true, true, true, true}, 6.f, 6.f, 2.5f, new Material(MyGLRenderer.cyan), ceilingMaterial,wallMaterial);
         room3.getTransform().posx(6);
-        room4 = new Room(new boolean[]{false,true,false,true},6.f,6.f,4.5f,MyGLRenderer.orange,MyGLRenderer.darkgray,MyGLRenderer.lightgray);
+        gameObjects.add(room3);
+        GameObject room4 = new Room(new boolean[]{false, true, false, true}, 6.f, 6.f, 4.5f, new Material(MyGLRenderer.orange), ceilingMaterial, wallMaterial);
         //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
         room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
-        ball = new Ball(1.2f,1.5f,1.5f,MyGLRenderer.orange);
-        ball2 = new Ball(0.3f,-1.5f,1.5f,MyGLRenderer.gray);
-        armadillo = new GameObject(MyGLRenderer.lightgray);
-        InputStream stream = context.getResources().openRawResource(R.raw.armadillo);
+        gameObjects.add(room4);
+
+        GameObject ball = new Ball(1.2f, 1.5f, 1.5f, new Material(MyGLRenderer.orange));
+        gameObjects.add(ball);
+
+        GameObject ball2 = new Ball(0.3f, -1.5f, 1.5f, new Material(MyGLRenderer.gray));
+        gameObjects.add(ball2);
+
+
+        InputStream stream = current.getResources().openRawResource(R.raw.armadillo);
+        Material armadilloMaterial = new Material(MyGLRenderer.lightgray);
+        GameObject armadillo = new GameObject();
         armadillo.setMesh(OBJImporter.importOBJ(stream, ShadingMode.SMOOTH_SHADING));
         armadillo.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f);
-        armadillo2 = new GameObject(MyGLRenderer.lightgray);
-        stream = context.getResources().openRawResource(R.raw.armadillo_with_normals);
+        armadillo.addMeshRenderer(armadilloMaterial);
+        gameObjects.add(armadillo);
+
+        GameObject armadillo2 = new GameObject();
+        stream = current.getResources().openRawResource(R.raw.armadillo_with_normals);
         armadillo2.setMesh(OBJImporter.importOBJ(stream,ShadingMode.SMOOTH_SHADING));
         armadillo2.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f).posz(1.f);
-        stream = context.getResources().openRawResource(R.raw.xyzrgb_dragon);
-        dragon = new GameObject(MyGLRenderer.white);
+        armadillo2.addMeshRenderer(armadilloMaterial);
+        gameObjects.add(armadillo2);
+
+        stream = current.getResources().openRawResource(R.raw.xyzrgb_dragon);
+        GameObject dragon = new GameObject();
         dragon.setMesh(OBJImporter.importOBJ(stream, ShadingMode.FLAT_SHADING));
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
-        donut = new GameObject(MyGLRenderer.cyan);
+        dragon.addMeshRenderer(new Material());
+        gameObjects.add(dragon);
+
+
+        GameObject donut = new GameObject();
         donut.setMesh(new Donut(1.0f,0.3f,50,20));
         donut.getTransform().posz(6).posy(0.6f);
-        cube = new GameObject(MyGLRenderer.magenta);
+        donut.addMeshRenderer(new Material(MyGLRenderer.cyan));
+        gameObjects.add(donut);
+
+        GameObject cube = new GameObject();
         cube.setMesh(new Cube(1));
         cube.getTransform().posz(6).posx(4);
-        pyramid = new GameObject(MyGLRenderer.yellow);
+        cube.addMeshRenderer(new Material(MyGLRenderer.magenta));
+        gameObjects.add(cube);
+
+        GameObject pyramid = new GameObject();
         pyramid.setMesh(new Pyramid(80));
         pyramid.getTransform().posx(-4).posz(6);
-        pipe = new GameObject(MyGLRenderer.white);
+        pyramid.addMeshRenderer(new Material(MyGLRenderer.yellow));
+        gameObjects.add(pyramid);
+
+        GameObject pipe = new GameObject();
         pipe.setMesh(new Pipe(50));
         pipe.getTransform().posz(6).scalex(0.5f).scalez(0.5f);
-        cylinder = new GameObject(MyGLRenderer.blue);
+        pipe.addMeshRenderer(new Material(MyGLRenderer.white));
+        gameObjects.add(pipe);
+
+        GameObject cylinder = new GameObject();
         cylinder.setMesh(new Cylinder(50));
         cylinder.getTransform().posz(6).scalez(0.2f).scalex(0.2f);
-        tictac = new GameObject(MyGLRenderer.green);
+        cylinder.addMeshRenderer(new Material(MyGLRenderer.blue));
+        gameObjects.add(cylinder);
+
+        GameObject tictac = new GameObject();
         tictac.setMesh(new Tictac(50,50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
-        frustum = new GameObject(MyGLRenderer.magenta);
+        tictac.addMeshRenderer(new Material(MyGLRenderer.green));
+        gameObjects.add(tictac);
+
+        GameObject frustum = new GameObject();
         frustum.setMesh(new Frustum(1.f,0.001f,50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
+        frustum.addMeshRenderer(new Material(MyGLRenderer.magenta));
+        gameObjects.add(frustum);
 
-        light = new LightGameObject(LightType.SPOT);
-        light.getTransform().roty(-90.0f).posy(1.f);
-        light2 = new LightGameObject(LightType.DIRECTIONAL);
-        light3 = new LightGameObject(LightType.POINT);
+        light = new GameObject();
+        light.addComponent(Light.class);
+        light.getCompotent(Light.class).setType(LightType.SPOT);
+        light.getTransform().rotx(-90.0f).posy(2.4f).posx(-1.5f).posz(1.5f);
+        lights.add(light);
+        light2 = new GameObject();
+        light2.addComponent(Light.class);
+        light2.getCompotent(Light.class).setType(LightType.DIRECTIONAL);
+        lights.add(light2);
+        light3 = new GameObject();
+        light3.addComponent(Light.class);
+        light3.getCompotent(Light.class).setType(LightType.POINT);
         light3.getTransform().posy(1.f).posz(6.f);
+        lights.add(light3);
     }
+
 
 
     /**
@@ -137,25 +174,15 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glDepthFunc(GLES20.GL_LESS);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        MainActivity.log("Graphics initialized");
         renderer.getShaders().setNormalizing(true);
         renderer.getShaders().setLighting(true);
-        room.initGraphics();
-        room2.initGraphics();
-        room3.initGraphics();
-        room4.initGraphics();
-        ball.initGraphics();
-        ball2.initGraphics();
-        armadillo.initGraphics();
-        armadillo2.initGraphics();
-        dragon.initGraphics();
-        donut.initGraphics();
-        cube.initGraphics();
-        pyramid.initGraphics();
-        pipe.initGraphics();
-        cylinder.initGraphics();
-        tictac.initGraphics();
-        frustum.initGraphics();
+        for(GameObject go : gameObjects){
+            go.start();
+        }
+        for (GameObject lgo : lights){
+            lgo.start();
+        }
+        MainActivity.log("Graphics initialized");
     }
 
 
@@ -199,32 +226,19 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
-        light.initLighting(shaders,modelviewmatrix);
-        light2.initLighting(shaders,modelviewmatrix);
-        light3.initLighting(shaders,modelviewmatrix);
+        shaders.setViewMatrix(modelviewmatrix);
+        for (GameObject light : lights){
+            light.update();
+        }
+
+
         shaders.setModelViewMatrix(modelviewmatrix);
-
-        room.draw(shaders,modelviewmatrix);
-        room2.draw(shaders, modelviewmatrix);
-        room3.draw(shaders,modelviewmatrix);
-        room4.draw(shaders,modelviewmatrix);
-
-        ball.draw(shaders,modelviewmatrix);
-        ball2.draw(shaders,modelviewmatrix);
-        armadillo.draw(shaders,modelviewmatrix);
-        armadillo2.draw(shaders,modelviewmatrix);
-        dragon.draw(shaders, modelviewmatrix);
-
-        cube.draw(shaders,modelviewmatrix, DrawMode.TRIANGLES_AND_WIREFRAME);
-        donut.draw(shaders,modelviewmatrix);
-        pyramid.draw(shaders,modelviewmatrix);
-        pipe.draw(shaders,modelviewmatrix);
-        cylinder.draw(shaders,modelviewmatrix);
-        tictac.draw(shaders,modelviewmatrix);
-        frustum.draw(shaders,modelviewmatrix);
-
-
-
+        for(GameObject go : gameObjects){
+            go.update();
+        }
+        for(GameObject go : gameObjects){
+            go.lateUpdate();
+        }
         //MainActivity.log("Rendering terminated.");
     }
 }

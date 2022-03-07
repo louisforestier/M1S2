@@ -4,18 +4,20 @@ import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
-public class Transform {
+public class Transform extends Component{
 
 
     private Vec3f pos;
     private Vec3f rot;
     private Vec3f scale;
 
-    public Transform() {
+    public Transform(GameObject gameObject) {
+        super(gameObject, null);
         pos = new Vec3f();
         rot = new Vec3f();
         scale = new Vec3f(1.0f,1.0f,1.0f);
     }
+
 
     public float[] getModelMatrix(){
         float[] modelMatrix = new float[16];
@@ -27,6 +29,29 @@ public class Transform {
         Matrix.scaleM(modelMatrix,0,scale.x,scale.y,scale.z);
         return modelMatrix;
     }
+
+    public float[] getModelViewMatrix(){
+        if (gameObject.getParent() == null) {
+            return getModelMatrix();
+        } else {
+            float[] modelviewmatrix = new float[16];
+            Matrix.multiplyMM(modelviewmatrix,0,gameObject.getParent().getTransform().getModelViewMatrix(),0,getModelMatrix(),0);
+            return modelviewmatrix;
+        }
+    }
+
+    public float[] getParentModelViewMatrix() {
+        float[] modelviewmatrix = new float[16];
+        if (gameObject.getParent() == null) {
+
+            Matrix.setIdentityM(modelviewmatrix,0);
+            return modelviewmatrix;
+        } else {
+            this.gameObject.getParent().getTransform().getModelViewMatrix();
+        }
+        return new float[0];
+    }
+
 
     public float getPosx() {
         return pos.x;
@@ -108,4 +133,5 @@ public class Transform {
         this.scale.z = scalez;
         return this;
     }
+
 }

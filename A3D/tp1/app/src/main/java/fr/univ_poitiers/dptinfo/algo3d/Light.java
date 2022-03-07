@@ -1,8 +1,16 @@
 package fr.univ_poitiers.dptinfo.algo3d;
 
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+import android.opengl.Matrix;
 
-public class Light {
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
+
+public class Light extends Component {
     private LightType type;
     private float[] position;
     private float[] direction;
@@ -15,8 +23,9 @@ public class Light {
     private float cutOff;
     private float outerCutOff;
 
-    public Light(LightType type) {
-        this.type = type;
+    public Light(GameObject gameObject, Transform transform) {
+        super(gameObject, transform);
+        this.type = LightType.POINT;
         ambient =new float[]{0.2f,0.2f,0.2f,1.f};
         diffuse = new float[]{0.8f,0.8f,0.8f,1.f};
         specular = new float[]{0.8f,0.8f,0.8f,1.f};
@@ -27,13 +36,74 @@ public class Light {
         outerCutOff = 17.5f;
     }
 
-    public Light(float[] ambient, float[] diffuse, float[] specular, float constant, float linear, float quadratic) {
-        this.ambient = ambient;
-        this.diffuse = diffuse;
-        this.specular = specular;
-        this.constant = constant;
-        this.linear = linear;
-        this.quadratic = quadratic;
+    /*
+        public Light(LightType type) {
+            this.type = type;
+            ambient =new float[]{0.2f,0.2f,0.2f,1.f};
+            diffuse = new float[]{0.8f,0.8f,0.8f,1.f};
+            specular = new float[]{0.8f,0.8f,0.8f,1.f};
+            constant = 1.f ;
+            linear = 0.09f;
+            quadratic = 0.032f;
+            cutOff = 12.5f;
+            outerCutOff = 17.5f;
+        }
+
+        public Light(float[] ambient, float[] diffuse, float[] specular, float constant, float linear, float quadratic) {
+            this.ambient = ambient;
+            this.diffuse = diffuse;
+            this.specular = specular;
+            this.constant = constant;
+            this.linear = linear;
+            this.quadratic = quadratic;
+        }
+    */
+    public float[] getPos(final float[] viewmatrix){
+        float[] lightPos = new float[4];
+        Matrix.multiplyMV(lightPos,0,viewmatrix,0,new float[]{transform.getPosx(),transform.getPosy(),transform.getPosz(),1.0f},0);
+        return new float[]{lightPos[0],lightPos[1],lightPos[2]};
+    }
+
+    public float[] getDir(final float[] viewmatrix){
+        float[] lightDir = new float[4];
+        float[] lightlocalDir = new float[]{
+                (float) (Math.cos(Math.toRadians(transform.getRoty())) * Math.cos(Math.toRadians(transform.getRotx()))),
+                (float) Math.sin(Math.toRadians(transform.getRotx())),
+                (float) (Math.sin(Math.toRadians(transform.getRoty())) * Math.cos(Math.toRadians(transform.getRotx()))),
+                0.f
+        };
+        Matrix.multiplyMV(lightDir,0,viewmatrix,0,lightlocalDir,0);
+        return new float[]{lightDir[0],lightDir[1],lightDir[2]};
+    }
+
+
+    public void initLighting(BasicShaders shaders, final float[] modelviewmatrix) {
+        if (shaders.useTypeLight()){
+            setPosition(getPos(modelviewmatrix));
+            setDirection(getDir(modelviewmatrix));
+            switch (getType()) {
+                case DIRECTIONAL:
+                    ((BlinnPhongMultipleLightShaders) shaders).setDirLight(this);
+                    break;
+                case POINT:
+                    ((BlinnPhongMultipleLightShaders) shaders).setPointLight(this);
+                    break;
+                case SPOT:
+                    ((BlinnPhongMultipleLightShaders) shaders).setSpotLight(this);
+                    break;
+            }
+        }
+    }
+
+
+    @Override
+    public void update() {
+        super.update();
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders()){
+            float[] modelviewmatrix = new float[16];
+            Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);
+            initLighting(s,modelviewmatrix);
+        }
     }
 
     public LightType getType() {
