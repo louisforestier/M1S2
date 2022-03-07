@@ -23,6 +23,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - implanter les collisions
 // - implanter des animations
 // - tuto lancer de rayon https://www.scratchapixel.com/
+// - faire une javadoc
 
 import android.util.Pair;
 
