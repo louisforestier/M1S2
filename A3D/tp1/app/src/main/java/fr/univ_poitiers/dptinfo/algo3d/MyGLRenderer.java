@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Shader;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
@@ -103,7 +104,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     {
         // Create shader
         this.shaders=new BlinnPhongMultipleLightShaders(this.view.getContext()); // or other shaders
+        ShaderManager.getInstance().getShaders().clear();
         ShaderManager.getInstance().addShaders(this.shaders);
+        shaders.resetLights();
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);
