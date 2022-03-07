@@ -24,6 +24,8 @@ public class Mesh {
     protected float[] vertexpos;
     protected int[] triangles;
     protected float[] normals;
+    protected float[] texCoords;
+
 
     protected Mesh() {
     }

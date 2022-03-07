@@ -15,6 +15,7 @@ public class Material {
     private float shininess;
     private Class<? extends MultipleLightingShaders> shader;
     private DrawMode drawMode;
+    private int textureId;
 
     public Material(){
         this.shader = defaultShader;
@@ -50,6 +51,10 @@ public class Material {
 
     public float getShininess() {
         return shininess;
+    }
+
+    public void setTextureId(int textureId) {
+        this.textureId = textureId;
     }
 
     public void setShader(Class<? extends MultipleLightingShaders> shader) {
