@@ -39,7 +39,7 @@ public class MeshRenderer extends Component {
 
 
     @Override
-    public void lateUpdate() {
+    public void update() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, material.getShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);

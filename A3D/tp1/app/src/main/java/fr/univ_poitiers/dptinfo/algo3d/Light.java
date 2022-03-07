@@ -97,8 +97,8 @@ public class Light extends Component {
 
 
     @Override
-    public void update() {
-        super.update();
+    public void earlyUpdate() {
+        super.earlyUpdate();
         for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders()){
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);

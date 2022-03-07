@@ -35,7 +35,6 @@ public class Scene {
     private final GameObject light3;
 
     private List<GameObject> gameObjects = new ArrayList<>();
-    private List<GameObject> lights = new ArrayList<GameObject>();
 
     private GameObject light;
     /**
@@ -147,16 +146,16 @@ public class Scene {
         light.addComponent(Light.class);
         light.getCompotent(Light.class).setType(LightType.SPOT);
         light.getTransform().rotx(-90.0f).posy(2.4f).posx(-1.5f).posz(1.5f);
-        lights.add(light);
+        gameObjects.add(light);
         light2 = new GameObject();
         light2.addComponent(Light.class);
         light2.getCompotent(Light.class).setType(LightType.DIRECTIONAL);
-        lights.add(light2);
+        gameObjects.add(light2);
         light3 = new GameObject();
         light3.addComponent(Light.class);
         light3.getCompotent(Light.class).setType(LightType.POINT);
         light3.getTransform().posy(1.f).posz(6.f);
-        lights.add(light3);
+        gameObjects.add(light3);
     }
 
 
@@ -178,9 +177,6 @@ public class Scene {
         renderer.getShaders().setLighting(true);
         for(GameObject go : gameObjects){
             go.start();
-        }
-        for (GameObject lgo : lights){
-            lgo.start();
         }
         MainActivity.log("Graphics initialized");
     }
@@ -227,8 +223,8 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
         shaders.setViewMatrix(modelviewmatrix);
-        for (GameObject light : lights){
-            light.update();
+        for (GameObject go : gameObjects){
+            go.earlyUpdate();
         }
 
 

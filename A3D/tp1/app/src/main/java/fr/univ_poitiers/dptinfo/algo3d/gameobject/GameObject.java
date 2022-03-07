@@ -8,7 +8,6 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.MeshFilter;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.MeshRenderer;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
 public class GameObject {
 
@@ -77,6 +76,18 @@ public class GameObject {
             }
         }
     }
+
+    public void earlyUpdate(){
+        for (Component c : components) {
+            c.earlyUpdate();
+        }
+        if (this.children.size() > 0){
+            for (GameObject go : this.children) {
+                go.earlyUpdate();
+            }
+        }
+    }
+
 
     public void update(){
         for (Component c : components) {

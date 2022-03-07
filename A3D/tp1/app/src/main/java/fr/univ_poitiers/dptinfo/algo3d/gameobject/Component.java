@@ -11,6 +11,7 @@ public abstract class Component {
     }
 
     public void start(){}
+    public void earlyUpdate(){}
     public void update(){}
     public void lateUpdate(){}
 }
