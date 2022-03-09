@@ -78,6 +78,21 @@ public class Sphere extends Mesh {
             triangles[k++] =  (i + vertexpos.length / 3 - 2 - quarter);
         }
         normals = vertexpos;
+        k=0;
+        texturesCoord = new float[((slice - 1) * (quarter + 1) + 2)*2];
+        for (int i = slice - 1; i > 0; i--) {
+            double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
+            for (int j = quarter; j >=0; j--) {
+                double phi = Math.toRadians((360.0 / quarter) * j);
+                // formule pour l'indice sans utiliser l'astuce de la variable k, (i - 1) * (1 + quarter) * 3 + (j * 3)
+                texturesCoord[k++] = (float) (phi/(2*Math.PI));
+                texturesCoord[k++] = (float) (theta / Math.PI + 0.5);
+            }
+        }
+        texturesCoord[texturesCoord.length - 4] = 0;
+        texturesCoord[texturesCoord.length - 3] = 1;
+        texturesCoord[texturesCoord.length - 2] = 0;
+        texturesCoord[texturesCoord.length - 1] = 0;
     }
 
     public Sphere(int nbDiv) {

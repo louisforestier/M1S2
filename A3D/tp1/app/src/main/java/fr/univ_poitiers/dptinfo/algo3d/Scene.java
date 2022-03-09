@@ -48,6 +48,8 @@ public class Scene {
     private final Material ceilingMaterial;
     private final Material floorMaterial;
     private final Material floorMaterial2;
+    private final Material sunMaterial;
+    private final Material earthMaterial;
 
 
     /**
@@ -63,6 +65,8 @@ public class Scene {
         wallMaterial = new Material(MyGLRenderer.lightgray);
         floorMaterial = new Material(MyGLRenderer.white);
         floorMaterial2 = new Material(MyGLRenderer.white);
+        sunMaterial = new Material(MyGLRenderer.orange);
+        earthMaterial = new Material(MyGLRenderer.white);
         GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, floorMaterial, ceilingMaterial, wallMaterial);
         gameObjects.add(room);
         GameObject room2 = new Room(new boolean[]{true, false, false, false}, 6.F, 16.F, 2.5F, floorMaterial2, ceilingMaterial, wallMaterial);
@@ -76,13 +80,15 @@ public class Scene {
         room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
         gameObjects.add(room4);
 
-        GameObject ball = new Ball(1.2f, 1.5f, 1.5f, new Material(MyGLRenderer.orange));
+        GameObject ball = new Ball(1.2f, 1.5f, 1.5f, sunMaterial);
         gameObjects.add(ball);
 
-        GameObject ball2 = new Ball(0.3f, -1.5f, 1.5f, new Material(MyGLRenderer.gray));
+        GameObject ball2 = new Ball(0.3f, -1.5f, 1.5f, earthMaterial);
+        ball2.getTransform().posy(1.8f);
         gameObjects.add(ball2);
 
 
+/*
         InputStream stream = current.getResources().openRawResource(R.raw.armadillo);
         Material armadilloMaterial = new Material(MyGLRenderer.lightgray);
         GameObject armadillo = new GameObject();
@@ -104,6 +110,7 @@ public class Scene {
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         dragon.addMeshRenderer(new Material());
         gameObjects.add(dragon);
+*/
 
 
         GameObject donut = new GameObject();
@@ -185,7 +192,8 @@ public class Scene {
         ceilingMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.ceiling));
         floorMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles1));
         floorMaterial2.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles2));
-
+        sunMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.sun));
+        earthMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.earth));
         for(GameObject go : gameObjects){
             go.start();
         }
