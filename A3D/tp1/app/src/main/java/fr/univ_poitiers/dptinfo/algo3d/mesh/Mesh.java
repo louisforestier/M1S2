@@ -21,10 +21,11 @@ public class Mesh {
     private int glposbuffer;
     private int gltrianglesbuffer;
     private int glnormalbuffer;
+    private int gltexturebuffer;
     protected float[] vertexpos;
     protected int[] triangles;
     protected float[] normals;
-    protected float[] texCoords;
+    protected float[] texturesCoord;
 
 
     protected Mesh() {
@@ -47,6 +48,7 @@ public class Mesh {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
         this.normals = normals;
+        this.texturesCoord = textures;
     }
 
     public final float[] getVertexpos() {
@@ -187,6 +189,9 @@ public class Mesh {
 
 
     public void initGraphics() {
+        //TODO : a retirer après avoir implanté les coordonnées de texture partout
+        if (texturesCoord == null)
+            texturesCoord = new float[vertexpos.length/3*2];
         /**
          * Buffer des sommets
          */
@@ -215,6 +220,16 @@ public class Mesh {
         FloatBuffer normalbuffer = normalbytebuf.asFloatBuffer();
         normalbuffer.put(normals);
         normalbuffer.position(0);
+
+        /**
+         *
+         * Buffer des textures
+         */
+        ByteBuffer texturebytebuf = ByteBuffer.allocateDirect(texturesCoord.length * Float.BYTES);
+        texturebytebuf.order(ByteOrder.nativeOrder());
+        FloatBuffer texturebuffer = texturebytebuf.asFloatBuffer();
+        texturebuffer.put(texturesCoord);
+        texturebuffer.position(0);
 
 
         int[] buffers = new int[1];
@@ -246,6 +261,16 @@ public class Mesh {
         GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, normals.length * Float.BYTES, normalbuffer, GLES20.GL_STATIC_DRAW);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
+        int[] texturebuffers = new int[1];
+        GLES20.glGenBuffers(1, texturebuffers, 0);
+
+        gltexturebuffer = texturebuffers[0];
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, gltexturebuffer);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, texturesCoord.length * Float.BYTES, texturebuffer, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
     }
 
     public void draw(final MultipleLightingShaders shaders) {
@@ -254,9 +279,12 @@ public class Mesh {
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
         shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,gltexturebuffer);
+        shaders.setTexturePointer(2,GLES20.GL_FLOAT);
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
+
 
 
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);

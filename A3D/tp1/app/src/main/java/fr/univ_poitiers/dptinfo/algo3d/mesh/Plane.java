@@ -40,5 +40,15 @@ public class Plane extends Mesh {
             normals[i+2] = 0.f;
         }
 
+        k=0;
+        texturesCoord = new float[11*11*2];
+        for (float s = 0 ; s < 11 ; s++){
+            for (float t = 0 ; t < 11 ; t++){
+                texturesCoord[k++] = t / 10;
+                texturesCoord[k++] = s / 10;
+            }
+        }
+
+
     }
 }

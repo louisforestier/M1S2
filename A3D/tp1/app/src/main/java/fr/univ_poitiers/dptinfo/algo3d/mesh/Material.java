@@ -1,21 +1,24 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+import android.opengl.GLES20;
+
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.TexturesShaders;
 
 public class Material {
 
-    private final static Class<? extends MultipleLightingShaders> defaultShader = BlinnPhongMultipleLightShaders.class;
+    private final static Class<? extends MultipleLightingShaders> defaultShader = TexturesShaders.class;
 
     private float[] color;
     private float[] specColor;
     private float shininess;
     private Class<? extends MultipleLightingShaders> shader;
     private DrawMode drawMode;
-    private int textureId;
+    private int textureId = -1;
 
     public Material(){
         this.shader = defaultShader;
@@ -73,5 +76,12 @@ public class Material {
         ShaderManager.getInstance().getShader(shader).setMaterialColor(color);
         ShaderManager.getInstance().getShader(shader).setMaterialSpecular(specColor);
         ShaderManager.getInstance().getShader(shader).setMaterialShininess(shininess);
+        ShaderManager.getInstance().getShader(shader).setTexturing(textureId!=-1);
+        if (textureId != -1) {
+            //TODO : demander si veut toujours bind la texture directement sur gpu quand donne la texture au matérial ou pas
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            ShaderManager.getInstance().getShader(shader).setTextureUnit(0);
+        }
     }
 }

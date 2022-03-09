@@ -272,4 +272,9 @@ public abstract class MultipleLightingShaders extends BasicShaders
         curr_spot = 0;
     }
 
-}
+    public void setTexturePointer(int size,int dtype){}
+    public void setTextureUnit(final int textureUnit){}
+    public void setTexturing(final boolean state){}
+
+
+    }

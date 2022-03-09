@@ -44,6 +44,10 @@ public class Scene {
 
     float posx, posz;
     float dx,dy,dx2,dy2;
+    private final Material wallMaterial;
+    private final Material ceilingMaterial;
+    private final Material floorMaterial;
+    private final Material floorMaterial2;
 
 
     /**
@@ -55,17 +59,19 @@ public class Scene {
          */
         // Init observer's view angles
         angley = 0.F;
-        Material ceilingMaterial = new Material(MyGLRenderer.darkgray);
-        Material wallMaterial = new Material(MyGLRenderer.lightgray);
-        GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, new Material(MyGLRenderer.green), ceilingMaterial,wallMaterial);
+        ceilingMaterial = new Material(MyGLRenderer.darkgray);
+        wallMaterial = new Material(MyGLRenderer.lightgray);
+        floorMaterial = new Material(MyGLRenderer.white);
+        floorMaterial2 = new Material(MyGLRenderer.white);
+        GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, floorMaterial, ceilingMaterial, wallMaterial);
         gameObjects.add(room);
-        GameObject room2 = new Room(new boolean[]{true, false, false, false}, 6.F, 16.F, 2.5F, new Material(MyGLRenderer.red), ceilingMaterial,wallMaterial);
+        GameObject room2 = new Room(new boolean[]{true, false, false, false}, 6.F, 16.F, 2.5F, floorMaterial2, ceilingMaterial, wallMaterial);
         room2.getTransform().posz(6);
         gameObjects.add(room2);
-        GameObject room3 = new Room(new boolean[]{true, true, true, true}, 6.f, 6.f, 2.5f, new Material(MyGLRenderer.cyan), ceilingMaterial,wallMaterial);
+        GameObject room3 = new Room(new boolean[]{true, true, true, true}, 6.f, 6.f, 2.5f, floorMaterial, ceilingMaterial, wallMaterial);
         room3.getTransform().posx(6);
         gameObjects.add(room3);
-        GameObject room4 = new Room(new boolean[]{false, true, false, true}, 6.f, 6.f, 4.5f, new Material(MyGLRenderer.orange), ceilingMaterial, wallMaterial);
+        GameObject room4 = new Room(new boolean[]{false, true, false, true}, 6.f, 6.f, 4.5f, floorMaterial2, ceilingMaterial, wallMaterial);
         //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
         room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
         gameObjects.add(room4);
@@ -175,6 +181,11 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         renderer.getShaders().setNormalizing(true);
         renderer.getShaders().setLighting(true);
+        wallMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.wall));
+        ceilingMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.ceiling));
+        floorMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles1));
+        floorMaterial2.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles2));
+
         for(GameObject go : gameObjects){
             go.start();
         }

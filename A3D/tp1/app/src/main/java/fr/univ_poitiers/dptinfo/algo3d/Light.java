@@ -83,13 +83,13 @@ public class Light extends Component {
             setDirection(getDir(modelviewmatrix));
             switch (getType()) {
                 case DIRECTIONAL:
-                    ((BlinnPhongMultipleLightShaders) shaders).setDirLight(this);
+                    ((MultipleLightingShaders) shaders).setDirLight(this);
                     break;
                 case POINT:
-                    ((BlinnPhongMultipleLightShaders) shaders).setPointLight(this);
+                    ((MultipleLightingShaders) shaders).setPointLight(this);
                     break;
                 case SPOT:
-                    ((BlinnPhongMultipleLightShaders) shaders).setSpotLight(this);
+                    ((MultipleLightingShaders) shaders).setSpotLight(this);
                     break;
             }
         }
