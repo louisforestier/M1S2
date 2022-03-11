@@ -31,12 +31,12 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
  * @version 1.0
  */
 public class Scene {
-    private final GameObject light2;
+    private GameObject light;
+    public final GameObject light2;
     private final GameObject light3;
 
     private List<GameObject> gameObjects = new ArrayList<>();
 
-    private GameObject light;
     /**
      * An angle used to animate the viewer
      */

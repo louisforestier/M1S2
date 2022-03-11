@@ -2,6 +2,9 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
+
+import fr.univ_poitiers.dptinfo.algo3d.Light;
 
 public class TexturesShaders extends MultipleLightingShaders{
 
@@ -60,27 +63,5 @@ public class TexturesShaders extends MultipleLightingShaders{
     @Override
     public void setTexturing(final boolean state){
         if (this.uTexturing!=-1) GLES20.glUniform1i(this.uTexturing,state?1:0);
-    }
-
-    public void prepareDepthMap(){
-        int[] depthMaptFBO = new int[1];
-        GLES20.glGenFramebuffers(1,depthMaptFBO,0);
-        int[] depthMap = new int[1];
-        final int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-        GLES20.glGenTextures(1,depthMap,0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,depthMap[0]);
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_DEPTH_COMPONENT,SHADOW_WIDTH,SHADOW_HEIGHT,0,GLES20.GL_DEPTH_COMPONENT,GLES20.GL_FLOAT,null);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_REPEAT);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,depthMaptFBO[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER,GLES20.GL_DEPTH_ATTACHMENT,GLES20.GL_TEXTURE_2D,depthMap[0],0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
-
-
-        GLES20.glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,depthMaptFBO[0]);
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
     }
 }

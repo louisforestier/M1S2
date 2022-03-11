@@ -1,5 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+import android.graphics.Shader;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 public class Mesh {
     private int glposbuffer;
@@ -277,11 +279,12 @@ public class Mesh {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
-        shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,gltexturebuffer);
-        shaders.setTexturePointer(2,GLES20.GL_FLOAT);
-
+        if (ShaderManager.isRender()) {
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+            shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, gltexturebuffer);
+            shaders.setTexturePointer(2, GLES20.GL_FLOAT);
+        }
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
 

@@ -99,10 +99,12 @@ public class Light extends Component {
     @Override
     public void earlyUpdate() {
         super.earlyUpdate();
-        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()){
-            float[] modelviewmatrix = new float[16];
-            Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);
-            initLighting(s,modelviewmatrix);
+        if (ShaderManager.getInstance().isRender()) {
+            for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+                float[] modelviewmatrix = new float[16];
+                Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);
+                initLighting(s, modelviewmatrix);
+            }
         }
     }
 
