@@ -22,6 +22,7 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
 import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
@@ -50,6 +51,7 @@ public class Scene {
     private final Material floorMaterial2;
     private final Material sunMaterial;
     private final Material earthMaterial;
+    private float[] modelviewmatrix = new float[16];
 
 
     /**
@@ -124,6 +126,12 @@ public class Scene {
         cube.getTransform().posz(6).posx(4);
         cube.addMeshRenderer(new Material(MyGLRenderer.magenta));
         gameObjects.add(cube);
+
+        GameObject cube2 = new GameObject();
+        cube2.setMesh(new Cube(1));
+        cube2.getTransform().posz(-1.5f).posx(-0.5f);
+        cube2.addMeshRenderer(new Material(MyGLRenderer.magenta));
+        gameObjects.add(cube2);
 
         GameObject pyramid = new GameObject();
         pyramid.setMesh(new Pyramid(80));
@@ -241,13 +249,17 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
 
-        shaders.setViewMatrix(modelviewmatrix);
+        if (ShaderManager.isRender()) {
+            shaders.setViewMatrix(modelviewmatrix);
+            shaders.setModelViewMatrix(modelviewmatrix);
+        }else{
+            renderer.getShadowShader().setModelViewMatrix(modelviewmatrix);
+        }
         for (GameObject go : gameObjects){
             go.earlyUpdate();
         }
 
 
-        shaders.setModelViewMatrix(modelviewmatrix);
         for(GameObject go : gameObjects){
             go.update();
         }
@@ -256,4 +268,38 @@ public class Scene {
         }
         //MainActivity.log("Rendering terminated.");
     }
+
+    public void setUpMatrix(MyGLRenderer renderer){
+        MultipleLightingShaders shaders = renderer.getShaders();
+        shaders.resetLights();
+
+        // Place viewer in the right position and orientation
+        Matrix.setIdentityM(modelviewmatrix, 0);
+        // setRotateM instead of rotateM in the next instruction would avoid this initialization...
+        Matrix.rotateM(modelviewmatrix, 0, anglex, 1.0F, 0.0F, 0.0F);
+        Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
+        Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
+        Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
+        shaders.setViewMatrix(modelviewmatrix);
+        shaders.setModelViewMatrix(modelviewmatrix);
+    }
+
+    public void earlyUpdate(){
+        for (GameObject go : gameObjects){
+            go.earlyUpdate();
+        }
+    }
+    public void update(){
+        for(GameObject go : gameObjects){
+            go.update();
+        }
+    }
+
+    public void lateUpdate(){
+        for(GameObject go : gameObjects){
+            go.lateUpdate();
+        }
+    }
+
+
 }

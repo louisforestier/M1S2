@@ -7,11 +7,12 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.TexturesShaders;
 
 public class Material {
 
-    private final static Class<? extends MultipleLightingShaders> defaultShader = TexturesShaders.class;
+    private final static Class<? extends MultipleLightingShaders> defaultShader = ShadowShaders.class;
 
     private float[] color;
     private float[] specColor;

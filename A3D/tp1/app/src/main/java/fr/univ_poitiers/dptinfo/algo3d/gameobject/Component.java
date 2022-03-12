@@ -10,6 +10,10 @@ public abstract class Component {
         this.transform = transform;
     }
 
+    public fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform getTransform() {
+        return transform;
+    }
+
     public void start(){}
     public void earlyUpdate(){}
     public void update(){}

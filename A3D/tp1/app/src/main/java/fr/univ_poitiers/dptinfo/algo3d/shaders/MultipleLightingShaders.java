@@ -62,7 +62,6 @@ public abstract class MultipleLightingShaders extends BasicShaders
     private int curr_dir = 0;
     private int curr_point = 0;
     private int curr_spot = 0;
-    private float[] viewMatrix;
     /**
      * Constructor. nothing to do, everything is done in the super class...
      */
@@ -72,13 +71,6 @@ public abstract class MultipleLightingShaders extends BasicShaders
     }
 
 
-    public float[] getViewMatrix() {
-        return viewMatrix;
-    }
-
-    public void setViewMatrix(float[] viewMatrix) {
-        this.viewMatrix = viewMatrix;
-    }
 
     /**
      * Get all the uniform variables and attributes defined in the shaders
@@ -275,6 +267,7 @@ public abstract class MultipleLightingShaders extends BasicShaders
     public void setTexturePointer(int size,int dtype){}
     public void setTextureUnit(final int textureUnit){}
     public void setTexturing(final boolean state){}
+    public void setLightSpaceMatrix(final float[] matrix){}
+    public void setDepthMap(final int depthMap){}
 
-
-    }
+}

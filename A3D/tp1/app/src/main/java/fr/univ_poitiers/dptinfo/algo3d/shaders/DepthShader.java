@@ -2,7 +2,7 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 
-public class ShadowShader extends BasicShaders{
+public class DepthShader extends BasicShaders{
 
 
     /**
@@ -10,12 +10,12 @@ public class ShadowShader extends BasicShaders{
      *
      * @param context
      */
-    public ShadowShader(Context context) {
+    public DepthShader(Context context) {
         super(context);
     }
 
     @Override
     public int createProgram(Context context) {
-        return initializeShadersFromResources(context,"shadow_vert.glsl","shadow_frag.glsl");
+        return initializeShadersFromResources(context, "depth_vert.glsl", "depth_frag.glsl");
     }
 }

@@ -6,19 +6,15 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Shader;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongTypeLightShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShader;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.TexturesShaders;
 
 
@@ -55,7 +51,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     /**
      * Shaders
      */
+
     private MultipleLightingShaders shaders;
+
+    private DepthShader depthShader;
+
+
     /**
      * Projection matrix to provide to the shader
      */
@@ -67,6 +68,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     public MultipleLightingShaders getShaders()
     {
         return this.shaders;
+    }
+
+    public DepthShader getShadowShader() {
+        return depthShader;
     }
 
     /**
@@ -105,10 +110,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 unused, EGLConfig config)
     {
         // Create shader
-        this.shaders=new TexturesShaders(this.view.getContext()); // or other shaders
+        this.depthShader = new DepthShader(this.view.getContext());
+        this.shaders=new ShadowShaders(this.view.getContext()); // or other shaders
         ShaderManager.getInstance().getShaders().clear();
         ShaderManager.getInstance().addShaders(this.shaders);
+        ShaderManager.getInstance().setDepthShader(depthShader);
         shaders.resetLights();
+
         checkGlError("Shader Creation");
 
         scene.initGraphics(this);
@@ -122,14 +130,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        prepareDepthMap(scene.light2.getCompotent(Light.class));
         this.scene.step();
         ShaderManager.setRender(true);
+        this.shaders.use();
 
         // Display the scene:
         // Drawing the scene is mandatory, since display buffers are swapped in any case.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        this.scene.draw(this);
+        this.draw(scene);
 
         // Dirty mode, so post a new display request to loop
         this.view.requestRender();
@@ -245,31 +253,50 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
 
 
-        ShadowShader shadowShader = new ShadowShader(this.view.getContext());
-/*
+
+
         GLES20.glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,depthMaptFBO[0]);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
 
         float[] lightProjection = new float[16];
-        Matrix.orthoM(lightProjection,0,-10.f,10.f,-10.f,10.f,1.f,7.5f);
+        Matrix.orthoM(lightProjection,0,-10.f,10.f,-10.f,10.f,0.1f,50.f);
         float[] lightView = new float[16];
         float[] lightpos = light.getPosition();
         float[] lightdir = light.getDirection();
-        Matrix.setLookAtM(lightView,0,lightpos[0], lightpos[1], lightpos[2], lightdir[0], lightdir[1],lightdir[2],0.f,1.f,0.f);
+        Matrix.setLookAtM(lightView,0,0, 0, 0, lightdir[0], lightdir[1],lightdir[2],0.f,1.f,0.f);
         float[] lightSpaceMatrix = new float[16];
         Matrix.multiplyMM(lightSpaceMatrix,0,lightProjection,0,lightView,0);
-        shadowShader.setProjectionMatrix(lightSpaceMatrix);
+        depthShader.use();
+        depthShader.setProjectionMatrix(lightProjection);
+        depthShader.setModelViewMatrix(lightView);
+        depthShader.setViewMatrix(lightView);
         ShaderManager.setRender(false);
 
-        scene.draw(this);
+
+        scene.earlyUpdate();
+        scene.update();
+
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
+
         GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthMap[0]);
         ShaderManager.setRender(true);
+        shaders.use();
+        shaders.setLightSpaceMatrix(lightSpaceMatrix);
+        shaders.setDepthMap(1);
+    }
 
-*/
+    public void draw(Scene scene){
+        scene.setUpMatrix(this);
+        scene.earlyUpdate();
+        prepareDepthMap(scene.light2.getCompotent(Light.class));
+        //scene.update();
+        scene.lateUpdate();
     }
 
 }

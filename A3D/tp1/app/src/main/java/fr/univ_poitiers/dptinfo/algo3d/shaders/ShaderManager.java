@@ -11,6 +11,7 @@ public class ShaderManager {
     private static boolean render;
 
     private Map<Class<? extends MultipleLightingShaders>,MultipleLightingShaders> shaders = new HashMap<>();
+    private DepthShader depthShader;
     private static ShaderManager INSTANCE;
     private ShaderManager() {
     }
@@ -39,5 +40,13 @@ public class ShaderManager {
 
     public void addShaders(MultipleLightingShaders shaders){
         this.shaders.put(shaders.getClass(),shaders);
+    }
+
+    public DepthShader getDepthShader() {
+        return depthShader;
+    }
+
+    public void setDepthShader(DepthShader depthShader) {
+        this.depthShader = depthShader;
     }
 }

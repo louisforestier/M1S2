@@ -69,6 +69,33 @@ public abstract class BasicShaders
     }
 
     /**
+     * Fragment shader : the uniform color is used for each pixel
+     */
+    private static final String FRAGSRC=
+            "precision mediump float;\n"
+                    +"uniform vec4 uColor;\n"
+                    +"void main()\n"
+                    +"{\n"
+                    +"    gl_FragColor=uColor;\n"
+                    +"}\n";
+
+    /**
+     * Vertex shader: it only transform vertex coordinates into viewer's space and project to screen
+     */
+    private static final String VERTSRC=
+            // Matrices
+            "uniform mat4 uModelViewMatrix;\n"
+                    +"uniform mat4 uProjectionMatrix;\n"
+
+                    // Vertex attributes
+                    +"attribute vec3 aVertexPosition;\n"
+
+                    +"void main() {\n"
+                    +"  gl_Position= uProjectionMatrix*uModelViewMatrix*vec4(aVertexPosition, 1.0);\n"
+                    +"}\n";
+
+
+    /**
      * General method to compile and link vertex and fragment shaders in a shader program
      * @param vertsrc vertex shader
      * @param fragsrc fragment shader
@@ -104,11 +131,9 @@ public abstract class BasicShaders
             throw new RuntimeException("Could not link program: "
                 +GLES20.glGetProgramInfoLog(shaderprogram));
         }
-
         // Now activate program
         GLES20.glUseProgram(shaderprogram);
         MyGLRenderer.checkGlError("glUseProgram");
-
         MainActivity.log("Shaders initialized");
         return shaderprogram;
     }
@@ -120,7 +145,7 @@ public abstract class BasicShaders
      * @param shaderCode - String containing the shader code.
      * @return - Returns an id for the shader.
      */
-    private static int loadShader(int type, String shaderCode)
+    public static int loadShader(int type, String shaderCode)
     {
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
@@ -158,6 +183,18 @@ public abstract class BasicShaders
      * (GLSL uniform variable)
      */
     private int uModelViewMatrix;
+
+    private float[] viewMatrix;
+
+
+    public float[] getViewMatrix() {
+        return viewMatrix;
+    }
+
+    public void setViewMatrix(float[] viewMatrix) {
+        this.viewMatrix = viewMatrix;
+    }
+
     /**
      * Index to give the array containing vertex position
      */
@@ -249,6 +286,10 @@ public abstract class BasicShaders
     public void setPositionsPointer(final int size, final int dtype)
     {
         GLES20.glVertexAttribPointer(this.aVertexPosition,size,dtype,false,0,0);
+    }
+
+    public void use(){
+        GLES20.glUseProgram(shaderprogram);
     }
 
 }
