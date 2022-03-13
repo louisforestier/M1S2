@@ -52,6 +52,7 @@ public class Scene {
     private final Material sunMaterial;
     private final Material earthMaterial;
     private float[] modelviewmatrix = new float[16];
+    public final GameObject cube2;
 
 
     /**
@@ -127,7 +128,7 @@ public class Scene {
         cube.addMeshRenderer(new Material(MyGLRenderer.magenta));
         gameObjects.add(cube);
 
-        GameObject cube2 = new GameObject();
+        cube2 = new GameObject();
         cube2.setMesh(new Cube(1));
         cube2.getTransform().posz(-1.5f).posx(-0.5f);
         cube2.addMeshRenderer(new Material(MyGLRenderer.magenta));
@@ -171,6 +172,7 @@ public class Scene {
         light2 = new GameObject();
         light2.addComponent(Light.class);
         light2.getCompotent(Light.class).setType(LightType.DIRECTIONAL);
+        light2.getTransform().posy(10).roty(-30).rotx(-50);
         gameObjects.add(light2);
         light3 = new GameObject();
         light3.addComponent(Light.class);

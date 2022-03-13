@@ -1,19 +1,10 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
-import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 public class MeshRenderer extends Component {
@@ -41,6 +32,10 @@ public class MeshRenderer extends Component {
 
     @Override
     public void update() {
+        renderShadow();
+    }
+
+    private void renderShadow() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, ShaderManager.getInstance().getDepthShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);
@@ -51,10 +46,15 @@ public class MeshRenderer extends Component {
 
     @Override
     public void lateUpdate() {
+        render();
+    }
+
+    private void render() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, material.getShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);
             material.getShader().setModelViewMatrix(modelviewmatrix);
+            material.getShader().setModelMatrix(transform.getModelViewMatrix());
             material.update();
             switch (material.getDrawMode()) {
                 case TRIANGLES:

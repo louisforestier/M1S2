@@ -10,6 +10,7 @@ public class ShadowShaders extends MultipleLightingShaders{
     protected int uTextureUnit;
     protected int uTexturing;
     private int lightSpaceMatrix;
+    private int uModelMatrix;
     private int shadowMap;
 
 
@@ -37,6 +38,8 @@ public class ShadowShaders extends MultipleLightingShaders{
         this.lightSpaceMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "lightSpaceMatrix");
         if (this.lightSpaceMatrix==-1) throw new RuntimeException("lightSpaceMatrix not found in shaders");
 
+        this.uModelMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "uModelMatrix");
+        if (this.uModelMatrix==-1) throw new RuntimeException("uModelMatrix not found in shaders");
 
         this.shadowMap = GLES20.glGetUniformLocation(this.shaderprogram, "shadowMap");
         if (this.shadowMap==-1) throw new RuntimeException("shadowMap not found in shaders");
@@ -73,6 +76,11 @@ public class ShadowShaders extends MultipleLightingShaders{
     @Override
     public void setLightSpaceMatrix(float[] matrix) {
         GLES20.glUniformMatrix4fv(this.lightSpaceMatrix, 1, false, matrix,0);
+    }
+
+    @Override
+    public void setModelMatrix(float[] matrix){
+        GLES20.glUniformMatrix4fv(this.uModelMatrix, 1, false, matrix,0);
     }
 
     @Override

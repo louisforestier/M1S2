@@ -1,6 +1,7 @@
 #version 100
 precision mediump float;
 uniform mat4 uModelViewMatrix;
+uniform mat4 uModelMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat3 uNormalMatrix;
 uniform mat4 lightSpaceMatrix;
@@ -28,6 +29,6 @@ void main(void) {
   normalf=uNormalMatrix * aVertexNormal;
   if (uNormalizing) normalf=normalize(normalf);
   texturef = aVertexTexture;
-  lightspaceposf = lightSpaceMatrix * posf;
+  lightspaceposf = lightSpaceMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
   gl_Position= uProjectionMatrix*posf;
 }
