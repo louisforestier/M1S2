@@ -1,6 +1,8 @@
 package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 
 
+import android.opengl.GLES20;
+
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Plane;
 
@@ -31,6 +33,13 @@ public class Room extends GameObject {
         this.addChildren(w2);
         this.addChildren(w3);
         this.addChildren(w4);
+    }
+
+    @Override
+    public void update() {
+        GLES20.glCullFace(GLES20.GL_BACK);
+        super.update();
+        GLES20.glCullFace(GLES20.GL_FRONT);
     }
 }
 

@@ -39,6 +39,7 @@ public class MeshRenderer extends Component {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, ShaderManager.getInstance().getDepthShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);
+            ShaderManager.getInstance().getDepthShader().setModelViewMatrix(modelviewmatrix);
             gameObject.getCompotent(MeshFilter.class).getMesh().draw(ShaderManager.getInstance().getDepthShader());
         }
     }

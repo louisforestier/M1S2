@@ -293,7 +293,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     int[] renderTextureId;
 
     public void generateShadowFBO() {
-        final int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+        final int SHADOW_WIDTH = view.getWidth(), SHADOW_HEIGHT = view.getHeight();
 
         fboId = new int[1];
         depthTextureId = new int[1];
@@ -316,8 +316,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 
         // Remove artifact on the edges of the shadowmap
-        GLES20.glTexParameteri( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT );
-        GLES20.glTexParameteri( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT );
+        GLES20.glTexParameteri( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri( GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 
@@ -339,7 +339,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     private void renderShadowMap(Light light) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 
-        GLES20.glViewport(0, 0, 1024, 1024);
+        GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
 
         //GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
@@ -358,11 +358,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         depthShader.setModelViewMatrix(lightView);
         depthShader.setViewMatrix(lightView);
 
-
-        //GLES20.glCullFace(GLES20.GL_FRONT);
-
+        //j'utilise à la fois la technique de générer l'ombre avec les faces internes pour supprimer
+        // l'acné d'ombre sur les objets arrondis (sphere, tore, capsule) et le biais pour le retirer sur les surfaces planes
+        GLES20.glCullFace(GLES20.GL_FRONT);
         scene.update();
-        //GLES20.glCullFace(GLES20.GL_BACK);
+        GLES20.glCullFace(GLES20.GL_BACK);
     }
 
     private void renderScene(Scene scene){
