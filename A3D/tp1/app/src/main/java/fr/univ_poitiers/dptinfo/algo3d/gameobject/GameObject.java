@@ -12,8 +12,8 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.MeshRenderer;
 public class GameObject {
 
     private Transform transform;
-    private List<GameObject> children = new ArrayList<>();
-    private List<Component> components = new ArrayList<>();
+    protected List<GameObject> children = new ArrayList<>();
+    protected List<Component> components = new ArrayList<>();
     private GameObject parent = null;
 
 

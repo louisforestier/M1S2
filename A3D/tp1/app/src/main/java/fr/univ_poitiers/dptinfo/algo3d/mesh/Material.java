@@ -80,7 +80,6 @@ public class Material {
             ShaderManager.getInstance().getShader(shader).setMaterialShininess(shininess);
             ShaderManager.getInstance().getShader(shader).setTexturing(textureId != -1);
             if (textureId != -1) {
-                //TODO : demander si veut toujours bind la texture directement sur gpu quand donne la texture au matérial ou pas
                 GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
                 ShaderManager.getInstance().getShader(shader).setTextureUnit(0);

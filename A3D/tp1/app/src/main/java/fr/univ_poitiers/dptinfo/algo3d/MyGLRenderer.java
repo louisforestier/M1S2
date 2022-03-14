@@ -204,6 +204,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
         if (textureHandle[0] != 0)
         {
+            MainActivity.log("test texture");
             // Load the given ressource as a bitmap
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inScaled = false;   // No pre-scaling
@@ -379,10 +380,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         ShaderManager.setRender(true);
         shaders.setLightSpaceMatrix(lightSpaceMatrix);
         shaders.setDepthMap(1);
-
+        GLES20.glFrontFace(GLES20.GL_CW);
+        scene.setUpReflexionMatrix(this);
+        scene.earlyUpdate();
+        scene.lateUpdate();
+        GLES20.glFrontFace(GLES20.GL_CCW);
         scene.setUpMatrix(this);
         scene.earlyUpdate();
         scene.lateUpdate();
-
     }
 }

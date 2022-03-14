@@ -66,8 +66,8 @@ public class Scene {
         angley = 0.F;
         ceilingMaterial = new Material(MyGLRenderer.darkgray);
         wallMaterial = new Material(MyGLRenderer.lightgray);
-        floorMaterial = new Material(MyGLRenderer.white);
-        floorMaterial2 = new Material(MyGLRenderer.white);
+        floorMaterial = new Material(new float[]{1.f,1.f,1.f,0.5f});
+        floorMaterial2 = new Material(new float[]{1.f,1.f,1.f,0.5f});
         sunMaterial = new Material(MyGLRenderer.orange);
         earthMaterial = new Material(MyGLRenderer.white);
         GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, floorMaterial, ceilingMaterial, wallMaterial);
@@ -91,7 +91,6 @@ public class Scene {
         gameObjects.add(ball2);
 
 
-/*
         InputStream stream = current.getResources().openRawResource(R.raw.armadillo);
         Material armadilloMaterial = new Material(MyGLRenderer.lightgray);
         GameObject armadillo = new GameObject();
@@ -113,7 +112,6 @@ public class Scene {
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         dragon.addMeshRenderer(new Material());
         gameObjects.add(dragon);
-*/
 
 
         GameObject donut = new GameObject();
@@ -285,6 +283,22 @@ public class Scene {
         shaders.setViewMatrix(modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
     }
+    public void setUpReflexionMatrix(MyGLRenderer renderer){
+        MultipleLightingShaders shaders = renderer.getShaders();
+        shaders.resetLights();
+
+        // Place viewer in the right position and orientation
+        Matrix.setIdentityM(modelviewmatrix, 0);
+        // setRotateM instead of rotateM in the next instruction would avoid this initialization...
+        Matrix.rotateM(modelviewmatrix, 0, anglex, 1.0F, 0.0F, 0.0F);
+        Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
+        Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
+        Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
+        Matrix.scaleM(modelviewmatrix,0,1.f,-1.f,1.f);
+        shaders.setViewMatrix(modelviewmatrix);
+        shaders.setModelViewMatrix(modelviewmatrix);
+    }
+
 
     public void earlyUpdate(){
         for (GameObject go : gameObjects){

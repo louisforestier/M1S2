@@ -86,7 +86,7 @@ float shadowCalculation(vec4 lightspaceposf, vec3 normal, vec3 lightdir)
     float closestDepth = texture2D(shadowMap, projCoords.xy).r;
     float currentDepth = projCoords.z;
     float cosTheta = clamp(dot(normal, lightdir), 0.0, 1.0);
-    float bias = 0.0009*tan(acos(cosTheta));
+    float bias = 0.001*tan(acos(cosTheta));
     bias = clamp(bias, 0.0, 0.01);
     float shadow = 0.0;
     for (int i=0;i<4;i++){
