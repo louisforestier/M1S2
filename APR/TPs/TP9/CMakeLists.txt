@@ -20,10 +20,10 @@ add_executable(PremierPas src/1-PremierPas/main.cc)
 
 add_executable(Communication students/2-Communication/main.cc ${OPP_MPI}) 
 
-file(GLOB NaiveSRC src/3-1-Broadcast/* students/3-1-Broadcast/*)
+file(GLOB NaiveSRC src/3-1-broadcast/* students/3-1-broadcast/*)
 add_executable(NaiveBroadcast ${NaiveSRC} ${OPP_CHRONO} ${OPP_MPI})    
 
-file(GLOB PipeSRC src/3-2-Broadcast/* students/3-2-Broadcast/*)
+file(GLOB PipeSRC src/3-2-broadcast/* students/3-2-broadcast/*)
 add_executable(PipeBroadcast ${PipeSRC} ${OPP_CHRONO} ${OPP_MPI})
 
 find_package(MPI REQUIRED)
