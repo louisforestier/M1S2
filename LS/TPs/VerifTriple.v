@@ -596,3 +596,128 @@ Proof.
   Hoare_assignment_rule.
   Impl_Intro. bool2Prop in H. lia.
 Qed.
+
+Lemma test (x y i : nat) :
+  {{x = y}}
+    i ::= 1;;
+    While (i <=? 10) Do
+      x::= x+1;; 
+      i::=i+1
+    Od 
+  {{x = y + 10}}.
+Proof.
+  Hoare_consequence_rule_left with (x <= y -1 +1).
+  lia.
+  Hoare_sequence_rule with (x <= y-1+i).
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_right with (( x <= y - 1 + i) /\ ( (i <=? 10) = false)).
+  Hoare_while_rule.
+  Hoare_sequence_rule with (x <= y - 1 + (i + 1)).
+  Hoare_consequence_rule_left with ((x +1) <= y - 1 + (i + 1)).
+  Impl_Intro. bool2Prop in H. lia. 
+  Hoare_assignment_rule. 
+  Hoare_assignment_rule.
+  Impl_Intro. bool2Prop in H. Abort. (*lia.
+Qed.*)
+
+Lemma test2 (r n i : nat) :
+{{(r = 0) /\ (n = 1)}}
+i::=1;;
+While negb (i=?6) Do
+r ::= r + n;;
+n ::= n + 1;;
+i::=i+1 
+Od 
+{{(r = 15) /\ (n = 6)}}.
+Proof.
+  Hoare_consequence_rule_left with ((r = 1 * (1 - 1) / 2) /\ (n = 1)).
+  Hoare_sequence_rule with ((r = i * (i - 1) / 2) /\ (n = i)).
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_right with (((r = i * (i - 1) / 2) /\ (n = i)) /\ negb (i=?6) = false).
+  Hoare_while_rule.
+  Hoare_consequence_rule_left with  (((r + n) = i * (i -1) / 2 + n) /\ (n = i)).
+  intros. And_Elim_1 in H. And_Intro. lia. lia.
+  Hoare_consequence_rule_left with  (((r + n) = (i * (i -1)) / 2 + i) /\ (n = i)).
+  intros. lia.
+  Hoare_consequence_rule_left with  (((r + n) = (i * (i -1)) / 2 + i * (2 /2)) /\ (n = i)).
+  assert (2/2 = 1).
+  simpl. lia.
+  intros. And_Intro. lia. lia.
+  Hoare_consequence_rule_left with  (((r + n) = (i*i-i) / 2 + i * (2 /2)) /\ (n = i)).
+  assert (i * i - i = i * (i-1)). admit.
+  intros. And_Intro. rewrite -> H. lia. lia.
+  Hoare_consequence_rule_left with  (((r + n) = (i * i -i + i + i) / 2) /\ (n = i)).
+  admit.
+  Hoare_consequence_rule_left with  (((r + n) = (i * i + i) / 2 ) /\ (n = i)).
+  admit.
+  Hoare_consequence_rule_left with  (((r + n) = ((i+1) * (i + 1 - 1)  ) / 2 ) /\ (n = i)).
+  admit.
+
+  Hoare_sequence_rule with  ((r = (i+1) * ((i+1) -1) / 2) /\ (n = (i+1))).
+  Hoare_sequence_rule with  ((r = (i+1) * ((i+1) -1) / 2) /\ (n +1= (i+1))).
+  Hoare_consequence_rule_right with  ((r = (i+1) * ((i+1) -1) / 2) /\ (n= i)).
+  Hoare_assignment_rule.
+  intros. lia.
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+  intros. bool2Prop in H. 
+  And_Elim_1 in H. And_Elim_1 in H0. And_Elim_2 in H0. And_Elim_2 in H.   
+  And_Intro.
+  assert( 15 = 6 * ( 6  -1 ) / 2  ).
+  simpl. lia.
+  rewrite -> H4.
+  assert (6 = i).
+  lia.
+  rewrite -> H5.
+  exact H1.
+  lia.
+Admitted.
+
+Lemma test3 ( x y : nat) : 
+{{y = 5}}
+  x::=y+1
+{{x=6}}.
+Proof.
+  Hoare_consequence_rule_left with (y+1=5+1).
+  lia.
+  Hoare_consequence_rule_right with (x=5+1).
+  Hoare_assignment_rule.
+Qed.
+
+Lemma test4 (u x y z : nat) : 
+{{True}}
+  z::=x;;
+  z::=z+y;;
+  u::=z
+{{u = x + y}}.
+Proof.
+  Hoare_sequence_rule with (z = x + y).
+  Hoare_sequence_rule with (z = x).
+  Hoare_consequence_rule_left with (x = x).
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_left with (z + y = x + y).
+  Impl_Intro. lia.
+  Hoare_assignment_rule.
+  Hoare_assignment_rule.
+Qed.
+
+Lemma test5 (r v : nat) : 
+{{True}}
+  If (v <=? 0)
+  Then r ::= 0 - v
+  Else r ::= v
+  Fi
+{{0 <= r}}.
+Proof.
+  Hoare_if_rule.
+  Hoare_consequence_rule_left with ((0 <= 0 - v)).
+  Hoare_assignment_rule.
+  Hoare_consequence_rule_left with (0 <= v).
+  Impl_Intro. bool2Prop in H. And_Elim_2 in H.
+  lia.
+  Hoare_assignment_rule.
+Qed.
+
+
+
+

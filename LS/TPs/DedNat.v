@@ -578,6 +578,24 @@ Proof.
   exact H0.
 Qed.
 
+Lemma test0 (P Q R : Prop): (P \/ Q -> R) -> (P->R) /\ (Q -> R).
+Proof.
+  Impl_Intro.
+  And_Intro.
+  Impl_Intro.
+  assume (P \/ Q).
+  Impl_Elim in H and H1.
+  exact H2.
+  Or_Intro_1.
+  exact H0.
+  Impl_Intro.
+  assume (P \/ Q).
+  Impl_Elim in H and H1.
+  exact H2.
+  Or_Intro_2.
+  exact H0.
+Qed.
+
 
 Lemma ex3 (P Q R : Prop) :  (~P \/ Q -> (P -> Q)) /\ ((P -> Q) -> ~P \/ Q).
 Proof.
