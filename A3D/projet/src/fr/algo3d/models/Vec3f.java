@@ -285,4 +285,8 @@ public class Vec3f
         this.z=v1.x*v2.y-v1.y*v2.x;
         return this;
     }
+
+    public Vec3f inverse() {
+        return new Vec3f(-x,-y,-z);
+    }
 }
