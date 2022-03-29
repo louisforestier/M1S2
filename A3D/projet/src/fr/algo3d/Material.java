@@ -8,6 +8,7 @@ public class Material {
     private float shininess;
     private float transparency;
     private float reflection;
+    private float refractIndex;
 
     public Material(Color color, Color specColor, float shininess) {
         this.color = color;
@@ -15,22 +16,16 @@ public class Material {
         this.shininess = shininess;
         transparency = 0;
         reflection = 0;
+        refractIndex = 0;
     }
 
-    /**
-     *
-     * @param color
-     * @param specColor
-     * @param shininess
-     * @param transparency float between 0 and 1
-     * @param reflection float between 0 and 1
-     */
-    public Material(Color color, Color specColor, float shininess, float transparency, float reflection) {
+    public Material(Color color, Color specColor, float shininess, float transparency, float reflection, float refractIndex) {
         this.color = color;
         this.specColor = specColor;
         this.shininess = shininess;
         this.transparency = transparency;
         this.reflection = reflection;
+        this.refractIndex = refractIndex;
     }
 
     public Color getColor() {
@@ -51,5 +46,9 @@ public class Material {
 
     public float getReflection() {
         return reflection;
+    }
+
+    public float getRefractIndex() {
+        return refractIndex;
     }
 }

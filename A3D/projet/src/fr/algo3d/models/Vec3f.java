@@ -232,6 +232,19 @@ public class Vec3f
         this.z+=scale*that.z;
         return this;
     }
+    /**
+     * Substract a given vector that is before-hand scaled, to the current vector
+     * @param scale scale factor
+     * @param that vector to scale and substract to current vector
+     * @return current vector
+     */
+    public Vec3f subScale(final float scale,final Vec3f that)
+    {
+        this.x-=scale*that.x;
+        this.y-=scale*that.y;
+        this.z-=scale*that.z;
+        return this;
+    }
 
     /**
      * Multiply a given vector by a matrix and put result into current vector

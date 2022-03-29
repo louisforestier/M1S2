@@ -28,4 +28,14 @@ public abstract class Model {
     public float getShininess(){
         return material.getShininess();
     }
+    public float getTransparency(){
+        return material.getTransparency();
+    }
+    public float getReflection(){
+        return material.getReflection();
+    }
+    public float getRefractIndex() {
+        return material.getRefractIndex();
+    }
+
 }

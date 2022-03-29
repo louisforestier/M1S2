@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class JavaTga
 {
+    public static final int MAX_RAY_DEPTH = 5;
     /**
      * 
      * @param fout : output file stream
@@ -77,7 +78,7 @@ public class JavaTga
                 float x = (col - w/2.f)/h;
                 float y = (row -h/2.f)/h;
                 float z = -1f;
-                Color c = scene.findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize());
+                Color c = scene.findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0);
                 // Ensure that the pixel is black
 
                 buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
