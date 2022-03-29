@@ -19,15 +19,22 @@ public class Sphere extends Model{
         Vec3f cp = new Vec3f();
         cp.setSub(P,origin);
         float b = 2 * (v.dotProduct(cp));
-        float c  = (cp.length() - radius * radius);
+        float c  = (cp.lengthSquare() - radius * radius);
         float delta = b*b - 4 * a * c;
-        float lambda1 = (float) ((-b - Math.sqrt(delta)) / (2 * a));
-        float lambda2 = (float) ((-b + Math.sqrt(delta)) / (2 * a));
-        if (lambda1 > 0)
-            return lambda1;
-        else if (lambda2 > 0)
-            return lambda2;
-        else return -1;
+        if (delta > 0) {
+            float lambda1 = (float) ((-b - Math.sqrt(delta)) / (2 * a));
+            float lambda2 = (float) ((-b + Math.sqrt(delta)) / (2 * a));
+            if (lambda1 > 0)
+                return lambda1;
+            else if (lambda2 > 0)
+                return lambda2;
+            else return -1;
+        }else if (delta == 0){
+            float lambda = -b / 2*a;
+            if (lambda>0)
+                return  lambda;
+            else return -1;
+        } else return -1;
     }
 
     @Override

@@ -35,17 +35,22 @@ public class Scene {
                 modelMin = m;
             }
         }
+        if (modelMin == null)
+            return Color.black;
         Vec3f I = new Vec3f();
         Vec3f lambdaMinV = new Vec3f();
         lambdaMinV.setScale(lambdaMin,v);
         I.setAdd(P, lambdaMinV);
         Vec3f normal = modelMin.getNormal(I);
+
         for (Light l : lights) {
-            color = color.add(l.getAmbient());
+            color = color.add(l.getAmbient().mul(modelMin.getAmbiantMaterial()));
             boolean seen = true;
             Vec3f IS = new Vec3f();
             for (Model m : models) {
                 IS.setSub(l.getPosition(), I);
+                float bias = 1e-4f;
+                I.addScale(bias,normal);
                 lambdaMin = m.getIntersection(I, IS);
                 if (lambdaMin > 0 && lambdaMin < 1) {
                     seen = false;
@@ -53,15 +58,20 @@ public class Scene {
                 }
             }
             if (seen) {
-                Color diffuse = new Color();
-                diffuse = l.getDiffuse().mul(modelMin.getDiffuseMaterial()).scale(normal.dotProduct(IS));
-                Color specular = new Color();
-                Vec3f IplusV = new Vec3f();
-                IplusV.setAdd(IS,v.inverse());
-                specular = l.getSpecular().mul(modelMin.getSpecularMaterial()).scale((float) Math.pow(normal.dotProduct(IplusV.normalize()),modelMin.getShininess()));
+                Color diffuse;
+                IS.normalize();
+                float weight = Math.max(normal.dotProduct(IS),0.f);
+                diffuse = modelMin.getDiffuseMaterial().mul(l.getDiffuse().scale(weight));
+                Color specular;
+                Vec3f halfdir = new Vec3f();
+                halfdir.setAdd(IS,v.inverse());
+                halfdir.normalize();
+                float spec = (float) Math.pow(Math.max(halfdir.dotProduct(normal),0.f),modelMin.getShininess());
+                specular = modelMin.getSpecularMaterial().mul(l.getSpecular()).scale(spec);
                 color = color.add(diffuse).add(specular);
             }
         }
+
         return color;
     }
 }

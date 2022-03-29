@@ -66,8 +66,8 @@ public class JavaTga
      * @param args no command line arguments
      */
     public static void main(String[] args) {
-        int w=1024;
-        int h=768;
+        int w=1920;
+        int h=1080;
         byte buffer[]=new byte[3*w*h];
         Scene scene = new Scene();
         for(int row = 0; row < h; row++){ // for each row of the image

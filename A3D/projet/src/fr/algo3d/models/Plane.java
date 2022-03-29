@@ -20,9 +20,6 @@ public class Plane extends Model{
         this.A.setScale(distance,normal);
     }
 
-    public Plane(Material material) {
-        super(material);
-    }
 
     @Override
     public float getIntersection(Vec3f P, Vec3f v) {

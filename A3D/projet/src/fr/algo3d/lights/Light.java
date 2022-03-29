@@ -11,11 +11,11 @@ public class Light {
     private Color diffuse;
     private Color specular;
 
-    public Light(Vec3f position, float[] ambient, float[] diffuse, float[] specular) {
+    public Light(Vec3f position, Color ambient, Color diffuse, Color specular) {
         this.position = position;
-        this.ambient = new Color(ambient);
-        this.diffuse = new Color(diffuse);
-        this.specular = new Color(specular);
+        this.ambient = ambient;
+        this.diffuse = diffuse;
+        this.specular = specular;
     }
 
 
