@@ -9,14 +9,15 @@ public class Plane extends Model{
 
     public Plane(Material material,Vec3f normal, Vec3f A) {
         super(material);
-        this.normal = normal;
+        this.normal = normal.normalize();
         this.A = A;
     }
 
     public Plane(Material material,Vec3f normal, float distance){
         super(material);
-        this.normal = normal;
-        this.A = normal.scale(distance);
+        this.normal = normal.normalize();
+        this.A = new Vec3f();
+        this.A.setScale(distance,normal);
     }
 
     public Plane(Material material) {

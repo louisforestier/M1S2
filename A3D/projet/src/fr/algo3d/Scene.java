@@ -15,9 +15,11 @@ public class Scene {
     public Scene() {
         Material green = new Material(Color.green,Color.white,32);
         Material orange = new Material(Color.orange,Color.white,32);
-        models.add(new Plane(green,new Vec3f(0,0,1),-2));
-        models.add(new Sphere(orange,new Vec3f(0,0,-1),0.2f));
-        lights.add(new Light(new Vec3f(-1,0,0), new float[]{0.2f,0.2f,0.2f,1.f},new float[]{0.8f,0.8f,0.8f,1.f},new float[]{1.f,1.f,1.f,1.f}));
+        Material cyan = new Material(Color.cyan,Color.white,32);
+        models.add(new Plane(green,new Vec3f(0,1,0),-2));
+        models.add(new Plane(cyan,new Vec3f(-1,1,1),-20));
+        models.add(new Sphere(orange,new Vec3f(0,0,-7.5f),2));
+        lights.add(new Light(new Vec3f(-1,1,0), Color.darkgray,Color.lightgray,Color.white));
     }
 
     Color findColor(Vec3f P, Vec3f v){
@@ -28,7 +30,7 @@ public class Scene {
         Model modelMin = null;
         for (Model m : models) {
             float lambda = m.getIntersection(P,v);
-            if (lambda != -1 && lambda < lambdaMin){
+            if (lambda > 0 && lambda < lambdaMin){
                 lambdaMin = lambda;
                 modelMin = m;
             }

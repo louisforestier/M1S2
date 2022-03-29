@@ -34,7 +34,7 @@ public class Sphere extends Model{
     public Vec3f getNormal(Vec3f i) {
         Vec3f tmp = new Vec3f();
         tmp.setSub(i,origin);
-        return tmp;
+        return tmp.normalize();
     }
 
 }
