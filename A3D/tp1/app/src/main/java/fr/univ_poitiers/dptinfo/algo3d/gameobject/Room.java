@@ -35,6 +35,8 @@ public class Room extends GameObject {
         this.addChildren(w4);
     }
 
+    //TODO: attention peut y avoir un problème car peut y avoir des sous objets qui nécessitent GL_FRONT comme paramètre
+    //  il faudrait le faire uniquement pour les planes
     @Override
     public void update() {
         GLES20.glCullFace(GLES20.GL_BACK);

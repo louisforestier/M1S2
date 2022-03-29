@@ -15,15 +15,16 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - implanter plusieurs types de lumières https://learnopengl.com/Lighting/Light-casters DONE
 // - implanter plusieurs lumières https://learnopengl.com/Lighting/Multiple-lights DONE
 // - revoir l'objimporter pour conserver les sommets qui peuvent etre communs, avec une hashmap de paire<vertex,normal>
-// - ajouter une pool de matériaux
 // - nettoyer code des shaders
 // - nettoyer code java
+// - faire la réflexion par stencil buffer
+// - réparer les textures des murs avec portes
+// - mettre à jour le readme
+// - faire une plus jolie scene
 // - implanter des ombres https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
 // - implanter le smooth shading with hard edges https://stackoverflow.com/questions/13205226/most-efficient-algorithm-to-calculate-vertex-normals-from-set-of-triangles-for-g
-// - implanter les collisions
-// - implanter des animations
-// - tuto lancer de rayon https://www.scratchapixel.com/
 // - faire une javadoc
+// - ajouter une pool de matériaux
 
 import android.util.Pair;
 
