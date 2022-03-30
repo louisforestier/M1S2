@@ -1,4 +1,4 @@
-package fr.algo3d.models;
+package fr.algo3d.model.models;
 
 /**
  * Basic class to represent 3-vectors

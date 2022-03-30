@@ -1,4 +1,4 @@
-package fr.algo3d.models;
+package fr.algo3d.model.models;
 
 public class Color {
     private float r;

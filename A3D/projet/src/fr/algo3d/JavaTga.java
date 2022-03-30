@@ -1,19 +1,25 @@
 package fr.algo3d;
 
-import fr.algo3d.models.Color;
-import fr.algo3d.models.Vec3f;
+import fr.algo3d.controller.MainPaneController;
+import fr.algo3d.model.Scene;
+import fr.algo3d.model.models.Color;
+import fr.algo3d.model.models.Vec3f;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.WritablePixelFormat;
+import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 /**
  *
  * @author P. Meseure based on a Java Adaptation of a C code by B. Debouchages (M1, 2018-2019)
  */
-public class JavaTga
+public class JavaTga extends Application
 {
     public static final int MAX_RAY_DEPTH = 5;
     /**
@@ -67,13 +73,19 @@ public class JavaTga
      * @param args no command line arguments
      */
     public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
         int w=1920;
         int h=1080;
         byte buffer[]=new byte[3*w*h];
+        byte image[]=new byte[3*w*h];
         Scene scene = new Scene();
         for(int row = 0; row < h; row++){ // for each row of the image
             for(int col = 0; col < w; col++){ // for each column of the image
-                
+
                 int index = 3*((row*w)+col); // compute index of color for pixel (x,y) in the buffer
                 float x = (col - w/2.f)/h;
                 float y = (row -h/2.f)/h;
@@ -84,8 +96,12 @@ public class JavaTga
                 buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
                 buffer[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
                 buffer[index+2]= (byte) (Math.min(c.getR(),1.f)*255); // red (red is the last component !!!)
-                
-                // Depending on the x position, select a color... 
+
+                image[index]= (byte) (Math.min(c.getR(),1.f)*255); // Red
+                image[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+                image[index+2]= (byte) (Math.min(c.getB(),1.f)*255); // blue
+
+                // Depending on the x position, select a color...
 /*
                 if (col<w/3) buffer[index]=(byte)255; // Blue in the left part of the image
                 else if (col<2*w/3) buffer[index+1]=(byte)255; // Green in the middle
@@ -93,6 +109,7 @@ public class JavaTga
 */
             }
         }
+
         try {
             saveTGA("imagetest.tga",buffer,w,h);
         }
@@ -100,6 +117,22 @@ public class JavaTga
         {
             System.err.println("TGA file not created :"+e);
         }
-    }  
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("view/MainPane.fxml"));
+        Parent root = loader.load();
+        MainPaneController controller = loader.getController();
+        controller.setBackground(getFXImage(image,w,h));
+        primaryStage.setScene(new javafx.scene.Scene(root,1280,720));
+        //primaryStage.setFullScreen(true);
+        primaryStage.setTitle("Ray Tracing Project");
+        primaryStage.show();
+    }
+
+    public static Image getFXImage(byte[] buffer, int width, int height) {
+        WritableImage image = new WritableImage(width,height);
+        PixelWriter writer = image.getPixelWriter();
+        writer.setPixels(0,0,1920,1080, WritablePixelFormat.getByteRgbInstance(),buffer,0,width*3);
+        return image;
+    }
 }
 

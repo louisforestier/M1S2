@@ -1,8 +1,8 @@
-package fr.algo3d.lights;
+package fr.algo3d.model.lights;
 
 
-import fr.algo3d.models.Color;
-import fr.algo3d.models.Vec3f;
+import fr.algo3d.model.models.Color;
+import fr.algo3d.model.models.Vec3f;
 
 
 public class Light {

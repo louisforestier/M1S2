@@ -1,6 +1,6 @@
-package fr.algo3d.models;
+package fr.algo3d.model.models;
 
-import fr.algo3d.Material;
+import fr.algo3d.model.Material;
 
 public class Sphere extends Model{
 

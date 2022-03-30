@@ -1,6 +1,6 @@
-package fr.algo3d;
+package fr.algo3d.model;
 
-import fr.algo3d.models.Color;
+import fr.algo3d.model.models.Color;
 
 public class Material {
     private Color color;

@@ -1,8 +1,8 @@
-package fr.algo3d;
+package fr.algo3d.model;
 
-import fr.algo3d.Material;
-import fr.algo3d.lights.Light;
-import fr.algo3d.models.*;
+import fr.algo3d.JavaTga;
+import fr.algo3d.model.models.*;
+import fr.algo3d.model.lights.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +13,20 @@ public class Scene {
     private List<Light> lights = new ArrayList<>();
 
     public Scene() {
-        Material green = new Material(Color.green,Color.white,32);
-        Material orange = new Material(Color.orange,Color.white,100,0.f,0,1);
-        Material cyan = new Material(Color.cyan,Color.white,32);
+        Material green = new Material(Color.green,Color.white,32,0,0.f,1);
+        Material orange = new Material(Color.orange,Color.white,100,0.f,0.f,1);
+        Material cyan = new Material(Color.cyan,Color.white,32,0.f,0,1);
+        Material red = new Material(Color.red,Color.white,32,0.f,0,1);
+        Material yellow = new Material(Color.yellow,Color.white,32,0.f,0,1);
         models.add(new Plane(green,new Vec3f(0,1,0),-2));
         models.add(new Plane(cyan,new Vec3f(-1,1,1),-20));
         models.add(new Sphere(orange,new Vec3f(0,0,-7.5f),2));
+        models.add(new Sphere(red,new Vec3f(-4,-1,-7.5f),1));
+        models.add(new Sphere(yellow,new Vec3f(4,-1,-7.5f),1));
         lights.add(new Light(new Vec3f(-1,1,0), Color.darkgray,Color.lightgray,Color.white));
     }
 
-    Color findColor(Vec3f P, Vec3f v, int depth){
+    public Color findColor(Vec3f P, Vec3f v, int depth){
         Color color = new Color();
         //List<Vec3f> positions = lights.stream().map(light -> light.getPosition()).collect(Collectors.toList());
         //models.parallelStream().collect(Collectors.toList());
@@ -56,7 +60,7 @@ public class Scene {
                 float bias = 1e-4f;
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.addScale(bias,normal);
-                Color reflectColor = findColor(I,r,depth+1).scale(modelMin.getReflection());
+                Color reflectColor = findColor(biasedI,r,depth+1).scale(modelMin.getReflection());
                 color = color.add(reflectColor);
             }
             if (modelMin.getTransparency() > 0.f) {
@@ -73,7 +77,7 @@ public class Scene {
                 float bias = 1e-4f;
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.subScale(bias,normal);
-                Color transColor = findColor(I,t,depth+1).scale(modelMin.getTransparency());
+                Color transColor = findColor(biasedI,t,depth+1).scale(modelMin.getTransparency());
                 color = color.add(transColor);
             }
         }
