@@ -11,6 +11,8 @@ void Broadcast(
     OPP::MPI::Ring ring(MPI_COMM_WORLD);
     int rank = ring.getRank();
     int p = ring.getSize();
+    if (p <= 1)
+        return; 
     if( rank == k )
         ring.Send(addr, N, MPI_INT);
     else if( rank == ((k + p - 1) % p) )
