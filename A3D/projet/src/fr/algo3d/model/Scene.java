@@ -14,7 +14,7 @@ public class Scene {
 
     public Scene() {
         Material green = new Material(Color.green,Color.white,32,0,0.f,1);
-        Material orange = new Material(Color.orange,Color.white,100,0.f,0.f,1);
+        Material orange = new Material(Color.orange,Color.white,100,0.f,0.5f,1);
         Material cyan = new Material(Color.cyan,Color.white,32,0.f,0,1);
         Material red = new Material(Color.red,Color.white,32,0.f,0,1);
         Material yellow = new Material(Color.yellow,Color.white,32,0.f,0,1);
@@ -51,7 +51,9 @@ public class Scene {
             normal = normal.inverse();
             inside = true;
         }
-
+        float reflRatio = modelMin.getReflection() / (1 + modelMin.getReflection()+ modelMin.getTransparency());
+        float transRatio = modelMin.getTransparency() / (1 + modelMin.getReflection()+ modelMin.getTransparency());
+        float diffuseRatio = 1 / (1 + modelMin.getReflection()+ modelMin.getTransparency());
         if (depth < JavaTga.MAX_RAY_DEPTH) {
             if (modelMin.getReflection() > 0.f) {
                 Vec3f r = new Vec3f(v);
@@ -61,7 +63,7 @@ public class Scene {
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.addScale(bias,normal);
                 Color reflectColor = findColor(biasedI,r,depth+1).scale(modelMin.getReflection());
-                color = color.add(reflectColor);
+                color = color.add(reflectColor.scale(reflRatio));
             }
             if (modelMin.getTransparency() > 0.f) {
                 float refractIndex;
@@ -78,7 +80,7 @@ public class Scene {
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.subScale(bias,normal);
                 Color transColor = findColor(biasedI,t,depth+1).scale(modelMin.getTransparency());
-                color = color.add(transColor);
+                color = color.add(transColor.scale(transRatio));
             }
         }
 
@@ -101,12 +103,14 @@ public class Scene {
                 IS.normalize();
                 float weight = Math.max(normal.dotProduct(IS),0.f);
                 diffuse = modelMin.getDiffuseMaterial().mul(l.getDiffuse().scale(weight));
+                diffuse = diffuse.scale(diffuseRatio);
                 Color specular;
                 Vec3f halfdir = new Vec3f();
                 halfdir.setAdd(IS,v.inverse());
                 halfdir.normalize();
                 float spec = (float) Math.pow(Math.max(halfdir.dotProduct(normal),0.f),modelMin.getShininess());
                 specular = modelMin.getSpecularMaterial().mul(l.getSpecular()).scale(spec);
+                specular = specular.scale(diffuseRatio);
                 color = color.add(diffuse).add(specular);
             }
         }
