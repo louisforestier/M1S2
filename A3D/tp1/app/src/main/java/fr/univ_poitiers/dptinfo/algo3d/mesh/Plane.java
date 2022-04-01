@@ -1,6 +1,10 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 
+import android.opengl.GLES20;
+
+import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
+
 /**
  * Primitive d'un plan de taille 10x10 constitué de 200 triangles
  */
@@ -48,7 +52,12 @@ public class Plane extends Mesh {
                 texturesCoord[k++] = s / 10;
             }
         }
+    }
 
-
+    @Override
+    public void draw(DepthShader shaders) {
+        GLES20.glCullFace(GLES20.GL_BACK);
+        super.draw(shaders);
+        GLES20.glCullFace(GLES20.GL_FRONT);
     }
 }

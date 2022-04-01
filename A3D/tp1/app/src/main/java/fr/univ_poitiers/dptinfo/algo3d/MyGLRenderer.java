@@ -305,7 +305,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         depthShader.setViewMatrix(lightView);
 
         //j'utilise à la fois la technique de générer l'ombre avec les faces internes pour supprimer
-        // l'acné d'ombre sur les objets arrondis (sphere, tore, capsule) et le biais pour le retirer sur les surfaces planes
+        // l'acné d'ombre sur les objets pleins (cube, sphere, tore, capsule ...) et le biais pour le retirer sur les surfaces planes
         GLES20.glCullFace(GLES20.GL_FRONT);
         scene.update();
         GLES20.glCullFace(GLES20.GL_BACK);

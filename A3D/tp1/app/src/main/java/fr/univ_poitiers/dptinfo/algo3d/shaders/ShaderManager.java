@@ -17,7 +17,9 @@ public class ShaderManager {
     }
 
     public static ShaderManager getInstance(){
-        synchronized (INSTANCE) {
+        if (INSTANCE != null)
+            return INSTANCE;
+        synchronized (ShaderManager.class){
             if (INSTANCE == null)
                 INSTANCE = new ShaderManager();
         }

@@ -123,7 +123,7 @@ public class Scene {
 
         GameObject cube = new GameObject();
         cube.setMesh(new Cube(1));
-        cube.getTransform().posz(6).posx(4);
+        cube.getTransform().posz(6).posx(4).posy(0.1f);
         cube.addMeshRenderer(new Material(MyGLRenderer.magenta));
         gameObjects.add(cube);
 
