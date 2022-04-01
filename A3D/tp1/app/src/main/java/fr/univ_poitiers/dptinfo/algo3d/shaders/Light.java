@@ -1,14 +1,10 @@
-package fr.univ_poitiers.dptinfo.algo3d;
+package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 public class Light extends Component {
     private LightType type;

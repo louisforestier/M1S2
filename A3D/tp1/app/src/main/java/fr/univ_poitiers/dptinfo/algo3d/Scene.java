@@ -21,6 +21,8 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.Pipe;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
 import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.Light;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.LightType;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;

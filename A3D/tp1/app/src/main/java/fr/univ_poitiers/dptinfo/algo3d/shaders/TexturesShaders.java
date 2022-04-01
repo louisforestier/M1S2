@@ -2,9 +2,6 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
-
-import fr.univ_poitiers.dptinfo.algo3d.Light;
 
 public class TexturesShaders extends MultipleLightingShaders{
 

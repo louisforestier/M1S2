@@ -1,10 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
-import android.opengl.GLES20;
-
-import fr.univ_poitiers.dptinfo.algo3d.Light;
-import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
 
 public class BlinnPhongMultipleLightShaders extends MultipleLightingShaders{
 

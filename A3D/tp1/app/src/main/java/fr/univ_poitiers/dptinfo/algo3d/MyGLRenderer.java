@@ -11,11 +11,11 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
+import fr.univ_poitiers.dptinfo.algo3d.shaders.Light;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.TexturesShaders;
 
 
 /**
