@@ -1,0 +1,68 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "TP10",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Produit::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Produit-Debug-db629f9bc27efc96b7da.json",
+					"name" : "Produit",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Resolution::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Resolution-Debug-84234e10a9d86d2f6d2d.json",
+					"name" : "Resolution",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/louisf/Documents/M1/M1S2/APR/TPs/TP10/build",
+		"source" : "/home/louisf/Documents/M1/M1S2/APR/TPs/TP10"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}
