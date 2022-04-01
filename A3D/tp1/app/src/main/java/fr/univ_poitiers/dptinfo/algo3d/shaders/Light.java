@@ -22,10 +22,10 @@ public class Light extends Component {
     public Light(GameObject gameObject, Transform transform) {
         super(gameObject, transform);
         this.type = LightType.POINT;
-        ambient =new float[]{0.2f,0.2f,0.2f,1.f};
-        diffuse = new float[]{0.8f,0.8f,0.8f,1.f};
-        specular = new float[]{0.8f,0.8f,0.8f,1.f};
-        constant = 1.f ;
+        ambient = new float[]{0.2f, 0.2f, 0.2f, 1.f};
+        diffuse = new float[]{0.8f, 0.8f, 0.8f, 1.f};
+        specular = new float[]{0.8f, 0.8f, 0.8f, 1.f};
+        constant = 1.f;
         linear = 0.09f;
         quadratic = 0.032f;
         cutOff = 12.5f;
@@ -54,13 +54,13 @@ public class Light extends Component {
             this.quadratic = quadratic;
         }
     */
-    public float[] getPos(final float[] viewmatrix){
+    public float[] getPos(final float[] viewmatrix) {
         float[] lightPos = new float[4];
-        Matrix.multiplyMV(lightPos,0,viewmatrix,0,new float[]{transform.getPosx(),transform.getPosy(),transform.getPosz(),1.0f},0);
-        return new float[]{lightPos[0],lightPos[1],lightPos[2]};
+        Matrix.multiplyMV(lightPos, 0, viewmatrix, 0, new float[]{transform.getPosx(), transform.getPosy(), transform.getPosz(), 1.0f}, 0);
+        return new float[]{lightPos[0], lightPos[1], lightPos[2]};
     }
 
-    public float[] getDir(final float[] viewmatrix){
+    public float[] getDir(final float[] viewmatrix) {
         float[] lightDir = new float[4];
         float[] lightlocalDir = new float[]{
                 (float) (Math.cos(Math.toRadians(transform.getRoty())) * Math.cos(Math.toRadians(transform.getRotx()))),
@@ -68,13 +68,13 @@ public class Light extends Component {
                 (float) (Math.sin(Math.toRadians(transform.getRoty())) * Math.cos(Math.toRadians(transform.getRotx()))),
                 0.f
         };
-        Matrix.multiplyMV(lightDir,0,viewmatrix,0,lightlocalDir,0);
-        return new float[]{lightDir[0],lightDir[1],lightDir[2]};
+        Matrix.multiplyMV(lightDir, 0, viewmatrix, 0, lightlocalDir, 0);
+        return new float[]{lightDir[0], lightDir[1], lightDir[2]};
     }
 
 
     public void initLighting(BasicShaders shaders, final float[] modelviewmatrix) {
-        if (shaders.useTypeLight()){
+        if (shaders.useTypeLight()) {
             setPosition(getPos(modelviewmatrix));
             setDirection(getDir(modelviewmatrix));
             switch (getType()) {
@@ -95,12 +95,10 @@ public class Light extends Component {
     @Override
     public void earlyUpdate() {
         super.earlyUpdate();
-        if (ShaderManager.getInstance().isRender()) {
-            for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
-                float[] modelviewmatrix = new float[16];
-                Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);
-                initLighting(s, modelviewmatrix);
-            }
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            float[] modelviewmatrix = new float[16];
+            Matrix.multiplyMM(modelviewmatrix, 0, s.getViewMatrix(), 0, transform.getParentModelViewMatrix(), 0);
+            initLighting(s, modelviewmatrix);
         }
     }
 

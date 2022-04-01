@@ -21,7 +21,7 @@ public class Material {
     private DrawMode drawMode;
     private int textureId = -1;
 
-    public Material(){
+    public Material() {
         this.shader = defaultShader;
         color = MyGLRenderer.white;
         specColor = MyGLRenderer.white;
@@ -65,7 +65,7 @@ public class Material {
         this.shader = shader;
     }
 
-    public MultipleLightingShaders getShader(){
+    public MultipleLightingShaders getShader() {
         return ShaderManager.getInstance().getShader(shader);
     }
 
@@ -74,16 +74,14 @@ public class Material {
     }
 
     public void update() {
-        if (ShaderManager.isRender()) {
-            ShaderManager.getInstance().getShader(shader).setMaterialColor(color);
-            ShaderManager.getInstance().getShader(shader).setMaterialSpecular(specColor);
-            ShaderManager.getInstance().getShader(shader).setMaterialShininess(shininess);
-            ShaderManager.getInstance().getShader(shader).setTexturing(textureId != -1);
-            if (textureId != -1) {
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-                ShaderManager.getInstance().getShader(shader).setTextureUnit(0);
-            }
+        ShaderManager.getInstance().getShader(shader).setMaterialColor(color);
+        ShaderManager.getInstance().getShader(shader).setMaterialSpecular(specColor);
+        ShaderManager.getInstance().getShader(shader).setMaterialShininess(shininess);
+        ShaderManager.getInstance().getShader(shader).setTexturing(textureId != -1);
+        if (textureId != -1) {
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            ShaderManager.getInstance().getShader(shader).setTextureUnit(0);
         }
     }
 }

@@ -313,16 +313,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 
     private void renderScene(Scene scene){
         this.scene.step();
-        ShaderManager.setRender(true);
-
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
         this.shaders.use();
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, renderTextureId[0]);
-        ShaderManager.setRender(true);
         shaders.setLightSpaceMatrix(lightSpaceMatrix);
         shaders.setDepthMap(1);
         GLES20.glFrontFace(GLES20.GL_CW);
@@ -333,26 +329,5 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         scene.setUpMatrix(this);
         scene.earlyUpdate();
         scene.lateUpdate();
-        /**
-         * A faire pour le stencil mirror
-         */
-        /*
-         * Quand j'ai un mirror component, je dois enregistrer le gameobject lié (dans une liste sije veux gérer plusieurs miroirs) :
-         * il faut faire une premiere passe pour dessiner la scène réfléchi selon le plan du miroir, sans dessiner le plan miroir !!!! (donc autant de passe que de miroirs)
-         *
-         * GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT|GLES20.GL_DEPTH_BUFFER_BIT| GLES20.GL_STENCIL_BUFFER_BIT);
-         * GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-         * GLES20.glColorMask(false,false,false,false);
-         * GLES20.glEnable(GLES20.GL_STENCIL_TEST);
-         * GLES20.glStencilOp(GLES20.GL_REPLACE,GLES20.GL_REPLACE,GLES20.GL_REPLACE);
-         * GLES20.glStencilFunc(GLES20.GL_ALWAYS, 1, 0x1);
-         * dessiner le plane
-         * GLES20.glColorMask(true,true,true,true);
-         * glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-         * glStencilFunc(GL_NOTEQUAL);
-         * GLES20.glDisable(GLES20.GL_STENCIL_TEST);
-         * Dessiner la scène sans réflexion
-         * attention il faut peut etre utiliser le gl_blend pour mélanger les couleurs du plane avec la réflexion
-         */
     }
 }

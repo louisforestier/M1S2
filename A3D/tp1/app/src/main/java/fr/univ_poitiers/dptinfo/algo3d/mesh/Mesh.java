@@ -98,9 +98,9 @@ public class Mesh {
             v2.setSub(p3, p2);
             Vec3f n = new Vec3f();
             n.setCrossProduct(v1, v2);
-            float a1 = calcAngle(p1,p2,p3);
-            float a2 = calcAngle(p2,p3,p1);
-            float a3 = calcAngle(p3,p1,p2);
+            float a1 = calcAngle(p1, p2, p3);
+            float a2 = calcAngle(p2, p3, p1);
+            float a3 = calcAngle(p3, p1, p2);
             Vec3f n1 = n.scale(a1);
             Vec3f n2 = n.scale(a2);
             Vec3f n3 = n.scale(a3);
@@ -161,12 +161,12 @@ public class Mesh {
             }
         }
 */
-        for (int i = 0 ; i < normals.length ; i+=3) {
-            Vec3f n = new Vec3f(normals[i],normals[i+1],normals[i+2]);
+        for (int i = 0; i < normals.length; i += 3) {
+            Vec3f n = new Vec3f(normals[i], normals[i + 1], normals[i + 2]);
             n.normalize();
             normals[i] = n.x;
-            normals[i+1] = n.y;
-            normals[i+2] = n.z;
+            normals[i + 1] = n.y;
+            normals[i + 2] = n.z;
         }
     }
 
@@ -175,7 +175,7 @@ public class Mesh {
         v1.setSub(p2, p1);
         Vec3f v2 = new Vec3f();
         v2.setSub(p3, p1);
-        float angle = (float) Math.acos(v1.dotProduct(v2) /(v1.length()* v2.length()));
+        float angle = (float) Math.acos(v1.dotProduct(v2) / (v1.length() * v2.length()));
         return angle;
     }
 
@@ -194,7 +194,7 @@ public class Mesh {
     public void initGraphics() {
         //TODO : a retirer après avoir implanté les coordonnées de texture partout
         if (texturesCoord == null)
-            texturesCoord = new float[vertexpos.length/3*2];
+            texturesCoord = new float[vertexpos.length / 3 * 2];
         /**
          * Buffer des sommets
          */
@@ -280,17 +280,15 @@ public class Mesh {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
-        if (ShaderManager.isRender()) {
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
-            shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, gltexturebuffer);
-            shaders.setTexturePointer(2, GLES20.GL_FLOAT);
-        }
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
+        shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, gltexturebuffer);
+        shaders.setTexturePointer(2, GLES20.GL_FLOAT);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
     public void draw(final DepthShader shaders) {

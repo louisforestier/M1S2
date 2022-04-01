@@ -8,8 +8,6 @@ import java.util.Set;
 
 public class ShaderManager {
 
-    private static boolean render;
-
     private Map<Class<? extends MultipleLightingShaders>,MultipleLightingShaders> shaders = new HashMap<>();
     private DepthShader depthShader;
     private static ShaderManager INSTANCE;
@@ -28,14 +26,6 @@ public class ShaderManager {
 
     public  MultipleLightingShaders getShader(Class<? extends MultipleLightingShaders> type){
         return shaders.get(type);
-    }
-
-    public static boolean isRender() {
-        return render;
-    }
-
-    public static void setRender(boolean render) {
-        ShaderManager.render = render;
     }
 
     public Map<Class<? extends MultipleLightingShaders>, MultipleLightingShaders> getShaders() {
