@@ -230,48 +230,6 @@ public class Scene {
         this.posz += speedx * Math.sin(yRot) + speedy * Math.cos(yRot);
     }
 
-    /**
-     * Draw the current simulation state
-     *
-     * @param renderer Renderer
-     */
-    public void draw(MyGLRenderer renderer) {
-        float[] modelviewmatrix = new float[16];
-
-        //MainActivity.log("Starting rendering");
-
-        // Get shader to send uniform data
-        MultipleLightingShaders shaders = renderer.getShaders();
-        shaders.resetLights();
-
-        // Place viewer in the right position and orientation
-        Matrix.setIdentityM(modelviewmatrix, 0);
-        // setRotateM instead of rotateM in the next instruction would avoid this initialization...
-        Matrix.rotateM(modelviewmatrix, 0, anglex, 1.0F, 0.0F, 0.0F);
-        Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
-        Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
-        Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
-
-        if (ShaderManager.isRender()) {
-            shaders.setViewMatrix(modelviewmatrix);
-            shaders.setModelViewMatrix(modelviewmatrix);
-        }else{
-            renderer.getShadowShader().setModelViewMatrix(modelviewmatrix);
-        }
-        for (GameObject go : gameObjects){
-            go.earlyUpdate();
-        }
-
-
-        for(GameObject go : gameObjects){
-            go.update();
-        }
-        for(GameObject go : gameObjects){
-            go.lateUpdate();
-        }
-        //MainActivity.log("Rendering terminated.");
-    }
-
     public void setUpMatrix(MyGLRenderer renderer){
         MultipleLightingShaders shaders = renderer.getShaders();
         shaders.resetLights();
