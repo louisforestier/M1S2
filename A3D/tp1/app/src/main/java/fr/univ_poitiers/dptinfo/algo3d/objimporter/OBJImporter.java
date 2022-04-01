@@ -64,10 +64,10 @@ public class OBJImporter {
                 for (int i = 0; i < verticesList.size(); i++) {
                     vertexpos[i] = verticesList.get(i);
                 }
-                for (int i = 0; i < trianglesList.size(); i ++) {
-                    triangles[i*3] = trianglesList.get(i).getV1().getV() - 1;
-                    triangles[i*3 + 1] = trianglesList.get(i).getV2().getV() - 1;
-                    triangles[i*3 + 2] = trianglesList.get(i).getV3().getV() - 1;
+                for (int i = 0; i < trianglesList.size(); i++) {
+                    triangles[i * 3] = trianglesList.get(i).getV1().getV() - 1;
+                    triangles[i * 3 + 1] = trianglesList.get(i).getV2().getV() - 1;
+                    triangles[i * 3 + 2] = trianglesList.get(i).getV3().getV() - 1;
                 }
                 mesh = new Mesh(vertexpos, triangles);
                 mesh.calculateSmoothShadingNormals();

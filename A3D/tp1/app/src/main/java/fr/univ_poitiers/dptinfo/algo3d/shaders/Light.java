@@ -32,28 +32,6 @@ public class Light extends Component {
         outerCutOff = 17.5f;
     }
 
-    /*
-        public Light(LightType type) {
-            this.type = type;
-            ambient =new float[]{0.2f,0.2f,0.2f,1.f};
-            diffuse = new float[]{0.8f,0.8f,0.8f,1.f};
-            specular = new float[]{0.8f,0.8f,0.8f,1.f};
-            constant = 1.f ;
-            linear = 0.09f;
-            quadratic = 0.032f;
-            cutOff = 12.5f;
-            outerCutOff = 17.5f;
-        }
-
-        public Light(float[] ambient, float[] diffuse, float[] specular, float constant, float linear, float quadratic) {
-            this.ambient = ambient;
-            this.diffuse = diffuse;
-            this.specular = specular;
-            this.constant = constant;
-            this.linear = linear;
-            this.quadratic = quadratic;
-        }
-    */
     public float[] getPos(final float[] viewmatrix) {
         float[] lightPos = new float[4];
         Matrix.multiplyMV(lightPos, 0, viewmatrix, 0, new float[]{transform.getPosx(), transform.getPosy(), transform.getPosz(), 1.0f}, 0);

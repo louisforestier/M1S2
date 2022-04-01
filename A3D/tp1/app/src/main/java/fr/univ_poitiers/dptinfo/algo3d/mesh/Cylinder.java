@@ -2,7 +2,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 public class Cylinder extends Mesh {
     public Cylinder(int quarter) {
-        vertexpos = new float[((2*2) * (quarter + 1)+2) * 3];
+        vertexpos = new float[((2 * 2) * (quarter + 1) + 2) * 3];
         triangles = new int[quarter * 4 * 3];
         int k = 0;
         float r = 1.f;
@@ -34,21 +34,21 @@ public class Cylinder extends Mesh {
 
         k = 0;
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 3);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2);
-            triangles[k++] =  ((i+quarter+1)* 2 + 1);
-            triangles[k++] =  (vertexpos.length/3-1);
-            triangles[k++] =  ((i+quarter+1) * 2 + 3);
-            triangles[k++] =  ((i+quarter+1) * 2);
-            triangles[k++] =  ((i+quarter+1) * 2 + 2);
-            triangles[k++] =  (vertexpos.length/3-2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 3);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2);
+            triangles[k++] = ((i + quarter + 1) * 2 + 1);
+            triangles[k++] = (vertexpos.length / 3 - 1);
+            triangles[k++] = ((i + quarter + 1) * 2 + 3);
+            triangles[k++] = ((i + quarter + 1) * 2);
+            triangles[k++] = ((i + quarter + 1) * 2 + 2);
+            triangles[k++] = (vertexpos.length / 3 - 2);
         }
 
-        k=0;
+        k = 0;
         normals = new float[vertexpos.length];
 
         for (int i = 0; i <= quarter; i++) {

@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class ShadowShaders extends MultipleLightingShaders{
+public class ShadowShaders extends MultipleLightingShaders {
 
 
     protected int aVertexTexture;
@@ -33,21 +33,25 @@ public class ShadowShaders extends MultipleLightingShaders{
     public void findVariables() {
         super.findVariables();
         this.aVertexTexture = GLES20.glGetAttribLocation(this.shaderprogram, "aVertexTexture");
-        if (this.aVertexTexture==-1) throw new RuntimeException("aVertexTexture not found in shaders");
+        if (this.aVertexTexture == -1)
+            throw new RuntimeException("aVertexTexture not found in shaders");
         GLES20.glEnableVertexAttribArray(this.aVertexTexture);
         this.uTextureUnit = GLES20.glGetUniformLocation(this.shaderprogram, "uTextureUnit");
-        if (this.uTextureUnit==-1) throw new RuntimeException("uTextureUnit not found in shaders");
+        if (this.uTextureUnit == -1)
+            throw new RuntimeException("uTextureUnit not found in shaders");
         this.uTexturing = GLES20.glGetUniformLocation(this.shaderprogram, "uTexturing");
-        if (this.uTexturing==-1) throw new RuntimeException("uTexturing not found in shaders");
+        if (this.uTexturing == -1) throw new RuntimeException("uTexturing not found in shaders");
 
         this.lightSpaceMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "lightSpaceMatrix");
-        if (this.lightSpaceMatrix==-1) throw new RuntimeException("lightSpaceMatrix not found in shaders");
+        if (this.lightSpaceMatrix == -1)
+            throw new RuntimeException("lightSpaceMatrix not found in shaders");
 
         this.uModelMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "uModelMatrix");
-        if (this.uModelMatrix==-1) throw new RuntimeException("uModelMatrix not found in shaders");
+        if (this.uModelMatrix == -1)
+            throw new RuntimeException("uModelMatrix not found in shaders");
 
         this.shadowMap = GLES20.glGetUniformLocation(this.shaderprogram, "shadowMap");
-        if (this.shadowMap==-1) throw new RuntimeException("shadowMap not found in shaders");
+        if (this.shadowMap == -1) throw new RuntimeException("shadowMap not found in shaders");
 
     }
 
@@ -58,39 +62,37 @@ public class ShadowShaders extends MultipleLightingShaders{
 
     @Override
     public int createProgram(Context context) {
-        return initializeShadersFromResources(context,"shadow_vert.glsl","shadow_frag.glsl");
+        return initializeShadersFromResources(context, "shadow_vert.glsl", "shadow_frag.glsl");
     }
 
     @Override
-    public void setTexturePointer(int size,int dtype)
-    {
+    public void setTexturePointer(int size, int dtype) {
         GLES20.glVertexAttribPointer(this.aVertexTexture, size, dtype, false, 0, 0);
     }
 
     @Override
-    public void setTextureUnit(final int textureUnit)
-    {
-        GLES20.glUniform1i(this.uTextureUnit,textureUnit);
+    public void setTextureUnit(final int textureUnit) {
+        GLES20.glUniform1i(this.uTextureUnit, textureUnit);
     }
 
     @Override
-    public void setTexturing(final boolean state){
-        if (this.uTexturing!=-1) GLES20.glUniform1i(this.uTexturing,state?1:0);
+    public void setTexturing(final boolean state) {
+        if (this.uTexturing != -1) GLES20.glUniform1i(this.uTexturing, state ? 1 : 0);
     }
 
     @Override
     public void setLightSpaceMatrix(float[] matrix) {
-        GLES20.glUniformMatrix4fv(this.lightSpaceMatrix, 1, false, matrix,0);
+        GLES20.glUniformMatrix4fv(this.lightSpaceMatrix, 1, false, matrix, 0);
     }
 
     @Override
-    public void setModelMatrix(float[] matrix){
-        GLES20.glUniformMatrix4fv(this.uModelMatrix, 1, false, matrix,0);
+    public void setModelMatrix(float[] matrix) {
+        GLES20.glUniformMatrix4fv(this.uModelMatrix, 1, false, matrix, 0);
     }
 
     @Override
     public void setDepthMap(int depthMap) {
-        GLES20.glUniform1i(this.shadowMap,depthMap);
+        GLES20.glUniform1i(this.shadowMap, depthMap);
     }
 
 }

@@ -3,7 +3,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 public class Pipe extends Mesh {
     public Pipe(int quarter) {
 
-        vertexpos = new float[((2*2) * (quarter + 1)) * 3];
+        vertexpos = new float[((2 * 2) * (quarter + 1)) * 3];
         triangles = new int[quarter * 2 * 3 * 2];
         int k = 0;
         float r = 1.f;
@@ -33,27 +33,27 @@ public class Pipe extends Mesh {
         k = 0;
         //faces internes
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2 + 3);
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2);
-            triangles[k++] =  (i * 2 + 2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2 + 3);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2);
+            triangles[k++] = (i * 2 + 2);
         }
 
         //faces externes
-        for (int i = quarter+1; i < quarter*2+1; i++) {
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 3);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2);
+        for (int i = quarter + 1; i < quarter * 2 + 1; i++) {
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 3);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2);
         }
 
-        k=0;
+        k = 0;
 
-        normals = new float[((2) * (quarter + 1)) * 3*2];
+        normals = new float[((2) * (quarter + 1)) * 3 * 2];
 
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);

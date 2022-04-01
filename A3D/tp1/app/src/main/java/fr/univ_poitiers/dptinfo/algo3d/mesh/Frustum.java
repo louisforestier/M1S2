@@ -5,7 +5,7 @@ import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 public class Frustum extends Mesh {
 
     public Frustum(float r1, float r2, int quarter) {
-        vertexpos = new float[((2*2) * (quarter + 1)+2) * 3];
+        vertexpos = new float[((2 * 2) * (quarter + 1) + 2) * 3];
         triangles = new int[quarter * 4 * 3];
 
         int k = 0;
@@ -34,32 +34,32 @@ public class Frustum extends Mesh {
         k = 0;
 
         for (int i = 0; i < quarter; i++) {
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 3);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2 + 1);
-            triangles[k++] =  (i * 2 + 2);
-            triangles[k++] =  (i * 2);
-            triangles[k++] =  ((i+quarter+1) * 2 + 1);
-            triangles[k++] =  (vertexpos.length/3-1);
-            triangles[k++] =  ((i+quarter+1) * 2 + 3);
-            triangles[k++] =  ((i+quarter+1) * 2);
-            triangles[k++] =  ((i+quarter+1) * 2 + 2);
-            triangles[k++] =  (vertexpos.length/3-2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 3);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2 + 1);
+            triangles[k++] = (i * 2 + 2);
+            triangles[k++] = (i * 2);
+            triangles[k++] = ((i + quarter + 1) * 2 + 1);
+            triangles[k++] = (vertexpos.length / 3 - 1);
+            triangles[k++] = ((i + quarter + 1) * 2 + 3);
+            triangles[k++] = ((i + quarter + 1) * 2);
+            triangles[k++] = ((i + quarter + 1) * 2 + 2);
+            triangles[k++] = (vertexpos.length / 3 - 2);
         }
-        k=0;
+        k = 0;
 
-        Vec3f p1 = new Vec3f(vertexpos[triangles[0]*3],vertexpos[triangles[0]*3+1],vertexpos[triangles[0]*3+2]);
-        Vec3f p2 = new Vec3f(vertexpos[triangles[0+1]*3],vertexpos[triangles[0+1]*3+1],vertexpos[triangles[0+1]*3+2]);
-        Vec3f p3 = new Vec3f(vertexpos[triangles[0+2]*3],vertexpos[triangles[0+2]*3+1],vertexpos[triangles[0+2]*3+2]);
-        Vec3f n = getNormal(p1,p2,p3);
+        Vec3f p1 = new Vec3f(vertexpos[triangles[0] * 3], vertexpos[triangles[0] * 3 + 1], vertexpos[triangles[0] * 3 + 2]);
+        Vec3f p2 = new Vec3f(vertexpos[triangles[0 + 1] * 3], vertexpos[triangles[0 + 1] * 3 + 1], vertexpos[triangles[0 + 1] * 3 + 2]);
+        Vec3f p3 = new Vec3f(vertexpos[triangles[0 + 2] * 3], vertexpos[triangles[0 + 2] * 3 + 1], vertexpos[triangles[0 + 2] * 3 + 2]);
+        Vec3f n = getNormal(p1, p2, p3);
 
         normals = new float[vertexpos.length];
 
         for (int i = 0; i <= quarter; i++) {
             double theta = Math.toRadians((360.0 / quarter) * i);
-            Vec3f n1 = new Vec3f((float) (r1 * Math.cos(theta)),n.y, (float) (r1 * Math.sin(theta)));
-            Vec3f n2 = new Vec3f((float) (r2 * Math.cos(theta)),n.y, (float) (r2 * Math.sin(theta)));
+            Vec3f n1 = new Vec3f((float) (r1 * Math.cos(theta)), n.y, (float) (r1 * Math.sin(theta)));
+            Vec3f n2 = new Vec3f((float) (r2 * Math.cos(theta)), n.y, (float) (r2 * Math.sin(theta)));
             n1.normalize();
             n2.normalize();
             normals[k++] = n1.x;

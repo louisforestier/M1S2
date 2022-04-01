@@ -46,7 +46,7 @@ public class Scene {
     float anglex, angley;
 
     float posx, posz;
-    float dx,dy,dx2,dy2;
+    float dx, dy, dx2, dy2;
     private final Material wallMaterial;
     private final Material ceilingMaterial;
     private final Material floorMaterial;
@@ -68,8 +68,8 @@ public class Scene {
         angley = 0.F;
         ceilingMaterial = new Material(MyGLRenderer.darkgray);
         wallMaterial = new Material(MyGLRenderer.lightgray);
-        floorMaterial = new Material(new float[]{1.f,1.f,1.f,0.4f});
-        floorMaterial2 = new Material(new float[]{1.f,1.f,1.f,0.4f});
+        floorMaterial = new Material(new float[]{1.f, 1.f, 1.f, 0.4f});
+        floorMaterial2 = new Material(new float[]{1.f, 1.f, 1.f, 0.4f});
         sunMaterial = new Material(MyGLRenderer.orange);
         earthMaterial = new Material(MyGLRenderer.white);
         GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, floorMaterial, ceilingMaterial, wallMaterial);
@@ -86,7 +86,7 @@ public class Scene {
         gameObjects.add(room4);
 
         GameObject ball = new Ball(1.2f, 1.5f, 1.5f, sunMaterial);
-        ball.getTransform().posy(ball.getTransform().getPosy()+0.1f);
+        ball.getTransform().posy(ball.getTransform().getPosy() + 0.1f);
         gameObjects.add(ball);
 
         GameObject ball2 = new Ball(0.3f, -1.5f, 1.5f, earthMaterial);
@@ -104,7 +104,7 @@ public class Scene {
 
         GameObject armadillo2 = new GameObject();
         stream = current.getResources().openRawResource(R.raw.armadillo_with_normals);
-        armadillo2.setMesh(OBJImporter.importOBJ(stream,ShadingMode.SMOOTH_SHADING));
+        armadillo2.setMesh(OBJImporter.importOBJ(stream, ShadingMode.SMOOTH_SHADING));
         armadillo2.getTransform().posy(1.F).scalex(0.01F).scaley(0.01F).scalez(0.01F).posx(7.5f).posz(1.f);
         armadillo2.addMeshRenderer(armadilloMaterial);
         gameObjects.add(armadillo2);
@@ -118,7 +118,7 @@ public class Scene {
 
 
         GameObject donut = new GameObject();
-        donut.setMesh(new Donut(1.0f,0.3f,50,20));
+        donut.setMesh(new Donut(1.0f, 0.3f, 50, 20));
         donut.getTransform().posz(6).posy(0.6f);
         donut.addMeshRenderer(new Material(MyGLRenderer.cyan));
         gameObjects.add(donut);
@@ -154,13 +154,13 @@ public class Scene {
         gameObjects.add(cylinder);
 
         GameObject tictac = new GameObject();
-        tictac.setMesh(new Tictac(50,50));
+        tictac.setMesh(new Tictac(50, 50));
         tictac.getTransform().posz(6).posx(6).posy(1.7f).scalex(0.7f).scalez(0.7f).scaley(0.8f);
         tictac.addMeshRenderer(new Material(MyGLRenderer.green));
         gameObjects.add(tictac);
 
         GameObject frustum = new GameObject();
-        frustum.setMesh(new Frustum(1.f,0.001f,50));
+        frustum.setMesh(new Frustum(1.f, 0.001f, 50));
         frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2).posy(1);
         frustum.addMeshRenderer(new Material(MyGLRenderer.magenta));
         gameObjects.add(frustum);
@@ -183,7 +183,6 @@ public class Scene {
     }
 
 
-
     /**
      * Init some OpenGL and shaders uniform data to render the simulation scene
      *
@@ -199,13 +198,13 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         renderer.getShaders().setNormalizing(true);
         renderer.getShaders().setLighting(true);
-        wallMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.wall));
-        ceilingMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.ceiling));
-        floorMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles1));
-        floorMaterial2.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.tiles2));
-        sunMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.sun));
-        earthMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(),R.drawable.earth));
-        for(GameObject go : gameObjects){
+        wallMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.wall));
+        ceilingMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.ceiling));
+        floorMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.tiles1));
+        floorMaterial2.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.tiles2));
+        sunMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.sun));
+        earthMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.earth));
+        for (GameObject go : gameObjects) {
             go.start();
         }
         MainActivity.log("Graphics initialized");
@@ -217,8 +216,8 @@ public class Scene {
      * Here, only the viewer rotates
      */
     public void step() {
-        this.angley += dx2/10;
-        this.anglex += dy2/10;
+        this.angley += dx2 / 10;
+        this.anglex += dy2 / 10;
         if (this.anglex > 70)
             this.anglex = 70;
         else if (this.anglex < -70)
@@ -230,7 +229,7 @@ public class Scene {
         this.posz += speedx * Math.sin(yRot) + speedy * Math.cos(yRot);
     }
 
-    public void setUpMatrix(MyGLRenderer renderer){
+    public void setUpMatrix(MyGLRenderer renderer) {
         MultipleLightingShaders shaders = renderer.getShaders();
         shaders.resetLights();
 
@@ -244,7 +243,8 @@ public class Scene {
         shaders.setViewMatrix(modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
     }
-    public void setUpReflexionMatrix(MyGLRenderer renderer){
+
+    public void setUpReflexionMatrix(MyGLRenderer renderer) {
         MultipleLightingShaders shaders = renderer.getShaders();
         shaders.resetLights();
 
@@ -255,25 +255,26 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
-        Matrix.scaleM(modelviewmatrix,0,1.f,-1.f,1.f);
+        Matrix.scaleM(modelviewmatrix, 0, 1.f, -1.f, 1.f);
         shaders.setViewMatrix(modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
     }
 
 
-    public void earlyUpdate(){
-        for (GameObject go : gameObjects){
+    public void earlyUpdate() {
+        for (GameObject go : gameObjects) {
             go.earlyUpdate();
         }
     }
-    public void update(){
-        for(GameObject go : gameObjects){
+
+    public void update() {
+        for (GameObject go : gameObjects) {
             go.update();
         }
     }
 
-    public void lateUpdate(){
-        for(GameObject go : gameObjects){
+    public void lateUpdate() {
+        for (GameObject go : gameObjects) {
             go.lateUpdate();
         }
     }

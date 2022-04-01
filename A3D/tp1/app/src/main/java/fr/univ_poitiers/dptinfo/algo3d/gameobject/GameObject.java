@@ -17,7 +17,7 @@ public class GameObject {
     private GameObject parent = null;
 
 
-    public GameObject(){
+    public GameObject() {
         this.transform = new Transform(this);
     }
 
@@ -26,14 +26,14 @@ public class GameObject {
         getCompotent(MeshFilter.class).setMesh(mesh);
     }
 
-    public void addMeshRenderer( Material material) {
+    public void addMeshRenderer(Material material) {
         addComponent(MeshRenderer.class);
         getCompotent(MeshRenderer.class).setMaterial(material);
     }
 
-    public <T extends Component> void addComponent(Class<T> type){
+    public <T extends Component> void addComponent(Class<T> type) {
         try {
-            components.add(type.getDeclaredConstructor(GameObject.class,Transform.class).newInstance(this,transform));
+            components.add(type.getDeclaredConstructor(GameObject.class, Transform.class).newInstance(this, transform));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -45,8 +45,8 @@ public class GameObject {
         }
     }
 
-    public <T extends Component> T getCompotent(Class<T> type){
-        for (Component c : components){
+    public <T extends Component> T getCompotent(Class<T> type) {
+        for (Component c : components) {
             if (type.isInstance(c))
                 return type.cast(c);
         }
@@ -58,7 +58,7 @@ public class GameObject {
         return transform;
     }
 
-    public void addChildren(GameObject child){
+    public void addChildren(GameObject child) {
         this.children.add(child);
         child.parent = this;
     }
@@ -67,21 +67,21 @@ public class GameObject {
         return parent;
     }
 
-    public void start(){
+    public void start() {
         for (Component c : components)
             c.start();
-        if (this.children.size() > 0){
+        if (this.children.size() > 0) {
             for (GameObject go : this.children) {
                 go.start();
             }
         }
     }
 
-    public void earlyUpdate(){
+    public void earlyUpdate() {
         for (Component c : components) {
             c.earlyUpdate();
         }
-        if (this.children.size() > 0){
+        if (this.children.size() > 0) {
             for (GameObject go : this.children) {
                 go.earlyUpdate();
             }
@@ -89,22 +89,22 @@ public class GameObject {
     }
 
 
-    public void update(){
+    public void update() {
         for (Component c : components) {
             c.update();
         }
-        if (this.children.size() > 0){
+        if (this.children.size() > 0) {
             for (GameObject go : this.children) {
                 go.update();
             }
         }
     }
 
-    public void lateUpdate(){
-        for (Component c : components){
+    public void lateUpdate() {
+        for (Component c : components) {
             c.lateUpdate();
         }
-        if (this.children.size() > 0){
+        if (this.children.size() > 0) {
             for (GameObject go : this.children) {
                 go.lateUpdate();
             }

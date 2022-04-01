@@ -34,14 +34,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
 
 
-
     private final float SCALE_FACTOR = 0.005F;
     private float leftJoystickOriginX;
     private float leftJoystickOriginY;
     private float rightJoystickOriginX;
     private float rightJoystickOriginY;
-    private int leftJoystickId=-1;
-    private int rightJoystickId=-1;
+    private int leftJoystickId = -1;
+    private int rightJoystickId = -1;
 
 
     private int activePointerId = INVALID_POINTER_ID;
@@ -52,7 +51,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
         // MainActivity.log("Event");
-        if(e.getPointerCount() > 2){
+        if (e.getPointerCount() > 2) {
             if (leftJoystickId != -1) {
                 leftJoystickOriginX = e.getX(leftJoystickId);
                 leftJoystickOriginY = e.getY(leftJoystickId);

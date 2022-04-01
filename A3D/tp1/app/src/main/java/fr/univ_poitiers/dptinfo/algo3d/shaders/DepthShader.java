@@ -2,7 +2,7 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 
-public class DepthShader extends BasicShaders{
+public class DepthShader extends BasicShaders {
 
 
     /**

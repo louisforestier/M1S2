@@ -8,23 +8,24 @@ import java.util.Set;
 
 public class ShaderManager {
 
-    private Map<Class<? extends MultipleLightingShaders>,MultipleLightingShaders> shaders = new HashMap<>();
+    private Map<Class<? extends MultipleLightingShaders>, MultipleLightingShaders> shaders = new HashMap<>();
     private DepthShader depthShader;
     private static ShaderManager INSTANCE;
+
     private ShaderManager() {
     }
 
-    public static ShaderManager getInstance(){
+    public static ShaderManager getInstance() {
         if (INSTANCE != null)
             return INSTANCE;
-        synchronized (ShaderManager.class){
+        synchronized (ShaderManager.class) {
             if (INSTANCE == null)
                 INSTANCE = new ShaderManager();
         }
         return INSTANCE;
     }
 
-    public  MultipleLightingShaders getShader(Class<? extends MultipleLightingShaders> type){
+    public MultipleLightingShaders getShader(Class<? extends MultipleLightingShaders> type) {
         return shaders.get(type);
     }
 
@@ -32,8 +33,8 @@ public class ShaderManager {
         return shaders;
     }
 
-    public void addShaders(MultipleLightingShaders shaders){
-        this.shaders.put(shaders.getClass(),shaders);
+    public void addShaders(MultipleLightingShaders shaders) {
+        this.shaders.put(shaders.getClass(), shaders);
     }
 
     public DepthShader getDepthShader() {

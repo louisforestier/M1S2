@@ -17,39 +17,38 @@ import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 /**
  * Abstract class to manipulate any shaders. Only position of vertices and their tranformation
  * are handled
+ *
  * @author Philippe Meseure
  * @version 1.0
  */
-public abstract class BasicShaders
-{
+public abstract class BasicShaders {
     /**
      * General method to get the content of a text file
+     *
      * @param file input file
      * @return string containing all the file content
      * @throws IOException
      */
-    static String getTextContent(InputStream file) throws IOException
-    {
-        BufferedReader reader=new BufferedReader(new InputStreamReader(file));
-        String content="";
-        while(reader.ready())
-        {
-            String line=reader.readLine();
-            content+=line+'\n';
+    static String getTextContent(InputStream file) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(file));
+        String content = "";
+        while (reader.ready()) {
+            String line = reader.readLine();
+            content += line + '\n';
         }
         return content;
     }
 
     /**
      * Method to create a program from source files for vertex and fragment shaders
-     * @param context Context of the application, a way to get to assets
+     *
+     * @param context  Context of the application, a way to get to assets
      * @param vertname name of the vertex program
      * @param fragname name of the fragment program
      * @return program linking the compiled vertex and fragment programs
      */
-    static protected int initializeShadersFromResources(Context context,String vertname,String fragname)
-    {
-        String vertsrc,fragsrc;
+    static protected int initializeShadersFromResources(Context context, String vertname, String fragname) {
+        String vertsrc, fragsrc;
         try {
             AssetManager assetmngr = context.getAssets();
 
@@ -57,62 +56,60 @@ public abstract class BasicShaders
             InputStream fraginput = assetmngr.open(fragname);
             vertsrc = getTextContent(vertinput);
             fragsrc = getTextContent(fraginput);
-        }
-        catch(IOException e)
-        {
-            MainActivity.log("Error loading shaders : " +e);
+        } catch (IOException e) {
+            MainActivity.log("Error loading shaders : " + e);
             throw new RuntimeException("Error loading shaders");
         }
 
-        int shaderprogram=initializeShaders(vertsrc,fragsrc);
+        int shaderprogram = initializeShaders(vertsrc, fragsrc);
         return shaderprogram;
     }
 
     /**
      * Fragment shader : the uniform color is used for each pixel
      */
-    private static final String FRAGSRC=
+    private static final String FRAGSRC =
             "precision mediump float;\n"
-                    +"uniform vec4 uColor;\n"
-                    +"void main()\n"
-                    +"{\n"
-                    +"    gl_FragColor=uColor;\n"
-                    +"}\n";
+                    + "uniform vec4 uColor;\n"
+                    + "void main()\n"
+                    + "{\n"
+                    + "    gl_FragColor=uColor;\n"
+                    + "}\n";
 
     /**
      * Vertex shader: it only transform vertex coordinates into viewer's space and project to screen
      */
-    private static final String VERTSRC=
+    private static final String VERTSRC =
             // Matrices
             "uniform mat4 uModelViewMatrix;\n"
-                    +"uniform mat4 uProjectionMatrix;\n"
+                    + "uniform mat4 uProjectionMatrix;\n"
 
                     // Vertex attributes
-                    +"attribute vec3 aVertexPosition;\n"
+                    + "attribute vec3 aVertexPosition;\n"
 
-                    +"void main() {\n"
-                    +"  gl_Position= uProjectionMatrix*uModelViewMatrix*vec4(aVertexPosition, 1.0);\n"
-                    +"}\n";
+                    + "void main() {\n"
+                    + "  gl_Position= uProjectionMatrix*uModelViewMatrix*vec4(aVertexPosition, 1.0);\n"
+                    + "}\n";
 
 
     /**
      * General method to compile and link vertex and fragment shaders in a shader program
+     *
      * @param vertsrc vertex shader
      * @param fragsrc fragment shader
      * @return program shader
      */
-    static public int initializeShaders(String vertsrc,String fragsrc)
-    {
+    static public int initializeShaders(String vertsrc, String fragsrc) {
         MainActivity.log("Loading shaders");
 
         // First compile vertex and fragment shaders
-        int vertexshader=loadShader(GLES20.GL_VERTEX_SHADER,vertsrc);
-        int fragmentshader=loadShader(GLES20.GL_FRAGMENT_SHADER,fragsrc);
+        int vertexshader = loadShader(GLES20.GL_VERTEX_SHADER, vertsrc);
+        int fragmentshader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragsrc);
 
         // Create a GL program
         int shaderprogram = GLES20.glCreateProgram();
         MyGLRenderer.checkGlError("glCreateProgram");
-        if (shaderprogram==0) return shaderprogram; // error ???
+        if (shaderprogram == 0) return shaderprogram; // error ???
 
         // Attach vertex shader to program
         GLES20.glAttachShader(shaderprogram, vertexshader);
@@ -126,10 +123,9 @@ public abstract class BasicShaders
         // Check if a link error appeared
         int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(shaderprogram, GLES20.GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] != GLES20.GL_TRUE)
-        {
+        if (linkStatus[0] != GLES20.GL_TRUE) {
             throw new RuntimeException("Could not link program: "
-                +GLES20.glGetProgramInfoLog(shaderprogram));
+                    + GLES20.glGetProgramInfoLog(shaderprogram));
         }
         // Now activate program
         GLES20.glUseProgram(shaderprogram);
@@ -145,13 +141,12 @@ public abstract class BasicShaders
      * @param shaderCode - String containing the shader code.
      * @return - Returns an id for the shader.
      */
-    public static int loadShader(int type, String shaderCode)
-    {
+    public static int loadShader(int type, String shaderCode) {
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
         int shader = GLES20.glCreateShader(type);
         MyGLRenderer.checkGlError("glCreateShader");
-        if (shader==0) return shader; // Could not create ??
+        if (shader == 0) return shader; // Could not create ??
 
         // Add the source code to the shader and compile it
         GLES20.glShaderSource(shader, shaderCode);
@@ -163,7 +158,7 @@ public abstract class BasicShaders
         GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
             throw new RuntimeException("Could not compile shader: "
-                + GLES20.glGetShaderInfoLog(shader));
+                    + GLES20.glGetShaderInfoLog(shader));
         }
 
         return shader;
@@ -207,15 +202,15 @@ public abstract class BasicShaders
     /**
      * Constructor of the complete rendering Shader programs
      */
-    public BasicShaders(Context context)
-    {
-        this.shaderprogram=createProgram(context);
+    public BasicShaders(Context context) {
+        this.shaderprogram = createProgram(context);
         this.findVariables();
     }
 
     /**
      * Method to create shaders. Made abstract to make sure that it is
      * created by downclasses
+     *
      * @return program id created after compiling and linking shader programs
      */
     public abstract int createProgram(Context context);
@@ -224,39 +219,42 @@ public abstract class BasicShaders
     /**
      * Get Shaders variables (uniform, attributes, etc.)
      */
-    public void findVariables()
-    {
+    public void findVariables() {
         // Variables for matrices
         this.uProjectionMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "uProjectionMatrix");
-        if (this.uProjectionMatrix==-1) throw new RuntimeException("uPojectionMatrix not found in shaders");
+        if (this.uProjectionMatrix == -1)
+            throw new RuntimeException("uPojectionMatrix not found in shaders");
         this.uModelViewMatrix = GLES20.glGetUniformLocation(this.shaderprogram, "uModelViewMatrix");
-        if (this.uProjectionMatrix==-1) throw new RuntimeException("uModelViewMatrix not found in shaders");
+        if (this.uProjectionMatrix == -1)
+            throw new RuntimeException("uModelViewMatrix not found in shaders");
 
         // vertex attributes
         this.aVertexPosition = GLES20.glGetAttribLocation(this.shaderprogram, "aVertexPosition");
-        if (this.aVertexPosition==-1) throw new RuntimeException("aVertexPosition not found in shaders");
+        if (this.aVertexPosition == -1)
+            throw new RuntimeException("aVertexPosition not found in shaders");
         GLES20.glEnableVertexAttribArray(this.aVertexPosition);
     }
 
     /*====================
       = Matrix functions =
       ====================*/
+
     /**
      * Set the uniform variable representing the Modelview Matrix
      * Modelview = transformation from object's space to viewer's space
+     *
      * @param matrix Matrix used to set the modelview matrix
      */
-    public void setModelViewMatrix(final float[] matrix)
-    {
-        GLES20.glUniformMatrix4fv(this.uModelViewMatrix, 1, false, matrix,0);
+    public void setModelViewMatrix(final float[] matrix) {
+        GLES20.glUniformMatrix4fv(this.uModelViewMatrix, 1, false, matrix, 0);
     }
 
     /**
      * Set the uniform variable representing the projection Matrix
+     *
      * @param matrix Matrix used to set the projection matrix
      */
-    public void setProjectionMatrix(final float[] matrix)
-    {
+    public void setProjectionMatrix(final float[] matrix) {
         GLES20.glUniformMatrix4fv(this.uProjectionMatrix, 1, false, matrix, 0);
     }
 
@@ -265,30 +263,31 @@ public abstract class BasicShaders
     /* =======================
        = Attributes handling =
        ======================= */
+
     /**
      * Provide the shaders with the list of vertex positions
-     * @param size Number of coordinates for each vertex
-     * @param dtype Type of coordinates
+     *
+     * @param size   Number of coordinates for each vertex
+     * @param dtype  Type of coordinates
      * @param stride Offset between two vertex coordinates
      * @param buffer Buffer containing the vertex positions
      */
     public void setPositionsPointer(final int size, final int dtype, final int stride,
-                                    final FloatBuffer buffer)
-    {
-        GLES20.glVertexAttribPointer(this.aVertexPosition,size,dtype,false,stride,buffer);
+                                    final FloatBuffer buffer) {
+        GLES20.glVertexAttribPointer(this.aVertexPosition, size, dtype, false, stride, buffer);
     }
 
     /**
      * Provide the shaders with the list of vertex of the desired VBO
-     * @param size Number of coordinates for each vertex
+     *
+     * @param size  Number of coordinates for each vertex
      * @param dtype Type of coordinates
      */
-    public void setPositionsPointer(final int size, final int dtype)
-    {
-        GLES20.glVertexAttribPointer(this.aVertexPosition,size,dtype,false,0,0);
+    public void setPositionsPointer(final int size, final int dtype) {
+        GLES20.glVertexAttribPointer(this.aVertexPosition, size, dtype, false, 0, 0);
     }
 
-    public void use(){
+    public void use() {
         GLES20.glUseProgram(shaderprogram);
     }
 
