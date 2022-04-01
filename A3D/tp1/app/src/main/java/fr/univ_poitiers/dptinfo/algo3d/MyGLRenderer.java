@@ -234,67 +234,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     }
 
 
-    public void prepareDepthMap(Light light){
-        int[] depthMaptFBO = new int[1];
-
-        GLES20.glGenFramebuffers(1,depthMaptFBO,0);
-        final int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-        int[] depthMap = new int[1];
-        GLES20.glGenTextures(1,depthMap,0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,depthMap[0]);
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_DEPTH_COMPONENT,SHADOW_WIDTH,SHADOW_HEIGHT,0,GLES20.GL_DEPTH_COMPONENT,GLES20.GL_UNSIGNED_INT,null);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_NEAREST);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_REPEAT);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_REPEAT);
-
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,depthMaptFBO[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER,GLES20.GL_DEPTH_ATTACHMENT,GLES20.GL_TEXTURE_2D,depthMap[0],0);
-
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
-
-        GLES20.glViewport(0,0,SHADOW_WIDTH,SHADOW_HEIGHT);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,depthMaptFBO[0]);
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
-
-        float[] lightProjection = new float[16];
-        Matrix.orthoM(lightProjection,0,-10.f,10.f,-10.f,10.f,0.1f,50.f);
-        float[] lightView = new float[16];
-        float[] lightpos = light.getPos(light.getTransform().getParentModelViewMatrix());
-        float[] lightdir = light.getDir(light.getTransform().getParentModelViewMatrix());
-        Matrix.setLookAtM(lightView,0,0, 0, 0, lightdir[0], lightdir[1],lightdir[2],0.f,1.f,0.f);
-        float[] lightSpaceMatrix = new float[16];
-        Matrix.multiplyMM(lightSpaceMatrix,0,lightProjection,0,lightView,0);
-        depthShader.use();
-        depthShader.setProjectionMatrix(lightProjection);
-        depthShader.setModelViewMatrix(lightView);
-        depthShader.setViewMatrix(lightView);
-        ShaderManager.setRender(false);
-
-
-        scene.cube2.earlyUpdate();
-        scene.cube2.update();
-
-
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
-
-        GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthMap[0]);
-        ShaderManager.setRender(true);
-        shaders.use();
-        shaders.setLightSpaceMatrix(lightSpaceMatrix);
-        shaders.setDepthMap(1);
-    }
-
     int[] fboId;
     int[] depthTextureId;
     int[] renderTextureId;
 
     public void generateShadowFBO() {
-        final int SHADOW_WIDTH = view.getWidth(), SHADOW_HEIGHT = view.getHeight();
+        final int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 
         fboId = new int[1];
         depthTextureId = new int[1];
@@ -340,7 +285,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
     private void renderShadowMap(Light light) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 
-        GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
+        GLES20.glViewport(0,0,2048,2048);
 
         //GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);

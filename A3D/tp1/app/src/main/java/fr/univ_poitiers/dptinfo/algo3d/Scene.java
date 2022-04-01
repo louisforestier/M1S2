@@ -66,8 +66,8 @@ public class Scene {
         angley = 0.F;
         ceilingMaterial = new Material(MyGLRenderer.darkgray);
         wallMaterial = new Material(MyGLRenderer.lightgray);
-        floorMaterial = new Material(new float[]{1.f,1.f,1.f,0.5f});
-        floorMaterial2 = new Material(new float[]{1.f,1.f,1.f,0.5f});
+        floorMaterial = new Material(new float[]{1.f,1.f,1.f,0.4f});
+        floorMaterial2 = new Material(new float[]{1.f,1.f,1.f,0.4f});
         sunMaterial = new Material(MyGLRenderer.orange);
         earthMaterial = new Material(MyGLRenderer.white);
         GameObject room = new Room(new boolean[]{false, false, true, true}, 6.F, 6.F, 2.5F, floorMaterial, ceilingMaterial, wallMaterial);
@@ -80,10 +80,11 @@ public class Scene {
         gameObjects.add(room3);
         GameObject room4 = new Room(new boolean[]{false, true, false, true}, 6.f, 6.f, 4.5f, floorMaterial2, ceilingMaterial, wallMaterial);
         //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
-        room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
+        room4.getTransform().posx(6).posz(-6).roty(90);
         gameObjects.add(room4);
 
         GameObject ball = new Ball(1.2f, 1.5f, 1.5f, sunMaterial);
+        ball.getTransform().posy(ball.getTransform().getPosy()+0.1f);
         gameObjects.add(ball);
 
         GameObject ball2 = new Ball(0.3f, -1.5f, 1.5f, earthMaterial);
@@ -158,7 +159,7 @@ public class Scene {
 
         GameObject frustum = new GameObject();
         frustum.setMesh(new Frustum(1.f,0.001f,50));
-        frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2);
+        frustum.getTransform().posx(6).posz(-6).rotx(45).rotz(45).scaley(2).posy(1);
         frustum.addMeshRenderer(new Material(MyGLRenderer.magenta));
         gameObjects.add(frustum);
 

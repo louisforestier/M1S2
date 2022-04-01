@@ -1,19 +1,13 @@
 #version 100
-#define POINT_LIGHT 0
+#define POINT_LIGHT 1
 #define DIRECTIONAL_LIGHT 1
-#define SPOT_LIGHT 2
+#define SPOT_LIGHT 1
 precision mediump float;
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform mat3 uNormalMatrix;
 // Light source definition
 uniform bool uLighting;
 // Material definition
-uniform bool uNormalizing;
 uniform vec4 uMaterialColor;
-//Specular effect
 uniform float uMaterialShininess;
-uniform vec4 uLightSpecular;
 uniform vec4 uMaterialSpecular;
 
 uniform sampler2D uTextureUnit;
@@ -69,15 +63,6 @@ uniform DirLight dirLights[NB_DIR_LIGHTS];
 uniform PointLight pointLights[NB_POINT_LIGHTS];
 uniform SpotLight spotLights[NB_SPOT_LIGHTS];
 
-uniform vec2 poissonDisk[16];
-
-
-// Returns a random number based on a vec3 and an int.
-float random(vec3 seed, int i){
-    vec4 seed4 = vec4(seed, i);
-    float dot_product = dot(seed4, vec4(12.9898, 78.233, 45.164, 94.673));
-    return fract(sin(dot_product) * 43758.5453);
-}
 
 float shadowCalculation(vec4 lightspaceposf, vec3 normal, vec3 lightdir)
 {
@@ -86,28 +71,20 @@ float shadowCalculation(vec4 lightspaceposf, vec3 normal, vec3 lightdir)
     float closestDepth = texture2D(shadowMap, projCoords.xy).r;
     float currentDepth = projCoords.z;
     float cosTheta = clamp(dot(normal, lightdir), 0.0, 1.0);
-    float bias = 0.001*tan(acos(cosTheta));
+    float bias = 0.0012*tan(acos(cosTheta));
     bias = clamp(bias, 0.0, 0.01);
     float shadow = 0.0;
-    for (int i=0;i<4;i++){
-        // use either :
-        //  - Always the same samples.
-        //    Gives a fixed pattern in the shadow, but no noise
-        int index = i;
-        //  - A random sample, based on the pixel's screen location.
-        //    No banding, but the shadow moves with the camera, which looks weird.
-        //int index = int(mod(16.0*random(gl_FragCoord.xyz, i),16.0));
-        //  - A random sample, based on the pixel's position in world space.
-        //    The position is rounded to the millimeter to avoid too much aliasing
-        //int index = int(mod(16.0 * random(floor(posf.xyz*1000.0), i),16.0));
-
-        // being fully in the shadow will eat up 4*0.2 = 0.8
-        // 0.2 potentially remain, which is quite dark.
-        float closestDepth = texture2D(shadowMap, vec2(projCoords.xy+poissonDisk[index]/700.0)).r;
-        float currentDepth = projCoords.z;
-        shadow += currentDepth - bias > closestDepth ? 0.2 * (1.0 - closestDepth) : 0.0;
+    vec2 textureSize = vec2(2048.0,2048.0);
+    vec2 texelSize = 1.0 / textureSize;
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture2D(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
     }
-    //float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    shadow /= 9.0;
     return shadow;
 }
 
@@ -185,11 +162,11 @@ void main(void) {
         }
         for (int i = 0; i < NB_POINT_LIGHTS; i++)
         {
-            //result += calcPointLight(pointLights[i],normal,posf.xyz,viewdir);
+            result += calcPointLight(pointLights[i],normal,posf.xyz,viewdir);
         }
         for (int i = 0; i < NB_SPOT_LIGHTS; i++)
         {
-            //result += calcSpotLight(spotLights[i],normal,posf.xyz,viewdir);
+            result += calcSpotLight(spotLights[i],normal,posf.xyz,viewdir);
         }
         gl_FragColor = result;
     }
