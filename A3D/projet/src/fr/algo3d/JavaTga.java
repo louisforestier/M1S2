@@ -21,7 +21,7 @@ import java.io.*;
  */
 public class JavaTga extends Application
 {
-    public static final int MAX_RAY_DEPTH = 1;
+    public static final int MAX_RAY_DEPTH = 2;
     /**
      * 
      * @param fout : output file stream
@@ -78,8 +78,8 @@ public class JavaTga extends Application
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        int w=64;
-        int h=36;
+        int w=1920;
+        int h=1080;
         byte buffer[]=new byte[3*w*h];
         byte image[]=new byte[3*w*h];
         Scene scene = new Scene();
@@ -90,7 +90,7 @@ public class JavaTga extends Application
                 float x = (col - w/2.f)/h;
                 float y = (row -h/2.f)/h;
                 float z = -1f;
-                Color c = scene.findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0);
+                Color c = scene.findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0,null);
                 // Ensure that the pixel is black
 
                 buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
