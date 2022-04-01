@@ -22,11 +22,8 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - mettre des textures sur les autres objets, notamment les obj
 // - mettre à jour le readme
 // - faire une plus jolie scene
-// - afficher un hud, notamment les joysticks https://stackoverflow.com/questions/5467218/opengl-2d-hud-over-3d
 // - implanter des ombres https://learnopengl.com/Advanced-Lighting/Shadows/Shadow-Mapping
-// - implanter le smooth shading with hard edges https://stackoverflow.com/questions/13205226/most-efficient-algorithm-to-calculate-vertex-normals-from-set-of-triangles-for-g
 // - faire une javadoc
-// - ajouter une pool de matériaux
 
 import android.util.Pair;
 
