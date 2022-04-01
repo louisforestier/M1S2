@@ -373,6 +373,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT|GLES20.GL_DEPTH_BUFFER_BIT| GLES20.GL_STENCIL_BUFFER_BIT);
         GLES20.glViewport(0,0,view.getWidth(),view.getHeight());
         this.shaders.use();
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
@@ -385,9 +386,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
         scene.earlyUpdate();
         scene.lateUpdate();
         GLES20.glFrontFace(GLES20.GL_CCW);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glColorMask(false,false,false,false);
+        GLES20.glEnable(GLES20.GL_STENCIL_TEST);
+        GLES20.glStencilOp(GLES20.GL_REPLACE,GLES20.GL_REPLACE,GLES20.GL_REPLACE);
+        GLES20.glStencilFunc(GLES20.GL_ALWAYS, 1, 0x1);
+        scene.fillStencil();
+
+        GLES20.glColorMask(true,true,true,true);
+        GLES20.glStencilOp(GLES20.GL_KEEP, GLES20.GL_KEEP, GLES20.GL_KEEP);
+        GLES20.glStencilFunc(GLES20.GL_NOTEQUAL,1,1);
+        GLES20.glDisable(GLES20.GL_STENCIL_TEST);
+        scene.setUpMatrix(this);
+        scene.earlyUpdate();
+        scene.finalRendering();
+
+        //Dessiner la scène sans réflexion
+        //attention il faut peut etre utiliser le gl_blend pour mélanger les couleurs du plane avec la réflexion
+
+/*
         scene.setUpMatrix(this);
         scene.earlyUpdate();
         scene.lateUpdate();
+*/
         /**
          * A faire pour le stencil mirror
          */

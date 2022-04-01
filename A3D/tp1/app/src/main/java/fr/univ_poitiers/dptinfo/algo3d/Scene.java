@@ -5,7 +5,6 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +17,11 @@ import fr.univ_poitiers.dptinfo.algo3d.mesh.Donut;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Frustum;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Pipe;
+import fr.univ_poitiers.dptinfo.algo3d.mesh.Plane;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Pyramid;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Tictac;
-import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
  * Class to represent the scene. It includes all the objects to display, in this case a room
@@ -32,6 +30,7 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
  * @version 1.0
  */
 public class Scene {
+    private GameObject mirror;
     private GameObject light;
     public final GameObject light2;
     private final GameObject light3;
@@ -79,9 +78,15 @@ public class Scene {
         room3.getTransform().posx(6);
         gameObjects.add(room3);
         GameObject room4 = new Room(new boolean[]{false, true, false, true}, 6.f, 6.f, 4.5f, floorMaterial2, ceilingMaterial, wallMaterial);
-        //je pourrais aussi créer mes portes sur les autres murs mais c'est pour vérifier que la rotation fonctionne correctement
-        room4.getTransform().posx(6).posz(-6).roty(90).rotx(180).posy(2.f);
+        room4.getTransform().posx(6).posz(-6).roty(90);
         gameObjects.add(room4);
+
+        mirror = new GameObject();
+        mirror.setMesh(Plane.INSTANCE);
+        mirror.getTransform().posx(6).posz(-6).scalex(0.4f).scalez(0.4f).posy(0.01f);
+        mirror.addMeshRenderer(new Material(new float[]{0.f,0.f,1.f,0.4f}));
+        mirror.addComponent(Mirror.class);
+        gameObjects.add(mirror);
 
         GameObject ball = new Ball(1.2f, 1.5f, 1.5f, sunMaterial);
         gameObjects.add(ball);
@@ -91,6 +96,7 @@ public class Scene {
         gameObjects.add(ball2);
 
 
+/*
         InputStream stream = current.getResources().openRawResource(R.raw.armadillo);
         Material armadilloMaterial = new Material(MyGLRenderer.lightgray);
         GameObject armadillo = new GameObject();
@@ -112,6 +118,7 @@ public class Scene {
         dragon.getTransform().posy(1.f).scalex(0.02f).scaley(0.02f).scalez(0.02f).posx(5);
         dragon.addMeshRenderer(new Material());
         gameObjects.add(dragon);
+*/
 
 
         GameObject donut = new GameObject();
@@ -294,9 +301,40 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
-        Matrix.scaleM(modelviewmatrix,0,1.f,-1.f,1.f);
+        Matrix.multiplyMM(modelviewmatrix,0,modelviewmatrix,0,getReflexionMatrix(mirror),0);
         shaders.setViewMatrix(modelviewmatrix);
         shaders.setModelViewMatrix(modelviewmatrix);
+    }
+
+    public float[] getReflexionMatrix(GameObject mirror) {
+        Vec3f point = new Vec3f(mirror.getTransform().getPosx(),mirror.getTransform().getPosy(),mirror.getTransform().getPosz());
+        Vec3f rotation = new Vec3f(mirror.getTransform().getRotx(),mirror.getTransform().getRoty(),mirror.getTransform().getRotz());
+        float[] rotationMatrix = new float[16];
+        Matrix.setRotateM(rotationMatrix,0,rotation.z,0f,0f,1f);
+        Matrix.rotateM(rotationMatrix,0,rotation.x,1f,0f,0f);
+        Matrix.rotateM(rotationMatrix,0,rotation.y,0f,1f,0f);
+        float[] rawNormal = new float[]{0,1,0,1};
+        Matrix.multiplyMV(rawNormal,0,rotationMatrix,0,rawNormal,0);
+        Vec3f  normal = new Vec3f(rawNormal[0],rawNormal[1],rawNormal[2]);
+        float[] matrix = new float[]{
+                1-2*normal.x*normal.x,
+                -2*normal.x* normal.y,
+                -2*normal.x* normal.z,
+                0,
+                -2*normal.x* normal.y,
+                1-2*normal.y*normal.y,
+                -2*normal.y* normal.z,
+                0,
+                -2*normal.x* normal.z,
+                -2*normal.y* normal.z,
+                1-2*normal.z*normal.z,
+                0,
+                2*(point.dotProduct(normal))*normal.x,
+                2*(point.dotProduct(normal))*normal.y,
+                2*(point.dotProduct(normal))*normal.z,
+                1
+        };
+        return matrix;
     }
 
 
@@ -313,9 +351,27 @@ public class Scene {
 
     public void lateUpdate(){
         for(GameObject go : gameObjects){
+            if (go == mirror) continue;
             go.lateUpdate();
         }
     }
+
+    public void finalRendering(){
+        for (GameObject go : gameObjects){
+            if (go == mirror){
+                GLES20.glEnable(GLES20.GL_BLEND);
+                GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);
+                go.lateUpdate();
+                GLES20.glDisable(GLES20.GL_BLEND);
+            }
+            else go.lateUpdate();
+        }
+    }
+
+    public void fillStencil(){
+        mirror.lateUpdate();
+    }
+
 
 
 }
