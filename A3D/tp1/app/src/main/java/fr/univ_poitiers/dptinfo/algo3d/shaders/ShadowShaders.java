@@ -2,11 +2,6 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 public class ShadowShaders extends MultipleLightingShaders {
 

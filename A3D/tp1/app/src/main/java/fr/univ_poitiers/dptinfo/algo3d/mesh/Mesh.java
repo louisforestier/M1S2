@@ -1,24 +1,16 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
-import android.graphics.Shader;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 public class Mesh {
     private int glposbuffer;
@@ -87,7 +79,6 @@ public class Mesh {
 
     public void calculateSmoothShadingNormals() {
         normals = new float[vertexpos.length];
-        Map<Integer, List<Vec3f>> vertexNormals = new HashMap<>();
         for (int i = 0; i < triangles.length; i += 3) {
             Vec3f p1 = new Vec3f(vertexpos[triangles[i] * 3], vertexpos[triangles[i] * 3 + 1], vertexpos[triangles[i] * 3 + 2]);
             Vec3f p2 = new Vec3f(vertexpos[triangles[i + 1] * 3], vertexpos[triangles[i + 1] * 3 + 1], vertexpos[triangles[i + 1] * 3 + 2]);
@@ -113,54 +104,7 @@ public class Mesh {
             normals[triangles[i + 2] * 3] += n3.x;
             normals[triangles[i + 2] * 3 + 1] += n3.y;
             normals[triangles[i + 2] * 3 + 2] += n3.z;
-/*
-            if (!vertexNormals.containsKey(triangles[i] * 3)){
-                vertexNormals.put(triangles[i]*3,new ArrayList<>());
-                vertexNormals.put(triangles[i+1]*3,new ArrayList<>());
-                vertexNormals.put(triangles[i+2]*3,new ArrayList<>());
-            }
-            vertexNormals.get(triangles[i]*3).add(n1);
-            vertexNormals.get(triangles[i+1]*3).add(n2);
-            vertexNormals.get(triangles[i+2]*3).add(n3);
-*/
-
         }
-/*
-        for (int i = 0; i < triangles.length; i += 3) {
-            Vec3f p1 = new Vec3f(vertexpos[triangles[i] * 3], vertexpos[triangles[i] * 3 + 1], vertexpos[triangles[i] * 3 + 2]);
-            Vec3f p2 = new Vec3f(vertexpos[triangles[i + 1] * 3], vertexpos[triangles[i + 1] * 3 + 1], vertexpos[triangles[i + 1] * 3 + 2]);
-            Vec3f p3 = new Vec3f(vertexpos[triangles[i + 2] * 3], vertexpos[triangles[i + 2] * 3 + 1], vertexpos[triangles[i + 2] * 3 + 2]);
-            Vec3f v1 = new Vec3f();
-            v1.setSub(p3, p1);
-            Vec3f v2 = new Vec3f();
-            v2.setSub(p3, p2);
-            Vec3f n = new Vec3f();
-            n.setCrossProduct(v1, v2);
-            Vec3f origin = new Vec3f();
-            for (Vec3f normal : vertexNormals.get(triangles[i]*3)){
-                if (calcAngle(origin,n,normal) < 50) {
-                    normals[triangles[i] * 3] += normal.x;
-                    normals[triangles[i] * 3 + 1] += normal.y;
-                    normals[triangles[i] * 3 + 2] += normal.z;
-                } else {
-
-                }
-
-            }
-            for (Vec3f normal : vertexNormals.get(triangles[i+1]*3)){
-                normals[triangles[i + 1] * 3] += n2.x;
-                normals[triangles[i + 1] * 3 + 1] += n2.y;
-                normals[triangles[i + 1] * 3 + 2] += n2.z;
-
-            }
-            for (Vec3f normal : vertexNormals.get(triangles[i+2]*3)){
-                normals[triangles[i + 2] * 3] += n3.x;
-                normals[triangles[i + 2] * 3 + 1] += n3.y;
-                normals[triangles[i + 2] * 3 + 2] += n3.z;
-
-            }
-        }
-*/
         for (int i = 0; i < normals.length; i += 3) {
             Vec3f n = new Vec3f(normals[i], normals[i + 1], normals[i + 2]);
             n.normalize();
@@ -192,10 +136,10 @@ public class Mesh {
 
 
     public void initGraphics() {
-        //TODO : a retirer après avoir implanté les coordonnées de texture partout
+        //est nécessaire car les coordonnées de textures ne sont pas implantées pour tous les maillages utilisés
         if (texturesCoord == null)
             texturesCoord = new float[vertexpos.length / 3 * 2];
-        /**
+        /*
          * Buffer des sommets
          */
         ByteBuffer posbytebuf = ByteBuffer.allocateDirect(vertexpos.length * Float.BYTES);
@@ -205,7 +149,7 @@ public class Mesh {
         posbuffer.position(0);
 
 
-        /**
+        /*
          * Buffer des triangles
          */
         ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Integer.BYTES);
@@ -214,8 +158,7 @@ public class Mesh {
         trianglesbuf.put(triangles);
         trianglesbuf.position(0);
 
-        /**
-         *
+        /*
          * Buffer des normals
          */
         ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
@@ -224,8 +167,7 @@ public class Mesh {
         normalbuffer.put(normals);
         normalbuffer.position(0);
 
-        /**
-         *
+        /*
          * Buffer des textures
          */
         ByteBuffer texturebytebuf = ByteBuffer.allocateDirect(texturesCoord.length * Float.BYTES);

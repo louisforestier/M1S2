@@ -45,8 +45,8 @@ public class Pyramid extends Mesh {
         k = 0;
 
         Vec3f p1 = new Vec3f(vertexpos[triangles[0] * 3], vertexpos[triangles[0] * 3 + 1], vertexpos[triangles[0] * 3 + 2]);
-        Vec3f p2 = new Vec3f(vertexpos[triangles[0 + 1] * 3], vertexpos[triangles[0 + 1] * 3 + 1], vertexpos[triangles[0 + 1] * 3 + 2]);
-        Vec3f p3 = new Vec3f(vertexpos[triangles[0 + 2] * 3], vertexpos[triangles[0 + 2] * 3 + 1], vertexpos[triangles[0 + 2] * 3 + 2]);
+        Vec3f p2 = new Vec3f(vertexpos[triangles[1] * 3], vertexpos[triangles[1] * 3 + 1], vertexpos[triangles[1] * 3 + 2]);
+        Vec3f p3 = new Vec3f(vertexpos[triangles[2] * 3], vertexpos[triangles[2] * 3 + 1], vertexpos[triangles[2] * 3 + 2]);
         Vec3f n = getNormal(p1, p2, p3);
 
         normals = new float[vertexpos.length];

@@ -5,10 +5,8 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import androidx.core.view.MotionEventCompat;
 
 /**
  * Class to described the surface view. Mainly based on well-known code.
@@ -34,7 +32,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
 
 
-    private final float SCALE_FACTOR = 0.005F;
     private float leftJoystickOriginX;
     private float leftJoystickOriginY;
     private float rightJoystickOriginX;

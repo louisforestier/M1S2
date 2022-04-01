@@ -3,12 +3,9 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 import android.opengl.GLES20;
 
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BasicShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.BlinnPhongMultipleLightShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.TexturesShaders;
 
 public class Material {
 

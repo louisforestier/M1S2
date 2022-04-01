@@ -2,9 +2,7 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class ShaderManager {
 

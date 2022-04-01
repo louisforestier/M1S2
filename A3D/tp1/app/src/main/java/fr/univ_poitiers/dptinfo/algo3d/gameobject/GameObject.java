@@ -34,13 +34,7 @@ public class GameObject {
     public <T extends Component> void addComponent(Class<T> type) {
         try {
             components.add(type.getDeclaredConstructor(GameObject.class, Transform.class).newInstance(this, transform));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }

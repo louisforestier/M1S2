@@ -24,7 +24,6 @@ import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.Light;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightType;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
@@ -61,9 +60,6 @@ public class Scene {
      * Constructor : build each wall, the floor and the ceiling as quads
      */
     public Scene(Context current) {
-        /**
-         * A constant for the size of the wall
-         */
         // Init observer's view angles
         angley = 0.F;
         ceilingMaterial = new Material(MyGLRenderer.darkgray);

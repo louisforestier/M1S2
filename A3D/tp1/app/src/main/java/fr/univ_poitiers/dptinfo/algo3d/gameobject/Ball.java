@@ -4,7 +4,6 @@ package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Sphere;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
 public class Ball extends GameObject {
 
