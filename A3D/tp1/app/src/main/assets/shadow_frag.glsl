@@ -1,7 +1,4 @@
 #version 100
-#define POINT_LIGHT 1
-#define DIRECTIONAL_LIGHT 1
-#define SPOT_LIGHT 1
 precision mediump float;
 // Light source definition
 uniform bool uLighting;
