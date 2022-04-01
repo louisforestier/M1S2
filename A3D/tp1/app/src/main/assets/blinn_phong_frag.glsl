@@ -1,8 +1,5 @@
 #version 100
 precision mediump float;
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform mat3 uNormalMatrix;
 // Light source definition
 uniform float uConstantAttenuation;
 uniform float uLinearAttenuation;
@@ -11,12 +8,10 @@ uniform vec4 uAmbiantLight;
 uniform bool uLighting;
 uniform vec3 uLightPos;
 uniform vec4 uLightColor;
-// Material definition
-uniform bool uNormalizing;
-uniform vec4 uMaterialColor;
-//Specular effect
-uniform float uMaterialShininess;
 uniform vec4 uLightSpecular;
+// Material definition
+uniform vec4 uMaterialColor;
+uniform float uMaterialShininess;
 uniform vec4 uMaterialSpecular;
 
 varying vec4 posf;
