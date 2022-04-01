@@ -34,7 +34,7 @@ public class Scene {
         Model modelMin = null;
         for (Model m : models) {
             float lambda = m.getIntersection(P,v);
-            if (lambda > 0 && lambda < lambdaMin){
+            if (lambda > 1E-3 && lambda < lambdaMin){
                 lambdaMin = lambda;
                 modelMin = m;
             }

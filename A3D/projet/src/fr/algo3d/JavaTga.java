@@ -21,7 +21,7 @@ import java.io.*;
  */
 public class JavaTga extends Application
 {
-    public static final int MAX_RAY_DEPTH = 5;
+    public static final int MAX_RAY_DEPTH = 1;
     /**
      * 
      * @param fout : output file stream
@@ -78,8 +78,8 @@ public class JavaTga extends Application
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        int w=1920;
-        int h=1080;
+        int w=64;
+        int h=36;
         byte buffer[]=new byte[3*w*h];
         byte image[]=new byte[3*w*h];
         Scene scene = new Scene();
@@ -131,7 +131,7 @@ public class JavaTga extends Application
     public static Image getFXImage(byte[] buffer, int width, int height) {
         WritableImage image = new WritableImage(width,height);
         PixelWriter writer = image.getPixelWriter();
-        writer.setPixels(0,0,1920,1080, WritablePixelFormat.getByteRgbInstance(),buffer,0,width*3);
+        writer.setPixels(0,0,width,height, WritablePixelFormat.getByteRgbInstance(),buffer,0,width*3);
         return image;
     }
 }
