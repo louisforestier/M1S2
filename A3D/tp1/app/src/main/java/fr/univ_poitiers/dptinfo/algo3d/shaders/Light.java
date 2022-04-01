@@ -19,8 +19,8 @@ public class Light extends Component {
     private float cutOff;
     private float outerCutOff;
 
-    public Light(GameObject gameObject, Transform transform) {
-        super(gameObject, transform);
+    public Light(GameObject gameObject) {
+        super(gameObject);
         this.type = LightType.POINT;
         ambient = new float[]{0.2f, 0.2f, 0.2f, 1.f};
         diffuse = new float[]{0.8f, 0.8f, 0.8f, 1.f};

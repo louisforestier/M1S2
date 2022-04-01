@@ -4,7 +4,6 @@ import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
 public class MeshRenderer extends Component {
@@ -12,8 +11,8 @@ public class MeshRenderer extends Component {
     private Material material;
 
 
-    public MeshRenderer(GameObject gameObject, Transform transform) {
-        super(gameObject, transform);
+    public MeshRenderer(GameObject gameObject) {
+        super(gameObject);
     }
 
     public Material getMaterial() {
@@ -38,7 +37,7 @@ public class MeshRenderer extends Component {
     private void renderShadow() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
-            Matrix.multiplyMM(modelviewmatrix, 0, ShaderManager.getInstance().getDepthShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);
+            Matrix.multiplyMM(modelviewmatrix, 0, ShaderManager.getInstance().getDepthShader().getViewMatrix(), 0, transform.getGlobalModelMatrix(), 0);
             ShaderManager.getInstance().getDepthShader().setModelViewMatrix(modelviewmatrix);
             gameObject.getCompotent(MeshFilter.class).getMesh().draw(ShaderManager.getInstance().getDepthShader());
         }
@@ -53,9 +52,9 @@ public class MeshRenderer extends Component {
     private void render() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
-            Matrix.multiplyMM(modelviewmatrix, 0, material.getShader().getViewMatrix(), 0, transform.getModelViewMatrix(), 0);
+            Matrix.multiplyMM(modelviewmatrix, 0, material.getShader().getViewMatrix(), 0, transform.getGlobalModelMatrix(), 0);
             material.getShader().setModelViewMatrix(modelviewmatrix);
-            material.getShader().setModelMatrix(transform.getModelViewMatrix());
+            material.getShader().setModelMatrix(transform.getGlobalModelMatrix());
             material.update();
             switch (material.getDrawMode()) {
                 case TRIANGLES:

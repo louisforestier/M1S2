@@ -16,7 +16,7 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 // - implanter plusieurs lumières https://learnopengl.com/Lighting/Multiple-lights DONE
 // - revoir l'objimporter pour conserver les sommets qui peuvent etre communs, avec une hashmap de paire<vertex,normal>
 // - nettoyer code des shaders DONE
-// - nettoyer code java
+// - nettoyer code java DONE
 // - faire la réflexion par stencil buffer
 // - réparer les textures des murs avec portes
 // - mettre des textures sur les autres objets, notamment les obj

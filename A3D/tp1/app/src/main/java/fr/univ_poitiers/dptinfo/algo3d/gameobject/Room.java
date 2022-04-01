@@ -6,9 +6,21 @@ import android.opengl.GLES20;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Plane;
 
+/**
+ * Class to build rooms in the scene with specific dimensions, materials and doors.
+ */
 public class Room extends GameObject {
 
-
+    /**
+     * Constructor.
+     * @param doors
+     * @param length
+     * @param width
+     * @param height
+     * @param floorMaterial
+     * @param ceilingMaterial
+     * @param wallMaterial
+     */
     public Room(boolean[] doors, float length, float width, float height, Material floorMaterial, Material ceilingMaterial, Material wallMaterial) {
         super();
         GameObject floor = new GameObject();
@@ -36,6 +48,9 @@ public class Room extends GameObject {
     }
 
 
+    /**
+     * Override of the lateUpdate method to add reflection effect with blending.
+     */
     @Override
     public void lateUpdate() {
         for (Component c : components) {

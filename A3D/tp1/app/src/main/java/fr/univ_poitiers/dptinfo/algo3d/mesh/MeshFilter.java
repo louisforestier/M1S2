@@ -8,8 +8,8 @@ public class MeshFilter extends Component {
 
     private Mesh mesh;
 
-    public MeshFilter(GameObject gameObject, Transform transform) {
-        super(gameObject, transform);
+    public MeshFilter(GameObject gameObject) {
+        super(gameObject);
     }
 
     public Mesh getMesh() {

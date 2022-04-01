@@ -276,4 +276,10 @@ public class Scene {
     }
 
 
+    public void finish(){
+        for (GameObject g : gameObjects){
+            GameObject.destroy(g);
+        }
+    }
+
 }

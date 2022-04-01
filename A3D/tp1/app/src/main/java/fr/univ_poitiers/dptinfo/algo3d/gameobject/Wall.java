@@ -3,9 +3,18 @@ package fr.univ_poitiers.dptinfo.algo3d.gameobject;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Material;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Plane;
 
+/**
+ * Class to build a wall with a door or not, with the {@link Plane} Mesh.
+ */
 public class Wall extends GameObject {
 
-
+    /**
+     * Constructor.
+     * @param width
+     * @param height
+     * @param material
+     * @param hasDoor
+     */
     public Wall(float width, float height, Material material, boolean hasDoor) {
         super();
         getTransform().posy(height / 2);
