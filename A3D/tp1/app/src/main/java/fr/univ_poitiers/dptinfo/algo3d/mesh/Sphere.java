@@ -30,15 +30,41 @@ import android.util.Pair;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class to calculate the mesh of a sphere in two different ways.
+ */
 public class Sphere extends Mesh {
 
+    /**
+     * Array to store the vertex position of an icosphere
+     */
     private float[] vertexposIco;
+    /**
+     * Array to store the triangles of an icosphere
+     */
     private int[] trianglesIco;
+    /**
+     * Number of current vertices.
+     */
     private int nbIndicesV;
+    /**
+     * Number of current triangles.
+     */
     private int nbIndicesT;
+
+    /**
+     * Map to store the paires of vertices already calculated.
+     */
     private Map<Pair<Integer, Integer>, Integer> middleVertices = new HashMap<>();
 
+    /**
+     * Constructor of UV sphere.
+     * @param slice - number of slices composing the silence. Must be superior to 2.
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
     public Sphere(int slice, int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
+        if (slice < 3) throw new IllegalArgumentException("Slice must be superior to 2.");
         float r = 1.f;
         vertexpos = new float[((slice - 1) * (quarter + 1) + 2) * 3];
         int k = 0;
@@ -95,6 +121,10 @@ public class Sphere extends Mesh {
         texturesCoord[texturesCoord.length - 1] = 0;
     }
 
+    /**
+     * Constructor of icosphere
+     * @param nbDiv - number of subdivision to do.
+     */
     public Sphere(int nbDiv) {
         vertexpos = new float[]{
                 1.F, 0.F, 0.F,
@@ -133,6 +163,13 @@ public class Sphere extends Mesh {
 
     }
 
+    /**
+     * Recursive method to divide a triangle until the nbDiv reached 0, then the vertices index are stored as a triangle
+     * @param v1 - index of the first vertex of the triangle
+     * @param v2 - index of the second vertex of the triangle
+     * @param v3 - index of the thrid vertex of the triangle
+     * @param nbDiv - number of remaining subdivisions
+     */
     private void divideTriangle(int v1, int v2, int v3, int nbDiv) {
         if (nbDiv == 0) {
             trianglesIco[nbIndicesT] = v1;
@@ -150,6 +187,12 @@ public class Sphere extends Mesh {
         }
     }
 
+    /**
+     * Calculate a new vertex in the middle of the v1v2 segment and returns its index.
+     * @param v1 - index of the first vertex
+     * @param v2 - index of the second vertex
+     * @return
+     */
     private int getMiddle(int v1, int v2) {
         float x = (vertexposIco[v1 * 3] + vertexposIco[v2 * 3]) / 2;
         float y = (vertexposIco[v1 * 3 + 1] + vertexposIco[v2 * 3 + 1]) / 2;

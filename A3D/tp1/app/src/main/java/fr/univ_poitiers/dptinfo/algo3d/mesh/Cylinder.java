@@ -1,7 +1,16 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+/**
+ * Class to calculate the mesh of a cylinder
+ */
 public class Cylinder extends Mesh {
+
+    /**
+     * Constructor.
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
     public Cylinder(int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
         vertexpos = new float[((2 * 2) * (quarter + 1) + 2) * 3];
         triangles = new int[quarter * 4 * 3];
         int k = 0;

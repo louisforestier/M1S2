@@ -2,9 +2,20 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
+/**
+ * Class to calculate the mesh of a frustum.
+ * Can be used to make a cylinder or a cone.
+ */
 public class Frustum extends Mesh {
 
+    /**
+     * Constructor
+     * @param r1 - radius of the bottom of the frustum
+     * @param r2 - radius of the top of the frustum
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
     public Frustum(float r1, float r2, int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
         vertexpos = new float[((2 * 2) * (quarter + 1) + 2) * 3];
         triangles = new int[quarter * 4 * 3];
 

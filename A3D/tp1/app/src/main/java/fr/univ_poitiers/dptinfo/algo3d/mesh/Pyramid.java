@@ -2,9 +2,18 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
 
+/**
+ * Class to calculate the mesh of a pyramid .
+ * Can be used to make a cone with flat shading.
+ */
 public class Pyramid extends Mesh {
 
+    /**
+     * Constructor.
+     * @param quarter - number of sides of the pyramid. Must be superior to 2.
+     */
     public Pyramid(int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
         vertexpos = new float[(2 * (quarter + 1) + 1 + quarter) * 3]; //+quarter pour le sommet,+1 pour la base et +1 pour le sommet de jointure de la base (le sommet répété pour theta = 0 et theta = 360)
         triangles = new int[quarter * 2 * 3];
         int k = 0;
@@ -49,35 +58,6 @@ public class Pyramid extends Mesh {
         Vec3f p3 = new Vec3f(vertexpos[triangles[2] * 3], vertexpos[triangles[2] * 3 + 1], vertexpos[triangles[2] * 3 + 2]);
         Vec3f n = getNormal(p1, p2, p3);
 
-        normals = new float[vertexpos.length];
-        for (int i = 0; i <= quarter; i++) {
-            double theta = Math.toRadians((360.0 / quarter) * i);
-            normals[k++] = (float) (r * Math.cos(theta));
-            normals[k++] = n.y;
-            normals[k++] = (float) (r * Math.sin(theta));
-        }
-        for (int i = 0; i <= quarter; i++) {
-            normals[k++] = 0.f;
-            normals[k++] = -1.f;
-            normals[k++] = 0.f;
-        }
-        for (int i = 0; i < quarter; i++) {
-            double theta1 = Math.toRadians((360.0 / quarter) * i);
-            double theta2 = Math.toRadians((360.0 / quarter) * (i + 1));
-            float x = (float) (((r * Math.cos(theta1)) + (r * Math.cos(theta2))) / 2);
-            float z = (float) (((r * Math.sin(theta1)) + (r * Math.sin(theta2))) / 2);
-            double norm = Math.sqrt(x * x + n.y * n.y + z * z);
-            x /= norm;
-            z /= norm;
-
-            normals[k++] = x;
-            normals[k++] = (float) (n.y / norm);
-            normals[k++] = z;
-        }
-
-        normals[k++] = 0.f;
-        normals[k++] = -1.f;
-        normals[k++] = 0.f;
         this.calculateFlatShadingNormals();
     }
 }

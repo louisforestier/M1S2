@@ -54,6 +54,7 @@ public class Transform extends Component{
     /**
      * Returns an array corresponding to the global Model Matrix, by getting its parent global Model Matrix recursively.
      * Not a good solution, because every child call the method for its parent so each matrix are calculated as many times as they have children.
+     * I did it because i found it easier to do without breaking my design and also because it was easier for me to debug, each object do its own calculation.
      * Should go the other way, the parent should give its matrix to its children.
      * @return float array with a size of 16, representing a 4*4 global model matrix
      */

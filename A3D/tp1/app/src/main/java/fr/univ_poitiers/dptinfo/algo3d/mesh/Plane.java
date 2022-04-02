@@ -6,13 +6,19 @@ import android.opengl.GLES20;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
 
 /**
- * Primitive d'un plan de taille 10x10 constitué de 200 triangles
+ * Class to calculate a 10x10 plane composed of 200 triangles.
  */
 public class Plane extends Mesh {
 
+    /**
+     * A static instance to be used. Can also be instantiated with a constructor.
+     */
     public static final Plane INSTANCE = new Plane();
 
 
+    /**
+     * Constructor.
+     */
     public Plane() {
         vertexpos = new float[11 * 11 * 3];
         triangles = new int[200 * 3];
@@ -54,6 +60,11 @@ public class Plane extends Mesh {
         }
     }
 
+    /**
+     * Draw the shadow of the mesh with the back face culled.
+     * This is done to not used front face culling for planes, as this method only works for solid objects with a volume.
+     * @param shaders
+     */
     @Override
     public void draw(DepthShader shaders) {
         GLES20.glCullFace(GLES20.GL_BACK);

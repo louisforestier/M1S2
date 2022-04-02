@@ -1,8 +1,18 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+/**
+ * Class to calculate the mesh of a capsule
+ */
 public class Tictac extends Mesh {
 
+    /**
+     * Constructor.
+     * @param slice - number of slices composing the silence. Must be superior to 2.
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
     public Tictac(int slice, int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
+        if (slice < 3) throw new IllegalArgumentException("Slice must be superior to 2.");
         int verticesSize;
         int trianglesSize;
         if (slice % 2 == 0) {

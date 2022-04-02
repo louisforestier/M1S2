@@ -1,8 +1,16 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+/**
+ * Class to calculate the mesh of a pipe (empty cylinder with inner and outer faces).
+ */
 public class Pipe extends Mesh {
-    public Pipe(int quarter) {
 
+    /**
+     * Constructor.
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
+    public Pipe(int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
         vertexpos = new float[((2 * 2) * (quarter + 1)) * 3];
         triangles = new int[quarter * 2 * 3 * 2];
         int k = 0;
