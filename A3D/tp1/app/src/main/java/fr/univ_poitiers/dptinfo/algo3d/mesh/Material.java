@@ -7,17 +7,47 @@ import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadowShaders;
 
+/**
+ * Class to store the material properties to be used in Blinn-Phong calculation of color in the shader.
+ */
 public class Material {
 
+    /**
+     * The default shader to use.
+     */
     private final static Class<? extends MultipleLightingShaders> defaultShader = ShadowShaders.class;
 
+    /**
+     * The ambient/diffuse color of the material.
+     */
     private float[] color;
+
+    /**
+     * The specular color of the material.
+     */
     private float[] specColor;
+    /**
+     * The shininess of the material.
+     */
     private float shininess;
+    /**
+     * The shader of the material. Should allow the use of different shaders in a Scene, not tested yet.
+     */
     private Class<? extends MultipleLightingShaders> shader;
+    /**
+     * How the object should be drawn. See {@link DrawMode}
+     */
     private DrawMode drawMode;
+
+    /**
+     * Handle of the texture stored on GPU.
+     */
     private int textureId = -1;
 
+    /**
+     * Default Constructor.
+     * Creates a white material.
+     */
     public Material() {
         this.shader = defaultShader;
         color = MyGLRenderer.white;
@@ -26,6 +56,10 @@ public class Material {
         drawMode = DrawMode.TRIANGLES;
     }
 
+    /**
+     * Constructor.
+     * @param color - the ambient/diffuse color of the material.
+     */
     public Material(float[] color) {
         this.color = color;
         this.shader = defaultShader;
@@ -34,6 +68,12 @@ public class Material {
         drawMode = DrawMode.TRIANGLES;
     }
 
+    /**
+     * Constructor.
+     * @param color - the ambient/diffuse color of the material.
+     * @param specColor - the specular color of the material.
+     * @param shininess - the shininess of the material.
+     */
     public Material(float[] color, float[] specColor, float shininess) {
         this.color = color;
         this.shader = defaultShader;
