@@ -4,38 +4,67 @@ import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 
+/**
+ * Component to render the mesh of the GameObject.
+ */
 public class MeshRenderer extends Component {
 
+    /**
+     * The material used by the renderer.
+     */
     private Material material;
 
-
+    /**
+     * Constructor
+     * @param gameObject
+     */
     public MeshRenderer(GameObject gameObject) {
         super(gameObject);
     }
 
+    /**
+     * Returns the material.
+     * @return the material.
+     */
     public Material getMaterial() {
         return material;
     }
 
+    /**
+     * Set the renderer material to the parameter.
+     * @param material
+     */
     public void setMaterial(Material material) {
         this.material = material;
     }
 
+    /**
+     * Call the {@link Mesh#initGraphics()} of the mesh contained in the {@link MeshFilter}, if they are not null, to send the data to the GPU.
+     */
     @Override
     public void start() {
-        gameObject.getCompotent(MeshFilter.class).getMesh().initGraphics();
+        MeshFilter mf = gameObject.getCompotent(MeshFilter.class);
+        if (mf != null && mf.getMesh() != null)
+            gameObject.getCompotent(MeshFilter.class).getMesh().initGraphics();
     }
 
-
+    /**
+     * Call the {@link MeshRenderer#renderShadow()} method.
+     */
     @Override
     public void update() {
         renderShadow();
     }
 
+    /**
+     * Update the model view matrix of the {@link DepthShader} and call the {@link Mesh#draw(DepthShader)} of the mesh contained in the {@link MeshFilter}, if they are not null, to draw the shadow of the mesh in the shadow map.
+     */
     private void renderShadow() {
-        if (gameObject.getCompotent(MeshFilter.class) != null) {
+        MeshFilter mf = gameObject.getCompotent(MeshFilter.class);
+        if (mf != null && mf.getMesh() != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, ShaderManager.getInstance().getDepthShader().getViewMatrix(), 0, transform.getGlobalModelMatrix(), 0);
             ShaderManager.getInstance().getDepthShader().setModelViewMatrix(modelviewmatrix);
@@ -44,11 +73,17 @@ public class MeshRenderer extends Component {
     }
 
 
+    /**
+     * Call the {@link MeshRenderer#render()} method.
+     */
     @Override
     public void lateUpdate() {
         render();
     }
 
+    /**
+     * Update the model view matrix of the material shader, call the {@link Material#update()} method and then draw the mesh depending on the material DrawMode.
+     */
     private void render() {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];

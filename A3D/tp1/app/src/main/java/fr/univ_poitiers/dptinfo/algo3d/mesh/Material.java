@@ -1,5 +1,6 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+import android.content.Context;
 import android.opengl.GLES20;
 
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
@@ -82,34 +83,66 @@ public class Material {
         drawMode = DrawMode.TRIANGLES;
     }
 
+    /**
+     * Returns the material color.
+     * @return an array of 4 float representing the r, g, b and alpha channels of the material color
+     */
     public float[] getColor() {
         return color;
     }
 
+    /**
+     * Returns the material specular color.
+     * @return an array of 4 float representing the r, g, b and alpha channels of the material specular color
+     */
     public float[] getSpecColor() {
         return specColor;
     }
 
+    /**
+     * Returns the shininess of the material.
+     * @return the shininess
+     */
     public float getShininess() {
         return shininess;
     }
 
+    /**
+     * Set the handle of the material texture.
+     * @param textureId - an int, preferably the return of the {@link MyGLRenderer#loadTexture(Context, int) method}
+     */
     public void setTextureId(int textureId) {
         this.textureId = textureId;
     }
 
+    /**
+     * Set the material shader.
+     * Not tested yet.
+     * @param shader
+     */
     public void setShader(Class<? extends MultipleLightingShaders> shader) {
         this.shader = shader;
     }
 
+    /**
+     * Returns the material shader.
+     * @return the material shader.
+     */
     public MultipleLightingShaders getShader() {
         return ShaderManager.getInstance().getShader(shader);
     }
 
+    /**
+     * Returns the material DrawMode.
+     * @return the material DrawMode
+     */
     public DrawMode getDrawMode() {
         return drawMode;
     }
 
+    /**
+     * Update the shader uniform variables related to the material (color, specular color, shininess and texture if there is one.
+     */
     public void update() {
         ShaderManager.getInstance().getShader(shader).setMaterialColor(color);
         ShaderManager.getInstance().getShader(shader).setMaterialSpecular(specColor);

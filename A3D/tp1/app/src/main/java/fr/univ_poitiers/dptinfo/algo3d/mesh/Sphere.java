@@ -110,7 +110,6 @@ public class Sphere extends Mesh {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = quarter; j >= 0; j--) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
-                // formule pour l'indice sans utiliser l'astuce de la variable k, (i - 1) * (1 + quarter) * 3 + (j * 3)
                 texturesCoord[k++] = (float) (phi / (2 * Math.PI));
                 texturesCoord[k++] = (float) (theta / Math.PI + 0.5);
             }
