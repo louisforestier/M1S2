@@ -108,6 +108,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Called on newdisplay events
+     * Render the shadow map of the directional light, then the whole scene with reflection.
      *
      * @param unused
      */

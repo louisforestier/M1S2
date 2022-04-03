@@ -16,6 +16,7 @@ public class GameObject {
 
     /**
      * The transform of the GameObject.
+     * Is also in the component list but because this object is called frequently, bypassing the getComponent method is better.
      */
     private Transform transform;
     /**
