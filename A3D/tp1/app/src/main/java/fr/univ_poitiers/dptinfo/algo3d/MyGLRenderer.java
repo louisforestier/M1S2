@@ -116,7 +116,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Display the scene:
         // Drawing the scene is mandatory, since display buffers are swapped in any case.
-        renderShadowMap(scene.light2.getCompotent(Light.class));
+        renderShadowMap(scene.directionalLight.getCompotent(Light.class));
         renderScene(scene);
         // Dirty mode, so post a new display request to loop
         this.view.requestRender();
@@ -216,7 +216,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return textureHandle[0];
     }
 
-
     /**
      * Frame Buffer Object id
      */
@@ -229,6 +228,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     /**
      * Generate the Frame buffer and the depth texture.
+     * It should be placed in the {@link Light#start()} method, ideally but this was just a test with one light.
+     * This would allow me to generate one shadow map per light.
      */
     public void generateShadowFBO() {
         final int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
@@ -236,37 +237,36 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         fboId = new int[1];
         depthTextureId = new int[1];
 
-        // create a framebuffer object
+        //Create the framebuffer object
         GLES20.glGenFramebuffers(1, fboId, 0);
 
-
-        // Try to use a texture depth component
+        //Create the depth texture
         GLES20.glGenTextures(1, depthTextureId, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthTextureId[0]);
 
-        // GL_LINEAR does not make sense for depth texture. However, next tutorial shows usage of GL_LINEAR and PCF. Using GL_NEAREST
+        //Modify paramters of the depth texture
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-
-        // Remove artifact on the edges of the shadowmap
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 
-        // Use a depth texture
+        //Use the depth texture
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GLES20.GL_DEPTH_COMPONENT, GLES20.GL_UNSIGNED_INT, null);
 
-        // Attach the depth texture to FBO depth attachment point
+        // Attach the depth texture as the framebuffer's depth buffer
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_TEXTURE_2D, depthTextureId[0], 0);
 
-
-        // check FBO status
+/*
+        To debug the framebuffer :
+        //Check FBO status
         int FBOstatus = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER);
         if (FBOstatus != GLES20.GL_FRAMEBUFFER_COMPLETE) {
             MainActivity.log("GL_FRAMEBUFFER_COMPLETE failed, CANNOT use FBO");
             throw new RuntimeException("GL_FRAMEBUFFER_COMPLETE failed, CANNOT use FBO");
         }
+*/
     }
 
     /**
@@ -274,6 +274,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * I use at the same time front face culling to generate shadows with the inner faces to get rid off shadow acne on solid objects
      * and bias to get rid off it on planes.
      * For now, its designed for a directional light only.
+     * In the future, the first part of this method should be called in the {@link Light#earlyUpdate()} method to set the matrix in the depth shader.
+     * The last part uses the scene, so either the lights know the scene and then the update is also done in earlyUpdate or the scene know the lights and calls an update for each light.
      * @param light
      */
     private void renderShadowMap(Light light) {
@@ -283,6 +285,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
+        //Calculate the light projection matrix, the light view matrix and the light space matrix.
         float[] lightProjection = new float[16];
         Matrix.orthoM(lightProjection, 0, -10.f, 10.f, -10.f, 10.f, 0.1f, 50.f);
         float[] lightView = new float[16];
@@ -297,6 +300,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ShaderManager.getInstance().getDepthShader().setModelViewMatrix(lightView);
         ShaderManager.getInstance().getDepthShader().setViewMatrix(lightView);
 
+        //Prerender the scene with front face culling (except for Planes, but it is done in the draw method of the Plane)
         GLES20.glCullFace(GLES20.GL_FRONT);
         scene.update();
         GLES20.glCullFace(GLES20.GL_BACK);
@@ -307,7 +311,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param scene
      */
     private void renderScene(Scene scene) {
+        //Make the scene evoluate
         this.scene.step();
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glViewport(0, 0, view.getWidth(), view.getHeight());
@@ -318,12 +324,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             s.setLightSpaceMatrix(lightSpaceMatrix);
             s.setDepthMap(1);
         }
+        //Render the reflexion
         GLES20.glFrontFace(GLES20.GL_CW);
-        scene.setUpReflexionMatrix(this);
+        scene.setUpReflexionMatrix();
         scene.earlyUpdate();
         scene.lateUpdate();
+        //Render the real scene
         GLES20.glFrontFace(GLES20.GL_CCW);
-        scene.setUpMatrix(this);
+        scene.setUpMatrix();
         scene.earlyUpdate();
         scene.lateUpdate();
     }
