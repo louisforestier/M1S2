@@ -52,7 +52,7 @@ public class MeshRenderer extends Component {
     }
 
     /**
-     * Call the {@link MeshRenderer#renderShadow()} method.
+     * Call the {@link #renderShadow()} method.
      */
     @Override
     public void update() {
@@ -74,7 +74,7 @@ public class MeshRenderer extends Component {
 
 
     /**
-     * Call the {@link MeshRenderer#render()} method.
+     * Call the {@link #render()} method.
      */
     @Override
     public void lateUpdate() {
