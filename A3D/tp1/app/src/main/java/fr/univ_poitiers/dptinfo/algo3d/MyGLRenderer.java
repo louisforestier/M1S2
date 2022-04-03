@@ -48,12 +48,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * Reference to the OpenGL surface view
      */
     private GLSurfaceView view;
+
     /**
      * Shaders
      */
-
     private MultipleLightingShaders shaders;
 
+    /**
+     * Shaders for the shadow map.
+     */
     private DepthShader depthShader;
 
 
@@ -61,6 +64,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * Projection matrix to provide to the shader
      */
     private final float[] projectionmatrix = new float[16];
+
+    /**
+     * Light space matrix to provide to the shaders
+     */
     private float[] lightSpaceMatrix = new float[16];
 
     /**
@@ -70,6 +77,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return this.shaders;
     }
 
+    /**
+     * Returns the depth shader.
+     * @return the depth shader
+     */
     public DepthShader getShadowShader() {
         return depthShader;
     }
@@ -160,8 +171,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         {
             Matrix.perspectiveM(this.projectionmatrix, 0, 45.F, ratio, 0.1F, 100.F);
         }
-        shaders.setProjectionMatrix(this.projectionmatrix);
-
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            s.setProjectionMatrix(this.projectionmatrix);
+        }
     }
 
     /**
@@ -231,28 +243,32 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
 
+    /**
+     * Frame Buffer Object id
+     */
     int[] fboId;
-    int[] depthTextureId;
-    int[] renderTextureId;
 
+    /**
+     * Depth texture id
+     */
+    int[] depthTextureId;
+
+    /**
+     * Generate the Frame buffer and the depth texture.
+     */
     public void generateShadowFBO() {
         final int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 
         fboId = new int[1];
         depthTextureId = new int[1];
-        renderTextureId = new int[1];
 
         // create a framebuffer object
         GLES20.glGenFramebuffers(1, fboId, 0);
 
-        // create render buffer and bind 16-bit depth buffer
-        GLES20.glGenRenderbuffers(1, depthTextureId, 0);
-        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, depthTextureId[0]);
-        GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, SHADOW_WIDTH, SHADOW_HEIGHT);
 
         // Try to use a texture depth component
-        GLES20.glGenTextures(1, renderTextureId, 0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, renderTextureId[0]);
+        GLES20.glGenTextures(1, depthTextureId, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthTextureId[0]);
 
         // GL_LINEAR does not make sense for depth texture. However, next tutorial shows usage of GL_LINEAR and PCF. Using GL_NEAREST
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
@@ -268,7 +284,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GLES20.GL_DEPTH_COMPONENT, GLES20.GL_UNSIGNED_INT, null);
 
         // Attach the depth texture to FBO depth attachment point
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_TEXTURE_2D, renderTextureId[0], 0);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_TEXTURE_2D, depthTextureId[0], 0);
 
 
         // check FBO status
@@ -279,12 +295,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
+    /**
+     * Render the shadow map in the depth texture from the light view.
+     * I use at the same time front face culling to generate shadows with the inner faces to get rid off shadow acne on solid objects
+     * and bias to get rid off it on planes.
+     * For now, its designed for a directional light only.
+     * @param light
+     */
     private void renderShadowMap(Light light) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 
         GLES20.glViewport(0, 0, 2048, 2048);
 
-        //GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
         float[] lightProjection = new float[16];
@@ -301,13 +323,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         depthShader.setModelViewMatrix(lightView);
         depthShader.setViewMatrix(lightView);
 
-        //j'utilise à la fois la technique de générer l'ombre avec les faces internes pour supprimer
-        // l'acné d'ombre sur les objets pleins (cube, sphere, tore, capsule ...) et le biais pour le retirer sur les surfaces planes
         GLES20.glCullFace(GLES20.GL_FRONT);
         scene.update();
         GLES20.glCullFace(GLES20.GL_BACK);
     }
 
+    /**
+     * Render the scene with a reflexion on the floor, by using blending and rendering the scene two times.
+     * @param scene
+     */
     private void renderScene(Scene scene) {
         this.scene.step();
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
@@ -315,7 +339,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, view.getWidth(), view.getHeight());
         this.shaders.use();
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, renderTextureId[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, depthTextureId[0]);
         shaders.setLightSpaceMatrix(lightSpaceMatrix);
         shaders.setDepthMap(1);
         GLES20.glFrontFace(GLES20.GL_CW);

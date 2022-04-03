@@ -37,7 +37,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         log("Starting " + getString(R.string.app_name) + "...");
-        log("scene :" + scene);
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity
@@ -54,7 +53,6 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         log("Pausing " + getString(R.string.app_name) + ".");
-        log("scene :" + scene);
         Ball.onPause();
         //this.glview.setPreserveEGLContextOnPause(true); //autre solution, conserver le contexte opengl quand on quitte l'appli
         this.glview.onPause();
@@ -67,18 +65,12 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         log("Resuming " + getString(R.string.app_name) + ".");
-        log("scene :" + scene);
         glview.onResume();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        log("Stopping...");
-        log("scene :" + scene);
-
-    }
-
+    /**
+     * End of the application.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
