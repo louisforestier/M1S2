@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Ball;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Room;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Cube;

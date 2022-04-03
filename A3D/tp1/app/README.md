@@ -22,7 +22,15 @@ app -
 
 Les classes sont commentées avec des commentaires types Javadoc.
 
-Le code a été testé sur émulateur avec version d'API 28 et 30, ainsi que sur mobile avec Android version 9 (API 28).
+Le code a été testé sur émulateur avec version d'API 30, ainsi que sur mobile avec Android version 9 (API 28).
+Avec API inférieur à 30, j'ai plusieurs erreurs que je n'ai pas comprises :
+    - avec émulateur API 25 : 
+        "a vertex attribute array is uninitialized. Skipping corresponding vertex attribute" lors de l'appel de renderShadow dès que j'appelle la méthode glDrawElements pour n'importe quel objet. Pourtant, je n'ai pas cette erreur si je commente l'appel à renderShadow donc tout se passe correctement lors de renderScene.
+    - avec émulateur API 28 : 
+        "a vertex attribute index out of boundary is detected. Skipping corresponding vertex attribute. buf=0xe79a5a10
+        Out of bounds vertex attribute info: clientArray? 0 attribute 2 vbo 216 allocedBufferSize 1648 bufferDataSpecified? 1 wantedStart 0 wantedEnd 20416"
+        Encore déclenché par renderShadow
+
 
 Je n'ai pas fait les exercices facultatifs du tp6.
 
