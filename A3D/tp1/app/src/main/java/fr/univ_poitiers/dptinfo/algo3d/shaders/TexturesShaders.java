@@ -38,11 +38,6 @@ public class TexturesShaders extends MultipleLightingShaders {
     }
 
     @Override
-    public boolean useTypeLight() {
-        return true;
-    }
-
-    @Override
     public int createProgram(Context context) {
         return initializeShadersFromResources(context, "texture_vert.glsl", "texture_frag.glsl");
     }

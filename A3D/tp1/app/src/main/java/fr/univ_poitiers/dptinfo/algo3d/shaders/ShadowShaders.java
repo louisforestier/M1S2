@@ -51,11 +51,6 @@ public class ShadowShaders extends MultipleLightingShaders {
     }
 
     @Override
-    public boolean useTypeLight() {
-        return true;
-    }
-
-    @Override
     public int createProgram(Context context) {
         return initializeShadersFromResources(context, "shadow_vert.glsl", "shadow_frag.glsl");
     }

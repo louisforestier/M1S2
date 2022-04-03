@@ -283,4 +283,10 @@ public abstract class MultipleLightingShaders extends BasicShaders {
     public void setLightSpaceMatrix(final float[] matrix) { }
     public void setDepthMap(final int depthMap) { }
     public void setModelMatrix(float[] matrix) { }
+
+    @Override
+    public boolean useTypeLight() {
+        return true;
+    }
+
 }

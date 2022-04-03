@@ -11,7 +11,7 @@ uniform vec4 uAmbiantLight;
 uniform int uLightType;
 uniform bool uLighting;
 uniform vec3 uLightPos;
-uniform vec3 uSpotDir;
+uniform vec3 uLightDir;
 uniform float uCutOff;
 uniform float uOuterCutOff;
 uniform vec4 uLightColor;
@@ -42,7 +42,7 @@ vec4 calcPointLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, fl
 
 vec4 calcDirLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, vec3 normal, vec3 viewdir)
 {
-  vec3 lightdir = normalize(-uSpotDir);
+  vec3 lightdir = normalize(-uLightDir);
   vec3 halfdir = normalize(lightdir + viewdir);
   float weight = max(dot(normal,lightdir),0.0);
   vec4 dColor = uMaterialColor * (ambient + weight*diffuse);
@@ -57,7 +57,7 @@ vec4 calcSpotLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, flo
   float distance = length(lightPos-posf);
   float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
   vec3 lightdir = normalize(lightPos-posf);
-  float theta = dot(lightdir,normalize(-uSpotDir));
+  float theta = dot(lightdir,normalize(-uLightDir));
   float epsilon = cutoff - outerCutOff;
   float intensity = clamp((theta - outerCutOff) / epsilon,0.0,1.0);
   vec3 halfdir = normalize(lightdir + viewdir);

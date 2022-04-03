@@ -4,7 +4,6 @@ import android.opengl.Matrix;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
 
 public class Light extends Component {
     private LightType type;
@@ -52,19 +51,45 @@ public class Light extends Component {
 
 
     public void initLighting(BasicShaders shaders, final float[] modelviewmatrix) {
+        position = getPos(modelviewmatrix);
+        direction = getDir(modelviewmatrix);
         if (shaders.useTypeLight()) {
-            setPosition(getPos(modelviewmatrix));
-            setDirection(getDir(modelviewmatrix));
-            switch (getType()) {
-                case DIRECTIONAL:
-                    ((MultipleLightingShaders) shaders).setDirLight(this);
-                    break;
-                case POINT:
-                    ((MultipleLightingShaders) shaders).setPointLight(this);
-                    break;
-                case SPOT:
-                    ((MultipleLightingShaders) shaders).setSpotLight(this);
-                    break;
+            if (shaders instanceof MultipleLightingShaders) {
+                MultipleLightingShaders mls = (MultipleLightingShaders) shaders;
+                switch (type) {
+                    case DIRECTIONAL:
+                        mls.setDirLight(this);
+                        break;
+                    case POINT:
+                        mls.setPointLight(this);
+                        break;
+                    case SPOT:
+                        mls.setSpotLight(this);
+                        break;
+                }
+            }
+            else {
+                BlinnPhongTypeLightShaders tls = (BlinnPhongTypeLightShaders) shaders;
+                tls.setLightType(type.getValue());
+                tls.setLightPosition(position);
+                tls.setLightPosition(position);
+                tls.setAmbiantLight(ambient);
+                tls.setLightColor(diffuse);
+                tls.setLightSpecular(specular);
+                tls.setLightAttenuation(constant,linear,quadratic);
+                tls.setLightDirection(direction);
+                tls.setCutOff(cutOff);
+                tls.setOuterCutOff(outerCutOff);
+            }
+        }
+        else {
+            if (shaders instanceof LightingShaders){
+                LightingShaders ls = (LightingShaders) shaders;
+                ls.setLightPosition(position);
+                ls.setAmbiantLight(ambient);
+                ls.setLightColor(diffuse);
+                ls.setLightSpecular(specular);
+                ls.setLightAttenuation(constant,linear,quadratic);
             }
         }
     }
