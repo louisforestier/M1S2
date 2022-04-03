@@ -2,6 +2,9 @@ package fr.univ_poitiers.dptinfo.algo3d.shaders;
 
 import android.content.Context;
 
+/**
+ * Shader class to use lightning with the lambert formula.
+ */
 public class PixelShaders extends LightingShaders{
 
     /**
@@ -13,7 +16,11 @@ public class PixelShaders extends LightingShaders{
         super(context);
     }
 
-
+    /**
+     * Create the shader program with the pixel glsl.
+     * @param context - context of the application
+     * @return the shader program handle
+     */
     @Override
     public int createProgram(Context context) {
         return initializeShadersFromResources(context,"pixel_vert.glsl","pixel_frag.glsl");

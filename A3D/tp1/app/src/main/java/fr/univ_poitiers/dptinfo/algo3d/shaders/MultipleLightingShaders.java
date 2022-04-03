@@ -7,10 +7,8 @@ import fr.univ_poitiers.dptinfo.algo3d.MainActivity;
 
 /**
  * Abstract class to represent shaders (vertex and fragment ones) that allow a
- * computation of plong lighting with no texture.
- *
- * @author Philippe Meseure
- * @version 1.0
+ * computation of blinn phong lighting with multiple lights.
+ * Adaptation of {@link LightingShaders}.
  */
 public abstract class MultipleLightingShaders extends BasicShaders {
     // ==============================
@@ -20,13 +18,7 @@ public abstract class MultipleLightingShaders extends BasicShaders {
      * GLSL uniform transformation matrix for normal (from object's space to viewer's space)
      */
     protected int uNormalMatrix;
-    // ======================================
-    // Uniform variables for (a single) light
-    // ======================================
-    /**
-     * GLSL uniform boolean value to turn lighting on/off
-     */
-    protected int uLighting;
+
     // =====================================
     // Uniform variables for object material
     // =====================================
@@ -55,11 +47,42 @@ public abstract class MultipleLightingShaders extends BasicShaders {
     protected int aVertexNormal;
 
 
+    /**
+     * GLSL uniform boolean value to turn lighting on/off
+     */
+    protected int uLighting;
+
+    /**
+     * Maximum number of directional lights to be added in the shader.
+     * Must be updated by hand to ensure it is the same in the glsl.
+     */
     private final int NB_DIR_LIGHTS = 1;
+
+    /**
+     * Maximum number of point lights to be added in the shader.
+     * Must be updated by hand to ensure it is the same in the glsl.
+     */
     private final int NB_POINT_LIGHTS = 1;
+
+    /**
+     * Maximum number of spot lights to be added in the shader.
+     * Must be updated by hand to ensure it is the same in the glsl.
+     */
     private final int NB_SPOT_LIGHTS = 1;
+
+    /**
+     * Number of directional lights added in the shader.
+     */
     private int curr_dir = 0;
+
+    /**
+     * Number of point lights added in the shader.
+     */
     private int curr_point = 0;
+
+    /**
+     * Number of spot lights added in the shader.
+     */
     private int curr_spot = 0;
 
     /**
@@ -158,19 +181,6 @@ public abstract class MultipleLightingShaders extends BasicShaders {
         GLES20.glUniformMatrix3fv(this.uNormalMatrix, 1, false, normal_matrix, 0);
     }
 
-    // =====================
-    // Source light function
-    // =====================
-
-    /**
-     * Set lighting on/off
-     *
-     * @param state on/off value
-     */
-    public void setLighting(final boolean state) {
-        if (this.uLighting != -1) GLES20.glUniform1i(this.uLighting, state ? 1 : 0);
-    }
-
 
     // ==================
     // Material functions
@@ -227,7 +237,26 @@ public abstract class MultipleLightingShaders extends BasicShaders {
         GLES20.glVertexAttribPointer(this.aVertexNormal, size, dtype, false, 0, 0);
     }
 
+    // =======================
+    // Source lights functions
+    // =======================
 
+    /**
+     * Set lighting on/off
+     *
+     * @param state on/off value
+     */
+    public void setLighting(final boolean state) {
+        if (this.uLighting != -1) GLES20.glUniform1i(this.uLighting, state ? 1 : 0);
+    }
+
+
+    /**
+     * Add a directional light to the shader uniform array of lights.
+     * If the number of directional lights added to the shader are equal or inferior to the maximum number of directional lights in the shader,
+     * the light is not added and a log is done.
+     * @param light light component of the object
+     */
     public void setDirLight(Light light) {
         if (curr_dir < NB_DIR_LIGHTS) {
             GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "dirLights[" + curr_dir + "].direction"), 1, light.getDirection(), 0);
@@ -239,6 +268,12 @@ public abstract class MultipleLightingShaders extends BasicShaders {
             MainActivity.log("More directional lights in Scene than in shaders, modify the shaders to take this light in account.");
     }
 
+    /**
+     * Add a point light to the shader uniform array of lights.
+     * If the number of directional lights added to the shader are equal or inferior to the maximum number of directional lights in the shader,
+     * the light is not added and a log is done.
+     * @param light light component of the object
+     */
     public void setPointLight(Light light) {
         if (curr_point < NB_POINT_LIGHTS) {
             GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "pointLights[" + curr_point + "].position"), 1, light.getPosition(), 0);
@@ -254,6 +289,12 @@ public abstract class MultipleLightingShaders extends BasicShaders {
 
     }
 
+    /**
+     * Add a spot light to the shader uniform array of lights.
+     * If the number of directional lights added to the shader are equal or inferior to the maximum number of directional lights in the shader,
+     * the light is not added and a log is done.
+     * @param light light component of the object
+     */
     public void setSpotLight(Light light) {
         if (curr_spot < NB_SPOT_LIGHTS) {
             GLES20.glUniform3fv(GLES20.glGetUniformLocation(this.shaderprogram, "spotLights[" + curr_spot + "].position"), 1, light.getPosition(), 0);
@@ -271,11 +312,16 @@ public abstract class MultipleLightingShaders extends BasicShaders {
             MainActivity.log("More spot lights in Scene than in shaders, modify the shaders to take this light in account.");
     }
 
+    /**
+     * Reset the number of lights added to the shader.
+     * Must be done at the beginning of each render or prerender pass.
+     */
     public void resetLights() {
         curr_dir = 0;
         curr_point = 0;
         curr_spot = 0;
     }
+
 
     public void setTexturePointer(int size, int dtype) { }
     public void setTextureUnit(final int textureUnit) { }
@@ -284,6 +330,11 @@ public abstract class MultipleLightingShaders extends BasicShaders {
     public void setDepthMap(final int depthMap) { }
     public void setModelMatrix(float[] matrix) { }
 
+
+    /**
+     * Returns true to set the GLSL variables correctly in the {@link Light#initLighting(BasicShaders, float[])} method.
+     * @return
+     */
     @Override
     public boolean useTypeLight() {
         return true;
