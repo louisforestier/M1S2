@@ -113,6 +113,7 @@ public class Light extends Component {
      * @param modelviewmatrix
      */
     private void initLighting(BasicShaders shaders, final float[] modelviewmatrix) {
+        shaders.use();
         position = getPos(modelviewmatrix);
         direction = getDir(modelviewmatrix);
         if (shaders.useTypeLight()) {

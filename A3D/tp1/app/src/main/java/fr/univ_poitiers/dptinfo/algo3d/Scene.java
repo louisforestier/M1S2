@@ -24,6 +24,7 @@ import fr.univ_poitiers.dptinfo.algo3d.objimporter.OBJImporter;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.Light;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.LightType;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.ShaderManager;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
 /**
@@ -192,8 +193,11 @@ public class Scene {
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glDepthFunc(GLES20.GL_LESS);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        renderer.getShaders().setNormalizing(true);
-        renderer.getShaders().setLighting(true);
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            s.use();
+            s.setNormalizing(true);
+            s.setLighting(true);
+        }
         wallMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.wall));
         ceilingMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.ceiling));
         floorMaterial.setTextureId(MyGLRenderer.loadTexture(renderer.getView().getContext(), R.drawable.tiles1));
@@ -226,8 +230,9 @@ public class Scene {
     }
 
     public void setUpMatrix(MyGLRenderer renderer) {
-        MultipleLightingShaders shaders = renderer.getShaders();
-        shaders.resetLights();
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            s.resetLights();
+        }
 
         // Place viewer in the right position and orientation
         Matrix.setIdentityM(modelviewmatrix, 0);
@@ -236,13 +241,16 @@ public class Scene {
         Matrix.rotateM(modelviewmatrix, 0, angley, 0.0F, 1.0F, 0.0F);
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
-        shaders.setViewMatrix(modelviewmatrix);
-        shaders.setModelViewMatrix(modelviewmatrix);
+
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            s.use();
+            s.resetLights();
+            s.setViewMatrix(modelviewmatrix);
+            s.setModelViewMatrix(modelviewmatrix);
+        }
     }
 
     public void setUpReflexionMatrix(MyGLRenderer renderer) {
-        MultipleLightingShaders shaders = renderer.getShaders();
-        shaders.resetLights();
 
         // Place viewer in the right position and orientation
         Matrix.setIdentityM(modelviewmatrix, 0);
@@ -252,8 +260,11 @@ public class Scene {
         Matrix.translateM(modelviewmatrix, 0, -posx, 0.F, -posz);
         Matrix.translateM(modelviewmatrix, 0, 0.F, -1.6F, 0.F);
         Matrix.scaleM(modelviewmatrix, 0, 1.f, -1.f, 1.f);
-        shaders.setViewMatrix(modelviewmatrix);
-        shaders.setModelViewMatrix(modelviewmatrix);
+        for (MultipleLightingShaders s : ShaderManager.getInstance().getShaders().values()) {
+            s.resetLights();
+            s.setViewMatrix(modelviewmatrix);
+            s.setModelViewMatrix(modelviewmatrix);
+        }
     }
 
 

@@ -47,6 +47,7 @@ public class MeshRenderer extends Component {
     @Override
     public void start() {
         MeshFilter mf = gameObject.getCompotent(MeshFilter.class);
+        material.getShader().use();
         if (mf != null && mf.getMesh() != null)
             gameObject.getCompotent(MeshFilter.class).getMesh().initGraphics();
     }
@@ -88,9 +89,10 @@ public class MeshRenderer extends Component {
         if (gameObject.getCompotent(MeshFilter.class) != null) {
             float[] modelviewmatrix = new float[16];
             Matrix.multiplyMM(modelviewmatrix, 0, material.getShader().getViewMatrix(), 0, transform.getGlobalModelMatrix(), 0);
+            material.getShader().use();
+            material.update();
             material.getShader().setModelViewMatrix(modelviewmatrix);
             material.getShader().setModelMatrix(transform.getGlobalModelMatrix());
-            material.update();
             switch (material.getDrawMode()) {
                 case TRIANGLES:
                     gameObject.getCompotent(MeshFilter.class).getMesh().draw(material.getShader());
