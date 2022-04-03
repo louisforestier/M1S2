@@ -323,11 +323,34 @@ public abstract class MultipleLightingShaders extends BasicShaders {
     }
 
 
+    /**
+     * Not implemented. To be redefined by {@link TexturesShaders}.
+     */
     public void setTexturePointer(int size, int dtype) { }
+
+    /**
+     * Not implemented. To be redefined by {@link TexturesShaders}.
+     */
     public void setTextureUnit(final int textureUnit) { }
+
+    /**
+     * Not implemented. To be redefined by {@link TexturesShaders}.
+     */
     public void setTexturing(final boolean state) { }
+
+    /**
+     * Not implemented. To be redefined by {@link ShadowShaders}.
+     */
     public void setLightSpaceMatrix(final float[] matrix) { }
+
+    /**
+     * Not implemented. To be redefined by {@link ShadowShaders}.
+     */
     public void setDepthMap(final int depthMap) { }
+
+    /**
+     * Not implemented. To be redefined by {@link ShadowShaders}.
+     */
     public void setModelMatrix(float[] matrix) { }
 
 

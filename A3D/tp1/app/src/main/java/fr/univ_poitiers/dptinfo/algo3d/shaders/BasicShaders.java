@@ -178,25 +178,12 @@ public abstract class BasicShaders {
      */
     private int uModelViewMatrix;
 
-    private float[] viewMatrix;
-
-
-    public float[] getViewMatrix() {
-        return viewMatrix;
-    }
-
-    public void setViewMatrix(float[] viewMatrix) {
-        this.viewMatrix = viewMatrix;
-    }
 
     /**
      * Index to give the array containing vertex position
      */
     private int aVertexPosition;
 
-    public boolean useTypeLight() {
-        return false;
-    }
 
     /**
      * Constructor of the complete rendering Shader programs
@@ -286,8 +273,42 @@ public abstract class BasicShaders {
         GLES20.glVertexAttribPointer(this.aVertexPosition, size, dtype, false, 0, 0);
     }
 
+    /**
+     * Defines the shader as the one being used by the GPU.
+     */
     public void use() {
         GLES20.glUseProgram(shaderprogram);
+    }
+
+    /**
+     * Matrix to represent a transformation from world space into viewer's space.
+     * Not a GLSL variable.
+     */
+    private float[] viewMatrix;
+
+    /**
+     * Returns the view matrix.
+     * @return
+     */
+    public float[] getViewMatrix() {
+        return viewMatrix;
+    }
+
+    /**
+     * Set the view matrix.
+     * @param viewMatrix
+     */
+    public void setViewMatrix(float[] viewMatrix) {
+        this.viewMatrix = viewMatrix;
+    }
+
+    /**
+     * Returns true if the shader use light type, else false.
+     * By default, returns false.
+     * @return false
+     */
+    public boolean useTypeLight() {
+        return false;
     }
 
 }
