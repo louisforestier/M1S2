@@ -18,8 +18,8 @@ public class MeshRenderer extends Component {
     private Material material;
 
     /**
-     * Constructor
-     * @param gameObject
+     * Constructor.
+     * @param gameObject - the gameobject linked to the component
      */
     public MeshRenderer(GameObject gameObject) {
         super(gameObject);
@@ -35,7 +35,7 @@ public class MeshRenderer extends Component {
 
     /**
      * Set the renderer material to the parameter.
-     * @param material
+     * @param material - material to be used by the renderer.
      */
     public void setMaterial(Material material) {
         this.material = material;

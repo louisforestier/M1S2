@@ -1,7 +1,5 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
-import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
-
 /**
  * Class to calculate the mesh of a pyramid .
  * Can be used to make a cone with flat shading.
@@ -51,13 +49,6 @@ public class Pyramid extends Mesh {
             triangles[k++] = i + quarter + 1 + 1;
             triangles[k++] = (vertexpos.length - 1) / 3;
         }
-        k = 0;
-
-        Vec3f p1 = new Vec3f(vertexpos[triangles[0] * 3], vertexpos[triangles[0] * 3 + 1], vertexpos[triangles[0] * 3 + 2]);
-        Vec3f p2 = new Vec3f(vertexpos[triangles[1] * 3], vertexpos[triangles[1] * 3 + 1], vertexpos[triangles[1] * 3 + 2]);
-        Vec3f p3 = new Vec3f(vertexpos[triangles[2] * 3], vertexpos[triangles[2] * 3 + 1], vertexpos[triangles[2] * 3 + 2]);
-        Vec3f n = getNormal(p1, p2, p3);
-
         this.calculateFlatShadingNormals();
     }
 }

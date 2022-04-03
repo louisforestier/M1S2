@@ -13,13 +13,13 @@ public class Room extends GameObject {
 
     /**
      * Constructor.
-     * @param doors
-     * @param length
-     * @param width
-     * @param height
-     * @param floorMaterial
-     * @param ceilingMaterial
-     * @param wallMaterial
+     * @param doors - array of boolean to decide wich walls have doors in the N,W,S,E order.
+     * @param length - length of the room, on the z axis
+     * @param width - width of the room, on the x axis
+     * @param height - height of the room, on the y axis
+     * @param floorMaterial - material of the floor
+     * @param ceilingMaterial - material of the ceiling
+     * @param wallMaterial - material of the walls
      */
     public Room(boolean[] doors, float length, float width, float height, Material floorMaterial, Material ceilingMaterial, Material wallMaterial) {
         super();

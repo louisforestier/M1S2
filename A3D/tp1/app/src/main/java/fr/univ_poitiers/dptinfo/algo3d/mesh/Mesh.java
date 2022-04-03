@@ -59,8 +59,8 @@ public class Mesh {
 
     /**
      * Constructor to be used mostly by the OBJImporter when no normals are given.
-     * @param vertexpos
-     * @param triangles
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
      */
     public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
@@ -70,9 +70,9 @@ public class Mesh {
 
     /**
      * Constructor to be used mostly by the OBJImporter when normals are already in the file.
-     * @param vertexpos
-     * @param triangles
-     * @param normals
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
+     * @param normals - normals array
      */
     public Mesh(float[] vertexpos, int[] triangles, float[] normals) {
         this.vertexpos = vertexpos;
@@ -82,10 +82,10 @@ public class Mesh {
 
     /**
      * Constructor to be used mostly by the OBJImporter when all vertex informations are present.
-     * @param vertexpos
-     * @param triangles
-     * @param normals
-     * @param textures
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
+     * @param normals - normals array
+     * @param textures - texture coordinates array
      */
     public Mesh(float[] vertexpos, int[] triangles, float[] normals, float[] textures) {
         this.vertexpos = vertexpos;
@@ -169,8 +169,7 @@ public class Mesh {
         v1.setSub(p2, p1);
         Vec3f v2 = new Vec3f();
         v2.setSub(p3, p1);
-        float angle = (float) Math.acos(v1.dotProduct(v2) / (v1.length() * v2.length()));
-        return angle;
+        return (float) Math.acos(v1.dotProduct(v2) / (v1.length() * v2.length()));
     }
 
     /**
@@ -279,8 +278,8 @@ public class Mesh {
     }
 
     /**
-     * Draw the mesh
-     * @param shaders
+     * Draw the mesh as triangles
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
      */
     public void draw(final MultipleLightingShaders shaders) {
 
@@ -299,7 +298,7 @@ public class Mesh {
 
     /**
      * Draw the shadow of the mesh.
-     * @param shaders
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
      */
     public void draw(final DepthShader shaders) {
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
@@ -311,8 +310,8 @@ public class Mesh {
     }
 
     /**
-     * Draw the mesh with all the edges of the triangles.
-     * @param shaders
+     * Draw the mesh as triangles and wireframe.
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
      */
     public void drawWithLines(final MultipleLightingShaders shaders) {
         GLES20.glPolygonOffset(2.F, 4.F);
@@ -337,8 +336,8 @@ public class Mesh {
     }
 
     /**
-     * Draw the lines of the triangles of the mesh
-     * @param shaders
+     * Draw the wireframe of the mesh
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
      */
     public void drawLinesOnly(final MultipleLightingShaders shaders) {
 

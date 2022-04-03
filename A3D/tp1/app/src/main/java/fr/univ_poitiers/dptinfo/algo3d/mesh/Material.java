@@ -118,7 +118,7 @@ public class Material {
     /**
      * Set the material shader.
      * Not tested yet.
-     * @param shader
+     * @param shader - shader to be used by the material
      */
     public void setShader(Class<? extends MultipleLightingShaders> shader) {
         this.shader = shader;

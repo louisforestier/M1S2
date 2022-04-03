@@ -10,10 +10,10 @@ public class Wall extends GameObject {
 
     /**
      * Constructor.
-     * @param width
-     * @param height
-     * @param material
-     * @param hasDoor
+     * @param width - width of the wall
+     * @param height - height of the wall
+     * @param material - material of the wall
+     * @param hasDoor - boolean to decide if the wall has a door
      */
     public Wall(float width, float height, Material material, boolean hasDoor) {
         super();

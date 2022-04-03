@@ -2,7 +2,6 @@ package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
 import fr.univ_poitiers.dptinfo.algo3d.gameobject.GameObject;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Transform;
 
 /**
  * Component to contain the mesh of the object.
@@ -18,7 +17,7 @@ public class MeshFilter extends Component {
 
     /**
      * Constructor.
-     * @param gameObject
+     * @param gameObject - the gameobject linked to the component
      */
     public MeshFilter(GameObject gameObject) {
         super(gameObject);
@@ -34,7 +33,7 @@ public class MeshFilter extends Component {
 
     /**
      * Set the contained mesh to the parameter.
-     * @param mesh
+     * @param mesh - the mesh that will be displayed when rendering this GameObject.
      */
     public void setMesh(Mesh mesh) {
         this.mesh = mesh;
