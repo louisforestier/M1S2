@@ -4,82 +4,90 @@
 #include <vector>
 
 void Solve(
-    const OPP::MPI::Communicator& communicator,
-    const DistributedRowMatrix& L,
-    const DistributedBlockVector& B,
-    DistributedBlockVector& X,
-    const int N
-) {
-    OPP::MPI::Ring ring(communicator);
-    
-    // Here, we have a block of row (take care to the distribution!)
-    // block size ... or B.End() - B.Start() except the last processor (it can be smaller for last block)
-    const int m = (N+ring.getSize()-1) / ring.getSize(); 
-    // check it is ok
-    if( m < B.End() - B.Start() )
-        std::cerr << "Bad value for m="<<m << std::endl;
-        
-    // TODO
-    int rank = ring.getRank();
-    int p = ring.getSize();
-    std::vector<float> tmp;
-    for (int i = B.Start(); i < B.End(); i++)
-    {
-        tmp.push_back(B[i]);
-    }
-    
-    //std::copy(B.Start(),B.End(),tmp);
+    const OPP::MPI::Communicator &communicator,
+    const DistributedRowMatrix &L,
+    const DistributedBlockVector &B,
+    DistributedBlockVector &X,
+    const int N)
+{
+  OPP::MPI::Ring ring(communicator);
 
-    for (int col = 0; col < B.End(); col++)
+  // Here, we have a block of row (take care to the distribution!)
+  // block size ... or B.End() - B.Start() except the last processor (it can be smaller for last block)
+  const int m = (N + ring.getSize() - 1) / ring.getSize();
+  // check it is ok
+  if (m < B.End() - B.Start())
+    std::cerr << "Bad value for m=" << m << std::endl;
+
+  int rank = ring.getRank();
+  int p = ring.getSize();
+  float *tmp = new float[m];
+  int n = 0;
+  for (int i = 0; i < m; i++)
+    tmp[i] = B[i + rank * m];
+
+  if (rank == 0)
+  {
+    for (int col = 0; col < m; col++)
     {
-        if (rank < col/m)
+      {
+        X[col] = tmp[col] / L[col][col];
+        for (int row = col; row < m; row++)
         {
-            X[col] = tmp[col-B.Start()] / L[col][col];
-            ring.Send(&X[col], 1, MPI_FLOAT);
-            for (int line = col; line < N; line++)
-            {
-                ring.Recv(&X[col], 1, MPI_FLOAT);
-                tmp[line-B.Start()] -= L[line][col] * X[col];
-            }
-        }        
+          tmp[row] -= L[row][col] * X[col];
+        }
+      }
     }
-}
-/*
-  float* newB = new float[B.End() - B.Start()];
-
-  for (int i = B.Start(), n = 0; i < B.End(); i++, n++) newB[n] = B[i];
-
-  if (ring.getRank() == 0) {
-    for (int col = 0; col < B.End(); ++col) {
-      X[col] = newB[col] / L[col][col];
-
-      for (int line = col; line < B.End(); ++line)
-        newB[line] -= L[line][col] * X[col];
-    }
-
     ring.Send(&X[0], m, MPI_FLOAT);
-  } else {
-    float* prevX = new float[m * ring.getRank()];
+  }
+  else if ((rank + 1) % p == 0)
+  {
+    float *recvBuffer = new float[rank * m];
+    for (int i = 0; i < rank; i++)
+    {
+      ring.Recv(recvBuffer + m * i, m, MPI_FLOAT);
 
-    for (int proc = 0; proc < ring.getRank(); proc++) {
-      ring.Recv(prevX + m * proc, m, MPI_FLOAT);
+      for (int col = i * m; col < (i + 1) * m; col++)
+      {
+        for (int row = 0; row < m; ++row)
+          tmp[row] -= L[row + rank * m][col] * recvBuffer[col];
+      }
+    }
+    for (int col = rank * m; col < N; col++)
+    {
+      X[col] = tmp[col - rank * m] / L[col][col];
 
-      if (ring.getNext() != 0) ring.Send(prevX + m * proc, m, MPI_FLOAT);
+      for (int row = col; row < N; ++row)
+        tmp[row - rank * m] -= L[row][col] * X[col];
+    }
+    delete[] recvBuffer;
+  }
+  else
+  {
+    float *recvBuffer = new float[rank * m];
+    for (int i = 0; i < rank; i++)
+    {
+      ring.Recv(recvBuffer + m * i, m, MPI_FLOAT);
 
-      for (int col = proc * m; col < ((proc + 1) * m); col++) {
-        for (int line = B.Start(); line < B.End(); ++line)
-          newB[line - B.Start()] -= L[line][col] * prevX[col];
+      ring.Send(recvBuffer + m * i, m, MPI_FLOAT);
+
+      for (int col = i * m; col < (i + 1) * m; col++)
+      {
+        for (int row = rank * m; row < (rank + 1) * m; ++row)
+          tmp[row - rank * m] -= L[row][col] * recvBuffer[col];
       }
     }
 
-    for (int col = B.Start(); col < B.End(); col++) {
-      X[col] = newB[col - B.Start()] / L[col][col];
+    for (int col = rank * m; col < (rank + 1) * m; col++)
+    {
+      X[col] = tmp[col - rank * m] / L[col][col];
 
-      for (int line = col; line < B.End(); ++line)
-        newB[line - B.Start()] -= L[line][col] * X[col];
+      for (int row = col; row < (rank + 1) * m; ++row)
+        tmp[row - rank * m] -= L[row][col] * X[col];
     }
 
-    if (ring.getNext() != 0) ring.Send(&X[m * ring.getRank()], m, MPI_FLOAT);
+    ring.Send(&X[rank * m], m, MPI_FLOAT);
+    delete[] recvBuffer;
   }
-
-*/
+  delete[] tmp;
+}

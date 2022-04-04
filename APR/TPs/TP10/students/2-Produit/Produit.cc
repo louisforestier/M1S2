@@ -12,63 +12,35 @@ void produit(
     DistributedBlockVector &X,
     const int N
 ){
-    OPP::MPI::Ring ring(communicator);
-  const int p = ring.getSize();
-  const int q = ring.getRank();
-  const int r = N / p;
+  OPP::MPI::Ring ring(communicator);
+  int p = ring.getSize();
+  int q = ring.getRank();
+  int r = N / p;
 
-  float *tempSend = new float[r];
-  float *tempRecv = new float[r];
-  for (int i = X.Start(); i < X.End(); i++) X[i] = 0;
-  for (int i = B.Start(), n = 0; i < B.End(); i++, n++) tempSend[n] = B[i];
+  float *sendArray = new float[r];
+  float *recvArray = new float[r];
+  
+  for (int i = X.Start(); i < X.End(); i++) 
+    X[i] = 0;
+
+  int n = 0;
+  for (int i = B.Start(); i < B.End(); i++) 
+    sendArray[n++] = B[i];
 
   for (int step = 0; step < p; ++step) {
-    MPI_Request sendRequest = ring.AsyncSend(tempSend, r, MPI_FLOAT);
-    MPI_Request recvRequest = ring.AsyncRecv(tempRecv, r, MPI_FLOAT);
+    MPI_Request requests[2];
+    requests[0] = ring.AsyncSend(sendArray, r, MPI_FLOAT);
+    requests[1] = ring.AsyncRecv(recvArray, r, MPI_FLOAT);
 
     for (int j = 0; j < r; ++j) {
       for (int i = 0; i < r; ++i) {
         int column = i + ((q + p - step) % p) * r;
-        X[X.Start() + j] += A[A.Start() + j][column] * tempSend[i];
+        X[X.Start() + j] += A[A.Start() + j][column] * sendArray[i];
       }
     }
-
-    MPI_Wait(&sendRequest, MPI_STATUS_IGNORE);
-    MPI_Wait(&recvRequest, MPI_STATUS_IGNORE);
-
-    float *temp = tempSend;
-    tempSend = tempRecv;
-    tempRecv = temp;
+    MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+    std::swap(sendArray,recvArray);
   }
-
+  delete[] sendArray;
+  delete[] recvArray;
 }
-
-/*
-  const int p = ring.getSize();
-  const int q = ring.getRank();
-  const int r = N / p;
-
-  float *tempSend = new float[r];
-  float *tempRecv = new float[r];
-  for (int i = X.Start(); i < X.End(); i++) X[i] = 0;
-  for (int i = B.Start(), n = 0; i < B.End(); i++, n++) tempSend[n] = B[i];
-
-  for (int step = 0; step < p; ++step) {
-    MPI_Request sendRequest = ring.AsyncSend(tempSend, r, MPI_FLOAT);
-    MPI_Request recvRequest = ring.AsyncRecv(tempRecv, r, MPI_FLOAT);
-
-    for (int j = 0; j < r; ++j) {
-      for (int i = 0; i < r; ++i) {
-        int column = i + ((q + p - step) % p) * r;
-        X[X.Start() + j] += A[A.Start() + j][column] * tempSend[i];
-      }
-    }
-
-    MPI_Wait(&sendRequest, MPI_STATUS_IGNORE);
-    MPI_Wait(&recvRequest, MPI_STATUS_IGNORE);
-
-    float *temp = tempSend;
-    tempSend = tempRecv;
-    tempRecv = temp;
-  }
-*/
