@@ -13,13 +13,13 @@ public class Scene {
     private List<Light> lights = new ArrayList<>();
 
     public Scene() {
-        Material green = new Material(Color.green,Color.white,32,0,0.5f,1);
-        Material orange = new Material(Color.orange,Color.white,100,0.f,0.5f,01.f);
-        Material cyan = new Material(Color.cyan,Color.white,32,0.f,0.f,1);
-        Material red = new Material(Color.red,Color.white,32,0.f,0.f,1);
-        Material yellow = new Material(Color.yellow,Color.white,32,0.f,0,1);
+        Material green = new Material(Color.green,Color.white,32,0,01.f,1);
+        Material orange = new Material(Color.orange,Color.white,100,01.f,01.f,04f);
+        Material cyan = new Material(Color.cyan,Color.white,32,0.f,01.f,1);
+        Material red = new Material(Color.red,Color.white,32,0.f,01.f,1);
+        Material yellow = new Material(Color.yellow,Color.white,32,0.f,01,1);
         models.add(new Plane(green,new Vec3f(0,1,0),-2));
-        models.add(new Plane(cyan,new Vec3f(-1,1,1),-20));
+        models.add(new Plane(cyan,new Vec3f(0,1,0),2));
         models.add(new Sphere(orange,new Vec3f(0,0,-7.5f),2));
         models.add(new Sphere(red,new Vec3f(-4,-1,-7.5f),1));
         models.add(new Sphere(yellow,new Vec3f(4,-1,-7.5f),1));
@@ -31,9 +31,9 @@ public class Scene {
         //List<Vec3f> positions = lights.stream().map(light -> light.getPosition()).collect(Collectors.toList());
         //models.parallelStream().collect(Collectors.toList());
         float lambdaMin = Float.MAX_VALUE;
-        Model modelMin = model;
+        Model modelMin = null;
         for (Model m : models) {
-            if (m == model) continue;
+            //if (m == model) continue;
             float lambda = m.getIntersection(P,v);
             if (lambda > 1E-3 && lambda < lambdaMin){
                 lambdaMin = lambda;
@@ -100,7 +100,7 @@ public class Scene {
                 color = color.add(reflectColor.scale(reflRatio));
             }
             if (modelMin.getTransparency() > 0.f) {
-                float refractIndex = 1/modelMin.getRefractIndex();
+                float refractIndex;
                 if (inside)
                     refractIndex = modelMin.getRefractIndex();
                 else refractIndex = 1 / modelMin.getRefractIndex();
