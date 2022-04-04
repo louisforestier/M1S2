@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <1-Resolution/Resolution.h>
 #include <algorithm>
+#include <vector>
 
 void Solve(
     const OPP::MPI::Communicator& communicator,
@@ -43,3 +44,42 @@ void Solve(
         }        
     }
 }
+/*
+  float* newB = new float[B.End() - B.Start()];
+
+  for (int i = B.Start(), n = 0; i < B.End(); i++, n++) newB[n] = B[i];
+
+  if (ring.getRank() == 0) {
+    for (int col = 0; col < B.End(); ++col) {
+      X[col] = newB[col] / L[col][col];
+
+      for (int line = col; line < B.End(); ++line)
+        newB[line] -= L[line][col] * X[col];
+    }
+
+    ring.Send(&X[0], m, MPI_FLOAT);
+  } else {
+    float* prevX = new float[m * ring.getRank()];
+
+    for (int proc = 0; proc < ring.getRank(); proc++) {
+      ring.Recv(prevX + m * proc, m, MPI_FLOAT);
+
+      if (ring.getNext() != 0) ring.Send(prevX + m * proc, m, MPI_FLOAT);
+
+      for (int col = proc * m; col < ((proc + 1) * m); col++) {
+        for (int line = B.Start(); line < B.End(); ++line)
+          newB[line - B.Start()] -= L[line][col] * prevX[col];
+      }
+    }
+
+    for (int col = B.Start(); col < B.End(); col++) {
+      X[col] = newB[col - B.Start()] / L[col][col];
+
+      for (int line = col; line < B.End(); ++line)
+        newB[line - B.Start()] -= L[line][col] * X[col];
+    }
+
+    if (ring.getNext() != 0) ring.Send(&X[m * ring.getRank()], m, MPI_FLOAT);
+  }
+
+*/

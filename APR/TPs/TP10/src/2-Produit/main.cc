@@ -48,23 +48,23 @@ namespace
             return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<matrixFileName<<" ... ").str(), dv, -1, -1, nullptr, nullptr);
         const int dr = _sopen(resultFileName, _O_BINARY | _O_RDONLY, _SH_DENYWR);
         if (dr == -1)
-            errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<resultFileName<<" ... ").str(), dv, dm, -1, nullptr, nullptr);
+            return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<resultFileName<<" ... ").str(), dv, dm, -1, nullptr, nullptr);
         float *A = new float[N], *B = new float[N];
         const int size = sizeof(float) * N;
         if (_read(dv, B, size) != size)
-            errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("vector file is too small ... unable to read N floats")).str(), dv, dm, dr, A, B);
+            return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("vector file is too small ... unable to read N floats")).str(), dv, dm, dr, A, B);
         for (int r = 0; r < N; ++r)
         {
             if (_read(dm, A, size) != size)
-                errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("matrix file is too small ... unable to get row ")<<r).str(), dv, dm, dr, A, B);
+                return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("matrix file is too small ... unable to get row ")<<r).str(), dv, dm, dr, A, B);
             float truth = 0.f;
             for (int c = 0; c < N; ++c)
                 truth += A[c] * B[c];
             float result;
             if (_read(dr, &result, sizeof(float)) != sizeof(float))
-                errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to read result vector at position ")<<r).str(), dv, dm, dr, A, B);
+                return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to read result vector at position ")<<r).str(), dv, dm, dr, A, B);
             if (fabs(truth - result) > 1e-3f)
-                errors_on_check( 
+                return errors_on_check( 
                     static_cast<std::ostringstream&&>(std::ostringstream("Your calculation is far too different to the good result")<<std::endl
                     <<" -> row="<<r<<", truth="<<truth<<", result="<<result).str(), 
                     dv, dm, dr, A, B
@@ -94,23 +94,23 @@ namespace
             return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<matrixFileName<<" ... ").str(), dv, -1, -1, nullptr, nullptr);
         const int dr = open(resultFileName, O_RDONLY);
         if (dr == -1)
-            errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<resultFileName<<" ... ").str(), dv, dm, -1, nullptr, nullptr);
+            return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to open ")<<resultFileName<<" ... ").str(), dv, dm, -1, nullptr, nullptr);
         float *A = new float[N], *B = new float[N];
         const int size = sizeof(float) * N;
         if (read(dv, B, size) != size)
-            errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("vector file is too small ... unable to read N floats")).str(), dv, dm, dr, A, B);
+            return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("vector file is too small ... unable to read N floats")).str(), dv, dm, dr, A, B);
         for (int r = 0; r < N; ++r)
         {
             if (read(dm, A, size) != size)
-                errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("matrix file is too small ... unable to get row ")<<r).str(), dv, dm, dr, A, B);
+                return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("matrix file is too small ... unable to get row ")<<r).str(), dv, dm, dr, A, B);
             float truth = 0.f;
             for (int c = 0; c < N; ++c)
                 truth += A[c] * B[c];
             float result;
             if (read(dr, &result, sizeof(float)) != sizeof(float))
-                errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to read result vector at position ")<<r).str(), dv, dm, dr, A, B);
+                return errors_on_check( static_cast<std::ostringstream&&>(std::ostringstream("Unable to read result vector at position ")<<r).str(), dv, dm, dr, A, B);
             if (fabs(truth - result) > 1e-3f)
-                errors_on_check( 
+                return errors_on_check( 
                     static_cast<std::ostringstream&&>(std::ostringstream("Your calculation is far too different to the good result")<<std::endl
                     <<" -> row="<<r<<", truth="<<truth<<", result="<<result).str(), 
                     dv, dm, dr, A, B
