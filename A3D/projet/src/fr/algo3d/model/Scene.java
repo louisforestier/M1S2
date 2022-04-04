@@ -4,8 +4,9 @@ import fr.algo3d.JavaTga;
 import fr.algo3d.model.models.*;
 import fr.algo3d.model.lights.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Scene {
 
@@ -23,6 +24,8 @@ public class Scene {
         models.add(new Sphere(orange,new Vec3f(0,0,-7.5f),2));
         models.add(new Sphere(red,new Vec3f(-4,-1,-7.5f),1));
         models.add(new Sphere(yellow,new Vec3f(4,-1,-7.5f),1));
+        models.add(new Sphere(red,new Vec3f(3f,-1,-12.5f),1));
+        models.add(new Sphere(yellow,new Vec3f(-3f,-1,-12.5f),1));
         lights.add(new Light(new Vec3f(-1,1,0), Color.darkgray,Color.lightgray,Color.white));
     }
 
@@ -91,7 +94,6 @@ public class Scene {
             if (modelMin.getReflection() > 0.f) {
                 Vec3f r = new Vec3f(v);
                 r.subScale(2*normal.dotProduct(v),normal);
-                //r.inverse();
                 r.normalize();
                 float bias = 1e-4f;
                 Vec3f biasedI = new Vec3f(I);
@@ -121,4 +123,118 @@ public class Scene {
         //}
         return color;
     }
+
+
+    public void renderParallelMap(int w, int h, byte[] buffer, byte[] image) {
+        List<Vec3f> list = new ArrayList<>();
+        for(int row = 0; row < h; row++){ // for each row of the image
+            for(int col = 0; col < w; col++) { // for each column of the image
+                float x = (col - w / 2.f) / h;
+                float y = (row - h / 2.f) / h;
+                float z = -1f;
+                Vec3f ray = new Vec3f(x,y,z).normalize();
+                list.add(ray);
+            }
+        }
+        List<Color> colors = list.parallelStream().map(ray -> findColor(new Vec3f(), ray,0,null)).collect(Collectors.toList());
+        for(int row = 0; row < h; row++) { // for each row of the image
+            for (int col = 0; col < w; col++) { // for each column of the image
+                int index = 3 * ((row * w) + col); // compute index of color for pixel (x,y) in the buffer
+                buffer[index]= (byte) (Math.min(colors.get((row * w) + col).getB(),1.f)*255); // blue : take care, blue is the first component !!!
+                buffer[index+1]= (byte) (Math.min(colors.get((row * w) + col).getG(),1.f)*255); // green
+                buffer[index+2]= (byte) (Math.min(colors.get((row * w) + col).getR(),1.f)*255); // red (red is the last component !!!)
+
+                image[index]= (byte) (Math.min(colors.get((row * w) + col).getR(),1.f)*255); // Red
+                image[index+1]= (byte) (Math.min(colors.get((row * w) + col).getG(),1.f)*255); // green
+                image[index+2]= (byte) (Math.min(colors.get((row * w) + col).getB(),1.f)*255); // blue
+
+            }
+        }
+    }
+
+    public void renderParallelForEach(int w, int h, byte[] buffer, byte[] image) {
+        Map<Integer,Vec3f> map = new HashMap<>();
+        for(int row = 0; row < h; row++){ // for each row of the image
+            for(int col = 0; col < w; col++) { // for each column of the image
+                float x = (col - w / 2.f) / h;
+                float y = (row - h / 2.f) / h;
+                float z = -1f;
+                int index = 3 * ((row * w) + col); // compute index of color for pixel (x,y) in the buffer
+                Vec3f ray = new Vec3f(x,y,z).normalize();
+                map.put(index,ray);
+            }
+        }
+        map.entrySet().parallelStream().forEach(integerVec3fEntry -> {
+            Color c = findColor(new Vec3f(), integerVec3fEntry.getValue(),0,null);
+            buffer[integerVec3fEntry.getKey()]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
+            buffer[integerVec3fEntry.getKey()+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+            buffer[integerVec3fEntry.getKey()+2]= (byte) (Math.min(c.getR(),1.f)*255); // red (red is the last component !!!)
+
+            image[integerVec3fEntry.getKey()]= (byte) (Math.min(c.getR(),1.f)*255); // Red
+            image[integerVec3fEntry.getKey()+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+            image[integerVec3fEntry.getKey()+2]= (byte) (Math.min(c.getB(),1.f)*255); // blue
+
+        });
+    }
+
+
+    /**
+     * Best performance out of all parallel algorithm
+     * @param w
+     * @param h
+     * @param buffer
+     * @param image
+     */
+    public void renderParallelNestedLoops(int w, int h, byte[] buffer, byte[] image) {
+        IntStream.range(0,h).parallel().forEach(row -> {
+            IntStream.range(0,w).parallel().forEach(col -> {
+                int index = 3*((row*w)+col); // compute index of color for pixel (x,y) in the buffer
+                float x = (col - w/2.f)/h;
+                float y = (row -h/2.f)/h;
+                float z = -1f;
+                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0,null);
+                // Ensure that the pixel is black
+
+                buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
+                buffer[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+                buffer[index+2]= (byte) (Math.min(c.getR(),1.f)*255); // red (red is the last component !!!)
+
+                image[index]= (byte) (Math.min(c.getR(),1.f)*255); // Red
+                image[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+                image[index+2]= (byte) (Math.min(c.getB(),1.f)*255); // blue
+
+            });
+        });
+    }
+
+    public void renderSequential(int w, int h, byte[] buffer, byte[] image) {
+        for(int row = 0; row < h; row++){ // for each row of the image
+            for(int col = 0; col < w; col++){ // for each column of the image
+
+                int index = 3*((row*w)+col); // compute index of color for pixel (x,y) in the buffer
+                float x = (col - w/2.f)/h;
+                float y = (row -h/2.f)/h;
+                float z = -1f;
+                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0,null);
+                // Ensure that the pixel is black
+
+                buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
+                buffer[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+                buffer[index+2]= (byte) (Math.min(c.getR(),1.f)*255); // red (red is the last component !!!)
+
+                image[index]= (byte) (Math.min(c.getR(),1.f)*255); // Red
+                image[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
+                image[index+2]= (byte) (Math.min(c.getB(),1.f)*255); // blue
+
+                // Depending on the x position, select a color...
+/*
+                if (col<w/3) buffer[index]=(byte)255; // Blue in the left part of the image
+                else if (col<2*w/3) buffer[index+1]=(byte)255; // Green in the middle
+                else buffer[index+2]=(byte)255; // Red in the right part
+*/
+            }
+        }
+
+    }
+
 }
