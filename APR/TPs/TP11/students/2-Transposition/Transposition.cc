@@ -12,6 +12,13 @@ namespace
         const unsigned width
     ) {
         // TODO
+        for (int i = M.Start(); i < M.End(); i++)
+        {
+            for (int j = M[i].Start(); j < M[i].End(); j++)
+            {
+                block.get()[(i - M.Start())+width*(j-M[i].Start())] = M[i][j];
+            }
+        }
     }
 
     // sens Lower vers Up (du bas vers le haut)
@@ -27,15 +34,29 @@ namespace
         std::unique_ptr<float> buffer(new float [bSize]);
         if( row < col ) // sous la diagonale : on envoie de gauche à droite
         {
-            // TODO
+            torus.Send(block.get(),bSize,MPI_FLOAT,Direction::EAST);
+            for (int i = 0; i < row; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::WEST);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::EAST);
+            }
         }
         else if( row > col ) // sur la diagonale : on reçoit de bas en haut
         {
-            // TODO
+            torus.Recv(transpose.get(),bSize,MPI_FLOAT,Direction::SOUTH);
+            for (int i = 0; i < col; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::SOUTH);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::NORTH);
+            }
         }
         else // sur la diagonale
         {
-            // TODO
+            for (int i = 0; i < row; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::WEST);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::NORTH);
+            }
         }
     }
 
@@ -46,7 +67,38 @@ namespace
         const std::shared_ptr<float>& block,
         std::shared_ptr<float>& transpose
     ) {
-        // TODO
+        using Direction = OPP::MPI::Torus::Direction;
+        const auto row = torus.getRowRing().getRank();
+        const auto col = torus.getColumnRing().getRank();
+        std::unique_ptr<float> buffer(new float [bSize]);
+        if( row < col ) // sous la diagonale : on reçoit de droite à gauche
+        {
+            torus.Recv(transpose.get(),bSize,MPI_FLOAT,Direction::EAST);
+            for (int i = 0; i < row; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::EAST);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::WEST);
+            }
+
+        }
+        else if( row > col ) // sur la diagonale : on envoie de haut en bas
+        {
+            torus.Send(block.get(),bSize,MPI_FLOAT,Direction::SOUTH);
+            for (int i = 0; i < col; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::NORTH);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::SOUTH);
+            }
+            
+        }
+        else // sur la diagonale
+        {
+            for (int i = 0; i < col; i++)
+            {
+                torus.Recv(buffer.get(),bSize,MPI_FLOAT,Direction::NORTH);
+                torus.Send(buffer.get(),bSize,MPI_FLOAT,Direction::WEST);
+            }
+        }
     }
 
     // sauvegarde du résultat
@@ -55,7 +107,13 @@ namespace
         DistributedBlockMatrix& M,
         const unsigned width
     ) {
-        // TODO
+        for (int i = M.Start(); i < M.End(); i++)
+        {
+            for (int j = M[i].Start(); j < M[i].End(); j++)
+            {
+                M[i][j]= transpose.get()[(i - M.Start())*width+(j-M[i].Start())];
+            }
+        }
     }
 }
 
