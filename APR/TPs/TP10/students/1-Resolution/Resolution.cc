@@ -55,12 +55,12 @@ void Solve(
     }
     for (int col = rank * m; col < N; col++)
     {
-      X[col] = tmp[col - rank * m] / L[col][col];
+      X[col] = tmp[col % m] / L[col][col];
 
       for (int row = col; row < N; ++row)
-        tmp[row - rank * m] -= L[row][col] * X[col];
+        tmp[row % m] -= L[row][col] * X[col];
     }
-    delete[] recvBuffer;
+    delete recvBuffer;
   }
   else
   {
@@ -74,20 +74,20 @@ void Solve(
       for (int col = i * m; col < (i + 1) * m; col++)
       {
         for (int row = rank * m; row < (rank + 1) * m; ++row)
-          tmp[row - rank * m] -= L[row][col] * recvBuffer[col];
+          tmp[row % m] -= L[row][col] * recvBuffer[col];
       }
     }
 
     for (int col = rank * m; col < (rank + 1) * m; col++)
     {
-      X[col] = tmp[col - rank * m] / L[col][col];
+      X[col] = tmp[col % m] / L[col][col];
 
       for (int row = col; row < (rank + 1) * m; ++row)
-        tmp[row - rank * m] -= L[row][col] * X[col];
+        tmp[row % m] -= L[row][col] * X[col];
     }
 
     ring.Send(&X[rank * m], m, MPI_FLOAT);
-    delete[] recvBuffer;
+    delete recvBuffer;
   }
-  delete[] tmp;
+  delete tmp;
 }
