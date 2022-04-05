@@ -23,9 +23,9 @@ void produit(
   for (int i = X.Start(); i < X.End(); i++) 
     X[i] = 0;
 
-  int n = 0;
+  int k = 0;
   for (int i = B.Start(); i < B.End(); i++) 
-    sendArray[n++] = B[i];
+    sendArray[k++] = B[i];
 
   for (int step = 0; step < p; ++step) {
     MPI_Request requests[2];
@@ -41,6 +41,6 @@ void produit(
     MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
     std::swap(sendArray,recvArray);
   }
-  delete[] sendArray;
-  delete[] recvArray;
+  delete sendArray;
+  delete recvArray;
 }
