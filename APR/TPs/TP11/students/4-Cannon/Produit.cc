@@ -1,4 +1,3 @@
-#include <DistributedBlockMatrix.h>
 #include <4-Cannon/Produit.h>
 #include <memory>
 

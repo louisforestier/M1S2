@@ -1,5 +1,4 @@
 #include <memory>
-#include <DistributedBlockMatrix.h>
 #include <5-Fox/Produit.h>
 
 namespace

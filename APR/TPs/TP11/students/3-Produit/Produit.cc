@@ -1,4 +1,3 @@
-#include <utils/DistributedBlockMatrix.h>
 #include <3-Produit/Produit.h>
 #include <memory>
 #include <MPI/OPP_MPI.h>

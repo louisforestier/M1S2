@@ -1,4 +1,3 @@
-#include <DistributedBlockMatrix.h>
 #include <6-Snyder/Produit.h>
 #include <thread>
 #include <memory>

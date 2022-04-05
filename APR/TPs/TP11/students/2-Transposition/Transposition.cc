@@ -1,4 +1,3 @@
-#include <utils/DistributedBlockMatrix.h>
 #include <2-Transposition/Transposition.h>
 #include <thread>
 #include <memory>
