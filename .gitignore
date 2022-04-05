@@ -149,3 +149,8 @@ settings.json
 *.ilk
 *VC.db
 *.sln.*
+A3D/projet/imagetest (copie).tga
+.gitignore
+A3D/projet/out/production/RayTracing/fr/algo3d/view/MainPane.fxml
+A3D/projet/.idea/workspace.xml
+A3D/projet/imagetest.tga
