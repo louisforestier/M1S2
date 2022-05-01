@@ -299,6 +299,10 @@ public class Vec3f
         return this;
     }
 
+    /**
+     * Returns the inverse of the current vector.
+     * @return
+     */
     public Vec3f inverse() {
         return new Vec3f(-x,-y,-z);
     }

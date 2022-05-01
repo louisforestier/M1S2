@@ -1,6 +1,5 @@
 package fr.algo3d.model;
 
-import fr.algo3d.JavaTga;
 import fr.algo3d.model.models.*;
 import fr.algo3d.model.lights.*;
 
@@ -8,12 +7,37 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Class to represent a scene to be rendered.
+ */
 public class Scene {
 
+    /**
+     * Maximum  number of recursion for the higher order rays.
+     */
+    public static final int MAX_RAY_DEPTH = 13;
+
+    /**
+     * Ambient color of the scene.
+     */
+    private Color ambient;
+
+    /**
+     * List of models in the scene.
+     */
     private List<Model> models = new ArrayList<>();
+
+    /**
+     * List of lights in the scene.
+     */
     private List<Light> lights = new ArrayList<>();
 
+    /**
+     * Constructor.
+     * Creates a scene with one infinite plane below and one above the point of view, and five spheres.
+     */
     public Scene() {
+        ambient = Color.darkgray;
         Material green = new Material(Color.green,Color.white,32,0,01.f,1);
         Material orange = new Material(Color.orange,Color.white,100,01.f,01.f,04f);
         Material cyan = new Material(Color.cyan,Color.white,32,0.f,01.f,1);
@@ -26,17 +50,24 @@ public class Scene {
         models.add(new Sphere(yellow,new Vec3f(4,-1,-7.5f),1));
         models.add(new Sphere(red,new Vec3f(3f,-1,-12.5f),1));
         models.add(new Sphere(yellow,new Vec3f(-3f,-1,-12.5f),1));
-        lights.add(new Light(new Vec3f(-1,1,0), Color.darkgray,Color.lightgray,Color.white));
+        lights.add(new Light(new Vec3f(-1,1,0), Color.lightgray,Color.white));
     }
 
-    public Color findColor(Vec3f P, Vec3f v, int depth, Model model){
+    /**
+     * Returns the color found by the ray defined by P and v.
+     * Looks if the ray intersects a model. If no then the color is black.
+     * Else, it calculates the diffuse and specular color for each light if it is not obscured in a shadow.
+     * Then it calculates the reflected and refracted colors.
+     * @param P
+     * @param v
+     * @param depth
+     * @return
+     */
+    public Color findColor(Vec3f P, Vec3f v, int depth){
         Color color = new Color();
-        //List<Vec3f> positions = lights.stream().map(light -> light.getPosition()).collect(Collectors.toList());
-        //models.parallelStream().collect(Collectors.toList());
         float lambdaMin = Float.MAX_VALUE;
         Model modelMin = null;
         for (Model m : models) {
-            //if (m == model) continue;
             float lambda = m.getIntersection(P,v);
             if (lambda > 1E-3 && lambda < lambdaMin){
                 lambdaMin = lambda;
@@ -60,11 +91,11 @@ public class Scene {
         float diffuseRatio = 1 / (1 + modelMin.getReflection()+ modelMin.getTransparency());
 
         for (Light l : lights) {
-            color = color.add(l.getAmbient().mul(modelMin.getAmbiantMaterial()));
+            color = color.add(ambient.mul(modelMin.getColor()));
             boolean seen = true;
             Vec3f IS = new Vec3f();
+            IS.setSub(l.getPosition(), I);
             for (Model m : models) {
-                IS.setSub(l.getPosition(), I);
                 float bias = 1e-4f;
                 I.addScale(bias, normal);
                 lambdaMin = m.getIntersection(I, IS);
@@ -77,7 +108,7 @@ public class Scene {
                 Color diffuse;
                 IS.normalize();
                 float weight = Math.max(normal.dotProduct(IS), 0.f);
-                diffuse = modelMin.getDiffuseMaterial().mul(l.getDiffuse().scale(weight));
+                diffuse = modelMin.getColor().mul(l.getDiffuse().scale(weight));
                 diffuse = diffuse.scale(diffuseRatio);
                 Color specular;
                 Vec3f halfdir = new Vec3f();
@@ -90,7 +121,7 @@ public class Scene {
             }
         }
 
-        if ((modelMin.getReflection() > 0 || modelMin.getTransparency() > 0) && depth < JavaTga.MAX_RAY_DEPTH) {
+        if ((modelMin.getReflection() > 0 || modelMin.getTransparency() > 0) && depth < Scene.MAX_RAY_DEPTH) {
             if (modelMin.getReflection() > 0.f) {
                 Vec3f r = new Vec3f(v);
                 r.subScale(2*normal.dotProduct(v),normal);
@@ -98,7 +129,7 @@ public class Scene {
                 float bias = 1e-4f;
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.addScale(bias,normal);
-                Color reflectColor = findColor(biasedI,r,depth+1,modelMin).scale(modelMin.getReflection());
+                Color reflectColor = findColor(biasedI,r,depth+1).scale(modelMin.getReflection());
                 color = color.add(reflectColor.scale(reflRatio));
             }
             if (modelMin.getTransparency() > 0.f) {
@@ -115,16 +146,20 @@ public class Scene {
                 float bias = 1e-4f;
                 Vec3f biasedI = new Vec3f(I);
                 biasedI.subScale(bias,normal);
-                Color transColor = findColor(biasedI,t,depth+1,modelMin).scale(modelMin.getTransparency());
+                Color transColor = findColor(biasedI,t,depth+1).scale(modelMin.getTransparency());
                 color = color.add(transColor.scale(transRatio));
             }
         }
-        //else {
-        //}
         return color;
     }
 
-
+    /**
+     * Builds a list of ray in sequential then uses this list in parallel via stream to call findcolor on each element. Uses the transform/map parallel pattern.
+     * @param w
+     * @param h
+     * @param buffer
+     * @param image
+     */
     public void renderParallelMap(int w, int h, byte[] buffer, byte[] image) {
         List<Vec3f> list = new ArrayList<>();
         for(int row = 0; row < h; row++){ // for each row of the image
@@ -136,7 +171,7 @@ public class Scene {
                 list.add(ray);
             }
         }
-        List<Color> colors = list.parallelStream().map(ray -> findColor(new Vec3f(), ray,0,null)).collect(Collectors.toList());
+        List<Color> colors = list.parallelStream().map(ray -> findColor(new Vec3f(), ray,0)).collect(Collectors.toList());
         for(int row = 0; row < h; row++) { // for each row of the image
             for (int col = 0; col < w; col++) { // for each column of the image
                 int index = 3 * ((row * w) + col); // compute index of color for pixel (x,y) in the buffer
@@ -152,6 +187,15 @@ public class Scene {
         }
     }
 
+    /**
+     * Builds a map of index and ray in sequential then uses this map in parallel via stream to call findcolor on each element.
+     * Better than the precedent algorithm because the index and the ray are calculated in the same loop.
+     *
+     * @param w
+     * @param h
+     * @param buffer
+     * @param image
+     */
     public void renderParallelForEach(int w, int h, byte[] buffer, byte[] image) {
         Map<Integer,Vec3f> map = new HashMap<>();
         for(int row = 0; row < h; row++){ // for each row of the image
@@ -165,7 +209,7 @@ public class Scene {
             }
         }
         map.entrySet().parallelStream().forEach(integerVec3fEntry -> {
-            Color c = findColor(new Vec3f(), integerVec3fEntry.getValue(),0,null);
+            Color c = findColor(new Vec3f(), integerVec3fEntry.getValue(),0);
             buffer[integerVec3fEntry.getKey()]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
             buffer[integerVec3fEntry.getKey()+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
             buffer[integerVec3fEntry.getKey()+2]= (byte) (Math.min(c.getR(),1.f)*255); // red (red is the last component !!!)
@@ -179,7 +223,8 @@ public class Scene {
 
 
     /**
-     * Best performance out of all parallel algorithm
+     * Uses IntStream in parallel to mimic nested for loops. Very close to the sequential algorithm in terms of code.
+     * Best performance out of all algorithms.
      * @param w
      * @param h
      * @param buffer
@@ -192,7 +237,7 @@ public class Scene {
                 float x = (col - w/2.f)/h;
                 float y = (row -h/2.f)/h;
                 float z = -1f;
-                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0,null);
+                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0);
                 // Ensure that the pixel is black
 
                 buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
@@ -207,6 +252,13 @@ public class Scene {
         });
     }
 
+    /**
+     * Classical ray tracing algorithm in sequential.
+     * @param w
+     * @param h
+     * @param buffer
+     * @param image
+     */
     public void renderSequential(int w, int h, byte[] buffer, byte[] image) {
         for(int row = 0; row < h; row++){ // for each row of the image
             for(int col = 0; col < w; col++){ // for each column of the image
@@ -215,7 +267,7 @@ public class Scene {
                 float x = (col - w/2.f)/h;
                 float y = (row -h/2.f)/h;
                 float z = -1f;
-                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0,null);
+                Color c = findColor(new Vec3f(),(new Vec3f(x,y,z)).normalize(),0);
                 // Ensure that the pixel is black
 
                 buffer[index]= (byte) (Math.min(c.getB(),1.f)*255); // blue : take care, blue is the first component !!!
@@ -225,16 +277,7 @@ public class Scene {
                 image[index]= (byte) (Math.min(c.getR(),1.f)*255); // Red
                 image[index+1]= (byte) (Math.min(c.getG(),1.f)*255); // green
                 image[index+2]= (byte) (Math.min(c.getB(),1.f)*255); // blue
-
-                // Depending on the x position, select a color...
-/*
-                if (col<w/3) buffer[index]=(byte)255; // Blue in the left part of the image
-                else if (col<2*w/3) buffer[index+1]=(byte)255; // Green in the middle
-                else buffer[index+2]=(byte)255; // Red in the right part
-*/
             }
         }
-
     }
-
 }

@@ -5,27 +5,37 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
+/**
+ * Controller for the main pane.
+ */
 public class MainPaneController {
+    /**
+     * Main pane.
+     */
     @FXML
     private AnchorPane mainPane;
 
+    /**
+     * ImageView to contain the rendered image.
+     */
     @FXML
     private ImageView imageView;
 
+    /**
+     * Binds the ImageView and the main pane heights and widths.
+     */
     @FXML
     public void initialize(){
         imageView.fitHeightProperty().bind(mainPane.heightProperty());
         imageView.fitWidthProperty().bind(mainPane.widthProperty());
     }
 
+    /**
+     * Set the image of the ImageView to the parameter.
+     * @param image
+     */
     public void setBackground(Image image) {
         imageView.setImage(image);
-    }
-
-    public void setMainPaneBackground(Image image){
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,BackgroundSize.DEFAULT);
-        Background bg = new Background(backgroundImage);
-        mainPane.setBackground(bg);
     }
 
 }

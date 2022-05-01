@@ -1,8 +1,22 @@
 package fr.algo3d.model.models;
 
+/**
+ * Class to represent colors with floats between 0 and 1.
+ */
 public class Color {
+    /**
+     * Value of the red channel.
+     */
     private float r;
+
+    /**
+     * Value of the green channel.
+     */
     private float g;
+
+    /**
+     * Value of the blue channel.
+     */
     private float b;
 
     static public final Color black=new Color(0.0F,0.0F,0.0F);
@@ -18,21 +32,30 @@ public class Color {
     static public final Color cyan=new Color(0.F,1.0F,1.F);
     static public final Color orange=new Color(1.F,0.5F,0.F);
 
+    /**
+     * Default constructor.
+     * Create a black color.
+     */
     public Color() {
     }
 
-    public Color(float[] colors){
-        this.r = colors[0];
-        this.g = colors[1];
-        this.b = colors[2];
-    }
-
+    /**
+     * Constructor.
+     * @param r
+     * @param g
+     * @param b
+     */
     public Color(float r, float g, float b) {
         this.r = r;
         this.g = g;
         this.b = b;
     }
 
+    /**
+     * Add a color and the current object and returns the result.
+     * @param c
+     * @return
+     */
     public Color add(Color c){
         float newR = Math.min(this.r + c.r,1.f);
         float newG = Math.min(this.g + c.g,1.f);
@@ -40,6 +63,11 @@ public class Color {
         return new Color(newR, newG, newB);
     }
 
+    /**
+     * Multiply the current object and a color and returns the result.
+     * @param c
+     * @return
+     */
     public Color mul(Color c){
         float newR = this.r * c.r;
         float newG = this.g * c.g;
@@ -47,6 +75,11 @@ public class Color {
         return new Color(newR,newG,newB);
     }
 
+    /**
+     * Multiply the current object and a float and returns the result.
+     * @param s
+     * @return
+     */
     public Color scale(float s){
         float newR = this.r * s;
         float newG = this.g * s;
@@ -54,14 +87,26 @@ public class Color {
         return new Color(newR,newG,newB);
     }
 
+    /**
+     * Returns the red channel.
+     * @return
+     */
     public float getR() {
         return r;
     }
 
+    /**
+     * Returns the green channel.
+     * @return
+     */
     public float getG() {
         return g;
     }
 
+    /**
+     * Returns the blue channel.
+     * @return
+     */
     public float getB() {
         return b;
     }
