@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+<h1 th:text="${title}"></h1>
+<main>
+    <table>
+        <tbody>
+        <tr th:each="event : ${events}">
+            <td class="id-column" th:text="${event.id}"></td>
+            <td th:text="${event.name}"></td>
+            <td th:text="${event.date}"></td>
+            <td>
+                <form th:action="@{/events/{id}(id=${event.id})}" th:method="DELETE">
+                    <button th:title="'Supprimer ' +${event.name}" type="submit"><span>x</span></button>
+                </form>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/events/add}">Ajouter</a> <br/>
+</main>
+<footer>
+    <a th:href="@{/index}">Index</a> <br/>
+    <span th:text="${author}+ ' - ' +${curse}"></span>
+</footer>
+</body>
+</html>

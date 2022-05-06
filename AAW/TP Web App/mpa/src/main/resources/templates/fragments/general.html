@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Multi Page Application</title>
+</head>
+<header th:fragment="header (title)">
+    <div>
+        <a href="index"><span th:text="#{title.message}"></span> </a>
+    </div>
+</header>
+</html>

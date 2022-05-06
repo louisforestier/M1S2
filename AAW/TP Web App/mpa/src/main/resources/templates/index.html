@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+<h1 th:text="${title}"></h1>
+<main>
+    <span th:text="${message}"></span> <br/>
+    <a th:href="@{/persons}">Personnes</a> <br/>
+    <a th:href="@{/events}">Evènements</a>
+</main>
+<footer>
+    <span th:text="${author}+ ' - ' +${curse}"></span>
+</footer>
+</body>
+</html>

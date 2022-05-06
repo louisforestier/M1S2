@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+<h1 th:text="${title}"></h1>
+<main>
+    <h2>Ajouter un participant</h2>
+    <form th:method="POST" th:action="@{/persons}" th:object="${personForm}">
+        <label th:for="*{firstName}">Prénom</label>
+        <input required type="text" value="" th:field="*{firstName}"/> <br/>
+        <label th:for="*{lastName}">Nom</label>
+        <input required type="text" th:field="*{lastName}"/> <br/>
+        <label th:for="*{eventId}">Evènement</label>
+        <select th:field="*{eventId}">
+            <option value=""></option>
+            <option th:each="event : ${events}" th:value="${event.id}" th:text="${event.name}" ></option>
+        </select>
+
+        <input type="submit" value="Valider"/>
+    </form>
+</main>
+<footer>
+    <a th:href="@{/index}">Index</a> <br/>
+    <span th:text="${author}+ ' - ' +${curse}"></span>
+</footer>
+</body>
+</html>
