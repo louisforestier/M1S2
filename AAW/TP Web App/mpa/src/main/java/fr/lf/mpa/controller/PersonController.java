@@ -1,7 +1,9 @@
 package fr.lf.mpa.controller;
 
 import fr.lf.mpa.form.PersonForm;
+import fr.lf.mpa.model.Event;
 import fr.lf.mpa.model.EventRecord;
+import fr.lf.mpa.model.Person;
 import fr.lf.mpa.model.PersonRecord;
 import fr.lf.mpa.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
-public class PersonController extends BaseController{
+public class PersonController extends BaseController {
 
     @Autowired
     private PersonService personService;
@@ -21,7 +23,9 @@ public class PersonController extends BaseController{
     @GetMapping(value = {"/persons"})
     public String showPersonListPage(Model model) {
         initModel(model);
-        model.addAttribute("persons",personService.getContext().getPersons());
+        if (personService.withContext())
+            model.addAttribute("persons", personService.getContext().getPersons());
+        else model.addAttribute("persons", personService.getPersons());
         return "person_list";
     }
 
@@ -29,16 +33,17 @@ public class PersonController extends BaseController{
     public String showAddPersonPage(Model model, @RequestParam(required = false) UUID event) {
         initModel(model);
         PersonForm personForm = new PersonForm();
-        model.addAttribute("events",personService.getContext().getEvents());
-        model.addAttribute("personForm",personForm);
+        if (personService.withContext())
+            model.addAttribute("events", personService.getContext().getEvents());
+        else model.addAttribute("events", personService.getEvents());
+        model.addAttribute("personForm", personForm);
         return "add_person";
     }
 
     @PostMapping(value = {"/persons"})
     public String savePerson(Model model, @ModelAttribute("personForm") PersonForm personForm) {
         initModel(model);
-        EventRecord eventRecord = personService.getContext().getEvents().stream().filter(p -> p.getId().equals(personForm.getEventId())).findFirst().get();
-        personService.getContext().getPersons().add(new PersonRecord(UUID.randomUUID(), personForm.getFirstName(), personForm.getLastName(),eventRecord));
+        personService.addPerson(personForm);
         return "redirect:/persons";
     }
 

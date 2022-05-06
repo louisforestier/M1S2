@@ -1,5 +1,6 @@
 package fr.lf.mpa.controller;
 
+import fr.lf.mpa.form.EventForm;
 import fr.lf.mpa.model.EventRecord;
 import fr.lf.mpa.service.EventService;
 import fr.lf.mpa.service.PersonService;
@@ -19,22 +20,24 @@ public class EventController extends BaseController{
     @GetMapping(value = {"/events"})
     public String showEventListPage(Model model) {
         initModel(model);
-        model.addAttribute("events",eventService.getContext().getEvents());
+        if (eventService.withContext())
+            model.addAttribute("events",eventService.getContext().getEvents());
+        else model.addAttribute("events",eventService.getEvents());
         return "event_list";
     }
 
     @GetMapping(value = {"/events/add"})
     public String showAddEventPage(Model model) {
         initModel(model);
-        EventRecord eventForm = new EventRecord();
+        EventForm eventForm = new EventForm();
         model.addAttribute("eventForm",eventForm);
         return "add_event";
     }
 
     @PostMapping(value = {"/events"})
-    public String saveEvent(Model model, @ModelAttribute("eventForm") EventRecord eventForm) {
+    public String saveEvent(Model model, @ModelAttribute("eventForm") EventForm eventForm) {
         initModel(model);
-        eventService.getContext().getEvents().add(eventForm);
+        eventService.addEvent(eventForm);
         return "redirect:/events";
     }
 
