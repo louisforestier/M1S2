@@ -1,10 +1,6 @@
 package fr.lf.mpa.controller;
 
 import fr.lf.mpa.form.PersonForm;
-import fr.lf.mpa.model.Event;
-import fr.lf.mpa.model.EventRecord;
-import fr.lf.mpa.model.Person;
-import fr.lf.mpa.model.PersonRecord;
 import fr.lf.mpa.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Controller
 public class PersonController extends BaseController {

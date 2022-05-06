@@ -1,7 +1,5 @@
 package fr.lf.mpa.form;
 
-import fr.lf.mpa.model.EventRecord;
-
 import java.util.UUID;
 
 public class PersonForm {

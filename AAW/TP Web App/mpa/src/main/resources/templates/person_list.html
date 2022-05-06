@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
         lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
+<head th:replace="fragments/general.html :: head"></head>
 <body>
-<h1 th:text="${title}"></h1>
+<header th:replace="fragments/general.html :: header (title=${title})"></header>
 <main>
     <table>
         <tbody>
@@ -25,9 +22,6 @@
     </table>
     <a th:href="@{/persons/add}">Ajouter</a> <br/>
 </main>
-<footer>
-    <a th:href="@{/index}">Index</a> <br/>
-    <span th:text="${author}+ ' - ' +${curse}"></span>
-</footer>
+<footer th:replace="fragments/general.html :: footer(author=${author},curse =${curse})"/>
 </body>
 </html>

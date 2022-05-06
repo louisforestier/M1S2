@@ -71,17 +71,13 @@ public class PersonService {
 
     public List<Event> getEvents(){
         List<Event> events = new ArrayList<>();
-        eventRepository.findAll().forEach(event -> {
-           events.add(event);
-       });
+        eventRepository.findAll().forEach(events::add);
         return events;
     }
 
     public List<Person> getPersons(){
         List<Person> persons = new ArrayList<>();
-        personRepository.findAll().forEach(person -> {
-           persons.add(person);
-       });
+        personRepository.findAll().forEach(persons::add);
         return persons;
     }
 

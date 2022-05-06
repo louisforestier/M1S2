@@ -2,11 +2,9 @@ package fr.lf.mpa.service;
 
 import fr.lf.mpa.context.Context;
 import fr.lf.mpa.form.EventForm;
-import fr.lf.mpa.form.PersonForm;
 import fr.lf.mpa.model.Event;
 import fr.lf.mpa.model.EventRecord;
 import fr.lf.mpa.model.Person;
-import fr.lf.mpa.model.PersonRecord;
 import fr.lf.mpa.repository.EventRepository;
 import fr.lf.mpa.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,26 +68,13 @@ public class EventService {
 
     public List<Event> getEvents(){
         List<Event> events = new ArrayList<>();
-        eventRepository.findAll().forEach(event -> {
-            events.add(event);
-        });
+        eventRepository.findAll().forEach(events::add);
         return events;
     }
 
     public List<Person> getPersons(){
         List<Person> persons = new ArrayList<>();
-        personRepository.findAll().forEach(person -> {
-            persons.add(person);
-        });
+        personRepository.findAll().forEach(persons::add);
         return persons;
     }
-
-    public EventRepository getEventRepository() {
-        return eventRepository;
-    }
-
-    public PersonRepository getPersonRepository() {
-        return personRepository;
-    }
-
 }

@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
         lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
+<head th:replace="fragments/general.html :: head"></head>
 <body>
-<h1 th:text="${title}"></h1>
+<header th:replace="fragments/general.html :: header (title=${title})"></header>
 <main>
     <h2>Ajouter un participant</h2>
     <form th:method="POST" th:action="@{/persons}" th:object="${personForm}">
@@ -23,9 +20,6 @@
         <input type="submit" value="Valider"/>
     </form>
 </main>
-<footer>
-    <a th:href="@{/index}">Index</a> <br/>
-    <span th:text="${author}+ ' - ' +${curse}"></span>
-</footer>
+<footer th:replace="fragments/general.html :: footer(author=${author},curse =${curse})"/>
 </body>
 </html>

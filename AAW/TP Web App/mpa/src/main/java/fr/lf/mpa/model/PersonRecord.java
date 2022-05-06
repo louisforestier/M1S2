@@ -1,7 +1,5 @@
 package fr.lf.mpa.model;
 
-import fr.lf.mpa.form.PersonForm;
-
 import java.util.UUID;
 
 public class PersonRecord {

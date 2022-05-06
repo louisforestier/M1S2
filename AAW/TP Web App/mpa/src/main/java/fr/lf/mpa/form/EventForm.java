@@ -1,7 +1,5 @@
 package fr.lf.mpa.form;
 
-import java.util.UUID;
-
 public class EventForm {
 
     private String name;

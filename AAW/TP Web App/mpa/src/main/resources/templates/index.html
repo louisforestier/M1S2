@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
         lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
+<head th:replace="fragments/general.html :: head"></head>
 <body>
-<h1 th:text="${title}"></h1>
+<header th:replace="fragments/general.html :: header (title=${title})"></header>
 <main>
     <span th:text="${message}"></span> <br/>
     <a th:href="@{/persons}">Personnes</a> <br/>
     <a th:href="@{/events}">Evènements</a>
 </main>
-<footer>
-    <span th:text="${author}+ ' - ' +${curse}"></span>
-</footer>
+<footer th:replace="fragments/general.html :: footer(author=${author},curse =${curse})"/>
 </body>
 </html>
