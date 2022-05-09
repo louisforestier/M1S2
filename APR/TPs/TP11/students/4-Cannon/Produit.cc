@@ -3,18 +3,18 @@
 
 namespace
 {
-    void RotationHorizontale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &srcAddr,std::shared_ptr<float> &destAddr,int L)
+    void RotationHorizontale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &buffer,int L)
     {
         using Direction = OPP::MPI::BidirRing::Direction;
-        torus.getRowRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
-        torus.getRowRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+        torus.getRowRing().Send(buffer.get(),L,MPI_FLOAT,Direction::NEXT);
+        torus.getRowRing().Recv(buffer.get(),L,MPI_FLOAT,Direction::PREVIOUS);
     }
 
-    void RotationVerticale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &srcAddr,std::shared_ptr<float> &destAddr, int L)
+    void RotationVerticale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &buffer, int L)
     {
         using Direction = OPP::MPI::BidirRing::Direction;
-        torus.getColumnRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
-        torus.getColumnRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+        torus.getColumnRing().Send(buffer.get(),L,MPI_FLOAT,Direction::NEXT);
+        torus.getColumnRing().Recv(buffer.get(),L,MPI_FLOAT,Direction::PREVIOUS);
     }
 } // namespace
 
@@ -26,43 +26,39 @@ void Produit(
 ) {
     // TODO
     int n = torus.getRowRing().getSize();
-    int i = torus.getRowRing().getRank();
-    int j = torus.getColumnRing().getRank();
 
-    int rows = A.m_m;
-    int cols = A.m_n;
+    int rows = A.End() - A.Start();
+    int cols = A.End() - A.Start();
 
-    std::shared_ptr<float> blockA(new float[rows*cols]);
-    std::shared_ptr<float> blockB(new float[rows*cols]);
     std::shared_ptr<float> bufferA(new float[rows*cols]);
     std::shared_ptr<float> bufferB(new float[rows*cols]);
-    for (int k = C.Start(); k < C.End(); k++)
+    for (int i = C.Start(); i < C.End(); i++)
     {
-        for (int l = C[k].Start(); l < C[k].End(); l++)
+        for (int j = C[i].Start(); j < C[i].End(); j++)
         {
-            auto I = k - C.Start();
-            auto J = l - C[k].Start();
-            blockA.get()[I * rows +J] = A[k][l];
-            blockB.get()[I * rows +J] = B[k][l];
-            C[k][l]= 0.0;
+            auto I = i - C.Start();
+            auto J = j - C[i].Start();
+            bufferA.get()[I * rows +J] = A[i][j];
+            bufferB.get()[I * rows +J] = B[i][j];
+            C[i][j]= 0.0;
         }
     }
-    RotationHorizontale(torus,blockA,bufferA,rows*cols);
-    RotationVerticale(torus,blockB,bufferB,rows*cols);
+    RotationHorizontale(torus,bufferA,rows*cols);
+    RotationVerticale(torus,bufferB,rows*cols);
 
     for (int k = 0; k < n; k++)
     {
-        for (int l = C.Start(); l < C.End(); l++)
+        for (int i = C.Start(); i < C.End(); i++)
         {
-            for (int m = C[l].Start(); m < C[l].End(); m++)
+            for (int j = C[i].Start(); j < C[i].End(); j++)
             {
-                auto I = l - C.Start();
-                auto J = m - C[l].Start();
-                for (int n = 0; n < rows/2; n++)
-                    C[l][m]+=bufferA.get()[I * rows + k] * bufferB.get()[J+rows *k];
+                auto I = i - C.Start();
+                auto J = j - C[i].Start();
+                for (int n = 0; n < rows; n++)
+                    C[i][j]+=bufferA.get()[I * rows + k] * bufferB.get()[J+rows *k];
             }
         }
-        RotationHorizontale(torus,blockA,bufferA,rows*cols);
-        RotationVerticale(torus,blockB,bufferB,rows*cols);
+        RotationHorizontale(torus,bufferA,rows*cols);
+        RotationVerticale(torus,bufferB,rows*cols);
     }
 }

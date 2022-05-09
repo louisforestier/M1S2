@@ -58,8 +58,8 @@ void Produit(
     int i = torus.getRowRing().getRank();
     int j = torus.getColumnRing().getRank();
 
-    int rows = A.m_m;
-    int cols = A.m_n;
+    int rows = A.End() - A.Start();
+    int cols = A.End() - A.Start();
 
     std::shared_ptr<float> blockA(new float[rows*cols]);
     std::shared_ptr<float> blockB(new float[rows*cols]);
@@ -72,9 +72,7 @@ void Produit(
             auto I = k - C.Start();
             auto J = l - C[k].Start();
             blockA.get()[I * rows +J] = A[k][l];
-            bufferA.get()[I * rows +J] = 0.0;
             blockB.get()[I * rows +J] = B[k][l];
-            bufferB.get()[I * rows +J] = 0.0;
             C[k][l]= 0.0;
         }
     }
@@ -88,7 +86,7 @@ void Produit(
             {
                 auto I = l - C.Start();
                 auto J = m - C[l].Start();
-                for (int n = 0; n < rows/2; n++)
+                for (int n = 0; n < rows; n++)
                     C[l][m]+=bufferA.get()[I * rows + k] * bufferB.get()[J+rows *k];
             }
         }
