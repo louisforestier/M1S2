@@ -154,3 +154,6 @@ A3D/projet/imagetest (copie).tga
 A3D/projet/out/production/RayTracing/fr/algo3d/view/MainPane.fxml
 A3D/projet/.idea/workspace.xml
 A3D/projet/imagetest.tga
+AAW/TP Web App/spa/node_modules/*
+AAW/TP Web App/spa/.parcel-cache/*
+APR/TPs/TP11/matrix*.bin

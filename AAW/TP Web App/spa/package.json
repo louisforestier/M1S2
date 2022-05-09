@@ -1,0 +1,13 @@
+{
+  "name": "spa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start-web": 
+  },
+  "author": "",
+  "license": "ISC"
+}
