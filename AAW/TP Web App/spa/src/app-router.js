@@ -4,7 +4,7 @@ const router = express.Router();
 const {eventRouter} = require("./event-router");
 const {personRouter} = require("./person-router");
 
-router.use("/event",eventRouter);
-router.use("/person",personRouter);
+router.use("/events",eventRouter);
+router.use("/persons",personRouter);
 
 module.exports =router;

@@ -6,15 +6,15 @@ let persons = [
     {firstName:'Clémentine',lastName:'Guillot'}]
 
 router.get("/",(req,res) => {
-    res.send("TODO");
+    res.send(persons);
 
 })
 router.post("/",(req,res) => {
-    res.send("TODO");
+    res.send(persons);
 
 })
 router.delete("/:id",(req,res) => {
-    res.send("TODO");
+    res.send(persons);
 
 })
 
