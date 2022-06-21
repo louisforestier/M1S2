@@ -1,22 +1,32 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+/**
+ * Class to calculate the mesh of a capsule
+ */
 public class Tictac extends Mesh {
 
+    /**
+     * Constructor.
+     * @param slice - number of slices composing the silence. Must be superior to 2.
+     * @param quarter - number of quarters composing the silence. Must be superior to 2.
+     */
     public Tictac(int slice, int quarter) {
+        if (quarter < 3) throw new IllegalArgumentException("Quarter must be superior to 2.");
+        if (slice < 3) throw new IllegalArgumentException("Slice must be superior to 2.");
         int verticesSize;
         int trianglesSize;
-        if (slice % 2 == 0){
-           verticesSize = ((slice) * (quarter + 1) + 2) * 3;
-           trianglesSize = (quarter * (slice - 1) * 2 + quarter * 2) * 3;
+        if (slice % 2 == 0) {
+            verticesSize = ((slice) * (quarter + 1) + 2) * 3;
+            trianglesSize = (quarter * (slice - 1) * 2 + quarter * 2) * 3;
         } else {
-            verticesSize = ((slice-1) * (quarter + 1) + 2) * 3;
+            verticesSize = ((slice - 1) * (quarter + 1) + 2) * 3;
             trianglesSize = (quarter * (slice - 2) * 2 + quarter * 2) * 3;
         }
         vertexpos = new float[verticesSize];
         triangles = new int[trianglesSize];
         float r = 1.f;
         int k = 0;
-        for (int i = 1; i <= slice/2; i++) {
+        for (int i = 1; i <= slice / 2; i++) {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
@@ -26,10 +36,10 @@ public class Tictac extends Mesh {
             }
         }
         int step;
-        if (slice % 2 == 0){
+        if (slice % 2 == 0) {
             step = slice / 2;
         } else {
-            step = slice/2 +1;
+            step = slice / 2 + 1;
         }
         double tmptheta = Math.toRadians(90.0 - (180.0 / slice) * step);
         for (int j = 0; j <= quarter; j++) {
@@ -39,7 +49,7 @@ public class Tictac extends Mesh {
             vertexpos[k++] = (float) (r * Math.cos(tmptheta) * Math.sin(phi));
         }
 
-        for (int i = step+1; i < slice; i++) {
+        for (int i = step + 1; i < slice; i++) {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
@@ -74,7 +84,7 @@ public class Tictac extends Mesh {
         }
         normals = new float[vertexpos.length];
         k = 0;
-        for (int i = 1; i <= slice/2; i++) {
+        for (int i = 1; i <= slice / 2; i++) {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);
@@ -91,7 +101,7 @@ public class Tictac extends Mesh {
             normals[k++] = (float) (r * Math.cos(tmptheta) * Math.sin(phi));
         }
 
-        for (int i = step+1; i < slice; i++) {
+        for (int i = step + 1; i < slice; i++) {
             double theta = Math.toRadians(90.0 - (180.0 / slice) * i);
             for (int j = 0; j <= quarter; j++) {
                 double phi = Math.toRadians((360.0 / quarter) * j);

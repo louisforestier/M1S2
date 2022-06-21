@@ -1,7 +1,14 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
+/**
+ * Class to calculate the mesh of a cube
+ */
 public class Cube extends Mesh {
 
+    /**
+     * Constructor
+     * @param length - length of an edge of the cube, preferably 1.
+     */
     public Cube(float length) {
         float x = length / 2;
         vertexpos = new float[]{

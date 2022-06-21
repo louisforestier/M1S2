@@ -3,9 +3,6 @@
 #define DIRECTIONAL_LIGHT 1
 #define SPOT_LIGHT 2
 precision mediump float;
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform mat3 uNormalMatrix;
 // Light source definition
 uniform float uConstantAttenuation;
 uniform float uLinearAttenuation;
@@ -14,16 +11,14 @@ uniform vec4 uAmbiantLight;
 uniform int uLightType;
 uniform bool uLighting;
 uniform vec3 uLightPos;
-uniform vec3 uSpotDir;
+uniform vec3 uLightDir;
 uniform float uCutOff;
 uniform float uOuterCutOff;
 uniform vec4 uLightColor;
-// Material definition
-uniform bool uNormalizing;
-uniform vec4 uMaterialColor;
-//Specular effect
-uniform float uMaterialShininess;
 uniform vec4 uLightSpecular;
+// Material definition
+uniform vec4 uMaterialColor;
+uniform float uMaterialShininess;
 uniform vec4 uMaterialSpecular;
 
 varying vec4 posf;
@@ -47,7 +42,7 @@ vec4 calcPointLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, fl
 
 vec4 calcDirLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, vec3 normal, vec3 viewdir)
 {
-  vec3 lightdir = normalize(-uSpotDir);
+  vec3 lightdir = normalize(-uLightDir);
   vec3 halfdir = normalize(lightdir + viewdir);
   float weight = max(dot(normal,lightdir),0.0);
   vec4 dColor = uMaterialColor * (ambient + weight*diffuse);
@@ -56,38 +51,13 @@ vec4 calcDirLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, vec3
   return dColor+specColor;
 }
 
-//spotlight sans intensité
-/*
-vec4 calcSpotLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, float constant, float linear, float quadratic, vec3 normal, vec3 posf, vec3 viewdir, float cutoff, float outerCutOff)
-{
-  float distance = length(lightPos-posf);
-  float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
-  vec3 lightdir = normalize(lightPos-posf);
-  float theta = dot(lightdir,normalize(-uSpotDir));
-  if(theta > cutoff)
-  {
-    vec3 halfdir = normalize(lightdir + viewdir);
-    float weight = max(dot(normal,lightdir),0.0);
-    vec4 dColor = uMaterialColor * (ambient + weight*diffuse);
-    float spec = pow(max(dot(halfdir,normal),0.0),uMaterialShininess*4.0);
-    vec4 specColor = uMaterialSpecular * specular * spec;
-    dColor *= attenuation;
-    specColor *= attenuation;
-    return dColor+specColor;
-  }
-  else
-  {
-    return vec4(ambient * uMaterialColor);
-  }
-}
-*/
 
 vec4 calcSpotLight(vec3 lightPos, vec4 diffuse, vec4 ambient, vec4 specular, float constant, float linear, float quadratic, vec3 normal, vec3 posf, vec3 viewdir, float cutoff, float outerCutOff)
 {
   float distance = length(lightPos-posf);
   float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
   vec3 lightdir = normalize(lightPos-posf);
-  float theta = dot(lightdir,normalize(-uSpotDir));
+  float theta = dot(lightdir,normalize(-uLightDir));
   float epsilon = cutoff - outerCutOff;
   float intensity = clamp((theta - outerCutOff) / epsilon,0.0,1.0);
   vec3 halfdir = normalize(lightdir + viewdir);

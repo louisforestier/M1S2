@@ -1,19 +1,10 @@
 #version 100
-#define POINT_LIGHT 0
-#define DIRECTIONAL_LIGHT 1
-#define SPOT_LIGHT 2
 precision mediump float;
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform mat3 uNormalMatrix;
 // Light source definition
 uniform bool uLighting;
 // Material definition
-uniform bool uNormalizing;
 uniform vec4 uMaterialColor;
-//Specular effect
 uniform float uMaterialShininess;
-uniform vec4 uLightSpecular;
 uniform vec4 uMaterialSpecular;
 
 varying vec4 posf;

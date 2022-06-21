@@ -3,14 +3,8 @@ precision mediump float;
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
 uniform mat3 uNormalMatrix;
-// Light source definition
-uniform vec4 uAmbiantLight;
-uniform bool uLighting;
-uniform vec3 uLightPos;
-uniform vec4 uLightColor;
 // Material definition
 uniform bool uNormalizing;
-uniform vec4 uMaterialColor;
 // vertex attributes
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexNormal;

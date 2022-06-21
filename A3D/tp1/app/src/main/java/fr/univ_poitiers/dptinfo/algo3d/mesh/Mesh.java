@@ -1,49 +1,92 @@
 package fr.univ_poitiers.dptinfo.algo3d.mesh;
 
 import android.opengl.GLES20;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import fr.univ_poitiers.dptinfo.algo3d.MyGLRenderer;
 import fr.univ_poitiers.dptinfo.algo3d.Vec3f;
-import fr.univ_poitiers.dptinfo.algo3d.gameobject.Component;
-import fr.univ_poitiers.dptinfo.algo3d.shaders.LightingShaders;
+import fr.univ_poitiers.dptinfo.algo3d.shaders.DepthShader;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.MultipleLightingShaders;
 
+/**
+ * Class to contain all datas for Meshes and binding/using the buffers on the GPU.
+ */
 public class Mesh {
+    /**
+     * Handle for the positions buffer.
+     */
     private int glposbuffer;
+    /**
+     * Handle for the triangles buffer.
+     */
     private int gltrianglesbuffer;
+    /**
+     * Handle for the normals buffer
+     */
     private int glnormalbuffer;
+    /**
+     * Handle for the textures coordinates buffer
+     */
     private int gltexturebuffer;
+
+    /**
+     * Array to store the vertex positions.
+     */
     protected float[] vertexpos;
+    /**
+     * Array to store the triangles.
+     */
     protected int[] triangles;
+    /**
+     * Array to store the normals.
+     */
     protected float[] normals;
+    /**
+     * Array to store the textures coordinates.
+     */
     protected float[] texturesCoord;
 
 
+    /**
+     * Default Constructor to be used by subclasses.
+     */
     protected Mesh() {
     }
 
-
+    /**
+     * Constructor to be used mostly by the OBJImporter when no normals are given.
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
+     */
     public Mesh(float[] vertexpos, int[] triangles) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
         this.normals = new float[vertexpos.length];
     }
 
+    /**
+     * Constructor to be used mostly by the OBJImporter when normals are already in the file.
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
+     * @param normals - normals array
+     */
     public Mesh(float[] vertexpos, int[] triangles, float[] normals) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
         this.normals = normals;
     }
 
+    /**
+     * Constructor to be used mostly by the OBJImporter when all vertex informations are present.
+     * @param vertexpos - vertices position array
+     * @param triangles - triangles array
+     * @param normals - normals array
+     * @param textures - texture coordinates array
+     */
     public Mesh(float[] vertexpos, int[] triangles, float[] normals, float[] textures) {
         this.vertexpos = vertexpos;
         this.triangles = triangles;
@@ -51,18 +94,9 @@ public class Mesh {
         this.texturesCoord = textures;
     }
 
-    public final float[] getVertexpos() {
-        return vertexpos;
-    }
-
-    public final int[] getTriangles() {
-        return triangles;
-    }
-
-    public final float[] getNormals() {
-        return normals;
-    }
-
+    /**
+     * Calculate and set the normals of the Mesh for a flat shading appearance.
+     */
     public void calculateFlatShadingNormals() {
         normals = new float[vertexpos.length];
         for (int i = 0; i < triangles.length; i += 3) {
@@ -82,9 +116,12 @@ public class Mesh {
         }
     }
 
+    /**
+     * Calculate and set the normals of the Mesh for a smooth shading appearance.
+     * Hard edges are lost.
+     */
     public void calculateSmoothShadingNormals() {
         normals = new float[vertexpos.length];
-        Map<Integer, List<Vec3f>> vertexNormals = new HashMap<>();
         for (int i = 0; i < triangles.length; i += 3) {
             Vec3f p1 = new Vec3f(vertexpos[triangles[i] * 3], vertexpos[triangles[i] * 3 + 1], vertexpos[triangles[i] * 3 + 2]);
             Vec3f p2 = new Vec3f(vertexpos[triangles[i + 1] * 3], vertexpos[triangles[i + 1] * 3 + 1], vertexpos[triangles[i + 1] * 3 + 2]);
@@ -95,9 +132,9 @@ public class Mesh {
             v2.setSub(p3, p2);
             Vec3f n = new Vec3f();
             n.setCrossProduct(v1, v2);
-            float a1 = calcAngle(p1,p2,p3);
-            float a2 = calcAngle(p2,p3,p1);
-            float a3 = calcAngle(p3,p1,p2);
+            float a1 = calcAngle(p1, p2, p3);
+            float a2 = calcAngle(p2, p3, p1);
+            float a3 = calcAngle(p3, p1, p2);
             Vec3f n1 = n.scale(a1);
             Vec3f n2 = n.scale(a2);
             Vec3f n3 = n.scale(a3);
@@ -110,72 +147,38 @@ public class Mesh {
             normals[triangles[i + 2] * 3] += n3.x;
             normals[triangles[i + 2] * 3 + 1] += n3.y;
             normals[triangles[i + 2] * 3 + 2] += n3.z;
-/*
-            if (!vertexNormals.containsKey(triangles[i] * 3)){
-                vertexNormals.put(triangles[i]*3,new ArrayList<>());
-                vertexNormals.put(triangles[i+1]*3,new ArrayList<>());
-                vertexNormals.put(triangles[i+2]*3,new ArrayList<>());
-            }
-            vertexNormals.get(triangles[i]*3).add(n1);
-            vertexNormals.get(triangles[i+1]*3).add(n2);
-            vertexNormals.get(triangles[i+2]*3).add(n3);
-*/
-
         }
-/*
-        for (int i = 0; i < triangles.length; i += 3) {
-            Vec3f p1 = new Vec3f(vertexpos[triangles[i] * 3], vertexpos[triangles[i] * 3 + 1], vertexpos[triangles[i] * 3 + 2]);
-            Vec3f p2 = new Vec3f(vertexpos[triangles[i + 1] * 3], vertexpos[triangles[i + 1] * 3 + 1], vertexpos[triangles[i + 1] * 3 + 2]);
-            Vec3f p3 = new Vec3f(vertexpos[triangles[i + 2] * 3], vertexpos[triangles[i + 2] * 3 + 1], vertexpos[triangles[i + 2] * 3 + 2]);
-            Vec3f v1 = new Vec3f();
-            v1.setSub(p3, p1);
-            Vec3f v2 = new Vec3f();
-            v2.setSub(p3, p2);
-            Vec3f n = new Vec3f();
-            n.setCrossProduct(v1, v2);
-            Vec3f origin = new Vec3f();
-            for (Vec3f normal : vertexNormals.get(triangles[i]*3)){
-                if (calcAngle(origin,n,normal) < 50) {
-                    normals[triangles[i] * 3] += normal.x;
-                    normals[triangles[i] * 3 + 1] += normal.y;
-                    normals[triangles[i] * 3 + 2] += normal.z;
-                } else {
-
-                }
-
-            }
-            for (Vec3f normal : vertexNormals.get(triangles[i+1]*3)){
-                normals[triangles[i + 1] * 3] += n2.x;
-                normals[triangles[i + 1] * 3 + 1] += n2.y;
-                normals[triangles[i + 1] * 3 + 2] += n2.z;
-
-            }
-            for (Vec3f normal : vertexNormals.get(triangles[i+2]*3)){
-                normals[triangles[i + 2] * 3] += n3.x;
-                normals[triangles[i + 2] * 3 + 1] += n3.y;
-                normals[triangles[i + 2] * 3 + 2] += n3.z;
-
-            }
-        }
-*/
-        for (int i = 0 ; i < normals.length ; i+=3) {
-            Vec3f n = new Vec3f(normals[i],normals[i+1],normals[i+2]);
+        for (int i = 0; i < normals.length; i += 3) {
+            Vec3f n = new Vec3f(normals[i], normals[i + 1], normals[i + 2]);
             n.normalize();
             normals[i] = n.x;
-            normals[i+1] = n.y;
-            normals[i+2] = n.z;
+            normals[i + 1] = n.y;
+            normals[i + 2] = n.z;
         }
     }
 
-    float calcAngle(Vec3f p1, Vec3f p2, Vec3f p3) {
+    /**
+     * Calculate and returns an angle between the vector p1p2 and p1p3.
+     * @param p1 - the common point of the 2 vectors
+     * @param p2 - extremity of the first vector
+     * @param p3 - extremity of the second vector
+     * @return an angle in radian.
+     */
+    private float calcAngle(Vec3f p1, Vec3f p2, Vec3f p3) {
         Vec3f v1 = new Vec3f();
         v1.setSub(p2, p1);
         Vec3f v2 = new Vec3f();
         v2.setSub(p3, p1);
-        float angle = (float) Math.acos(v1.dotProduct(v2) /(v1.length()* v2.length()));
-        return angle;
+        return (float) Math.acos(v1.dotProduct(v2) / (v1.length() * v2.length()));
     }
 
+    /**
+     * Calculate and returns the orthogonal vector between the p1p2 and p1p3 vectors.
+     * @param p1 - the common point of the 2 vectors
+     * @param p2 - extremity of the first vector
+     * @param p3 - extremity of the second vector
+     * @return the normal to a plan defined by the vector p1p2 and p1p3
+     */
     Vec3f getNormal(Vec3f p1, Vec3f p2, Vec3f p3) {
         Vec3f v1 = new Vec3f();
         v1.setSub(p2, p1);
@@ -188,11 +191,14 @@ public class Mesh {
     }
 
 
+    /**
+     * Initialize the buffers on the GPU.
+     */
     public void initGraphics() {
-        //TODO : a retirer après avoir implanté les coordonnées de texture partout
+        //est nécessaire car les coordonnées de textures ne sont pas implantées pour tous les maillages utilisés
         if (texturesCoord == null)
-            texturesCoord = new float[vertexpos.length/3*2];
-        /**
+            texturesCoord = new float[vertexpos.length / 3 * 2];
+        /*
          * Buffer des sommets
          */
         ByteBuffer posbytebuf = ByteBuffer.allocateDirect(vertexpos.length * Float.BYTES);
@@ -202,7 +208,7 @@ public class Mesh {
         posbuffer.position(0);
 
 
-        /**
+        /*
          * Buffer des triangles
          */
         ByteBuffer trianglesbutebuf = ByteBuffer.allocateDirect(triangles.length * Integer.BYTES);
@@ -211,8 +217,7 @@ public class Mesh {
         trianglesbuf.put(triangles);
         trianglesbuf.position(0);
 
-        /**
-         *
+        /*
          * Buffer des normals
          */
         ByteBuffer normalbytebuf = ByteBuffer.allocateDirect(normals.length * Float.BYTES);
@@ -221,8 +226,7 @@ public class Mesh {
         normalbuffer.put(normals);
         normalbuffer.position(0);
 
-        /**
-         *
+        /*
          * Buffer des textures
          */
         ByteBuffer texturebytebuf = ByteBuffer.allocateDirect(texturesCoord.length * Float.BYTES);
@@ -273,26 +277,42 @@ public class Mesh {
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
     }
 
+    /**
+     * Draw the mesh as triangles
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
+     */
     public void draw(final MultipleLightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
         shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glnormalbuffer);
         shaders.setNormalsPointer(3, GLES20.GL_FLOAT);
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,gltexturebuffer);
-        shaders.setTexturePointer(2,GLES20.GL_FLOAT);
-
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, gltexturebuffer);
+        shaders.setTexturePointer(2, GLES20.GL_FLOAT);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
-
-
-
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-
-
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
     }
 
+    /**
+     * Draw the shadow of the mesh.
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
+     */
+    public void draw(final DepthShader shaders) {
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
+        shaders.setPositionsPointer(3, GLES20.GL_FLOAT);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, gltrianglesbuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, triangles.length, GLES20.GL_UNSIGNED_INT, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+    }
+
+    /**
+     * Draw the mesh as triangles and wireframe.
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
+     */
     public void drawWithLines(final MultipleLightingShaders shaders) {
         GLES20.glPolygonOffset(2.F, 4.F);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);
@@ -315,6 +335,10 @@ public class Mesh {
 
     }
 
+    /**
+     * Draw the wireframe of the mesh
+     * @param shaders - shader which receive the buffers as attribute variables to draw the mesh according to its corresponding glsl.
+     */
     public void drawLinesOnly(final MultipleLightingShaders shaders) {
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, glposbuffer);

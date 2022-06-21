@@ -10,8 +10,21 @@ import java.util.List;
 import fr.univ_poitiers.dptinfo.algo3d.mesh.Mesh;
 import fr.univ_poitiers.dptinfo.algo3d.shaders.ShadingMode;
 
+/**
+ * Class to build a mesh from an .obj files.
+ */
 public class OBJImporter {
 
+    /**
+     * Static method to parse the obj file and build the position and triangles array.
+     * Normals are either calculated or parsed if they are present in the obj file.
+     * Texture coordinates are not tested yet.
+     * Still a work in progress, should use a map of to verify if a vertex index, normal index paire already exists.
+     * For now, all vertices are independent when normals are given, so the size of the Mesh can be quite big.
+     * @param stream - stream of the corresponding .obj file, preferably the return of {@link android.content.res.Resources#openRawResource(int)}
+     * @param shadingMode - how the normals should be calculated (flat or smooth).
+     * @return the imported mesh
+     */
     public static Mesh importOBJ(InputStream stream, ShadingMode shadingMode) {
         List<Float> verticesList = new ArrayList<>();
         List<Float> normalsList = new ArrayList<>();
@@ -64,10 +77,10 @@ public class OBJImporter {
                 for (int i = 0; i < verticesList.size(); i++) {
                     vertexpos[i] = verticesList.get(i);
                 }
-                for (int i = 0; i < trianglesList.size(); i ++) {
-                    triangles[i*3] = trianglesList.get(i).getV1().getV() - 1;
-                    triangles[i*3 + 1] = trianglesList.get(i).getV2().getV() - 1;
-                    triangles[i*3 + 2] = trianglesList.get(i).getV3().getV() - 1;
+                for (int i = 0; i < trianglesList.size(); i++) {
+                    triangles[i * 3] = trianglesList.get(i).getV1().getV() - 1;
+                    triangles[i * 3 + 1] = trianglesList.get(i).getV2().getV() - 1;
+                    triangles[i * 3 + 2] = trianglesList.get(i).getV3().getV() - 1;
                 }
                 mesh = new Mesh(vertexpos, triangles);
                 mesh.calculateSmoothShadingNormals();
@@ -150,7 +163,6 @@ public class OBJImporter {
             }
             mesh = new Mesh(vertexpos, triangles, normals, textures);
         }
-
         return mesh;
     }
 
