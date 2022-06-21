@@ -1,6 +1,7 @@
 Rendu A3D Louis Forestier
 
 Structure de l'archive :
+```
 app -
     |- src -
            |- main -
@@ -19,7 +20,7 @@ app -
                    |- res (contient les ressources, notamment les textures et les .obj)
     |- build.gradle
     |- README.md
-
+```
 Les classes sont commentées avec des commentaires types Javadoc.
 
 Le code a été testé sur émulateur avec version d'API 30, ainsi que sur mobile avec Android version 9 (API 28).
@@ -69,7 +70,7 @@ Les autres lumières ne projettent pas d'ombre.
 
 Scène :
 La scène est composée de 4 pièces disposées de cette manière :
-
+```
     N                                           *********** ***********
    O+E                                          *                     *
     S                                           *                     *
@@ -95,7 +96,7 @@ La scène est composée de 4 pièces disposées de cette manière :
       *                                                           *
       *                                                           *
       *************************************************************
-
+```
 Le point de vue de départ est en 0,0,0 au milieu de la pièce 1, qui regarde vers le nord (vers les négatifs de l'axe Z).
 Dans la première pièce, il y a 2 objets Ball.
 Dans la deuxième pièce, il y a une capsule, un cube, un tore, un cylindre plein, un cylindre vide et une pyramide (avec suffisament de quartiers pour que ça ressemble à un cône).
