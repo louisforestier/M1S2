@@ -144,3 +144,16 @@ IHM/TP2IHM/.idea/deploymentTargetDropDown.xml
 settings.json
 /APR/TPs/*/*/*/*/*.obj
 
+.suo
+*.pdb
+*.ilk
+*VC.db
+*.sln.*
+A3D/projet/imagetest (copie).tga
+.gitignore
+A3D/projet/out/production/RayTracing/fr/algo3d/view/MainPane.fxml
+A3D/projet/.idea/workspace.xml
+A3D/projet/imagetest.tga
+AAW/TP Web App/spa/node_modules/*
+AAW/TP Web App/spa/.parcel-cache/*
+APR/TPs/TP11/matrix*.bin

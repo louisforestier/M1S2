@@ -6,7 +6,7 @@ namespace {
 }
 
 bool StudentWorkImpl::isImplemented() const {
-	return false;
+	return true;
 }
 
 void StudentWorkImpl::check() 
