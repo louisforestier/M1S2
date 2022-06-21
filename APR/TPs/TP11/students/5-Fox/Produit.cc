@@ -5,29 +5,29 @@ namespace
 {
     void BroadcastRow(const OPP::MPI::Torus& torus, int i, int j, std::shared_ptr<float> &srcAddr, std::shared_ptr<float>& destAddr, int L )
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
+        using Direction = OPP::MPI::Torus::Direction;
         if (torus.getRowRing().getRank() == j )
         {
-            torus.getRowRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::EAST);
             for (int k = 0; k < L; k++)
                 destAddr.get()[k] = srcAddr.get()[k];
         }
         else if (torus.getRowRing().getNext() == j)
         {
-            torus.getRowRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::WEST);
         }
         else
         {
-            torus.getRowRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
-            torus.getRowRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
-        }   
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::WEST);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::EAST);
+        }
     }
 
     void RotationVerticale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &buffer, int L)
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
-        torus.getColumnRing().Send(buffer.get(),L,MPI_FLOAT,Direction::NEXT);
-        torus.getColumnRing().Recv(buffer.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+        using Direction = OPP::MPI::Torus::Direction;
+        torus.Send(buffer.get(),L,MPI_FLOAT,Direction::SOUTH);
+        torus.Recv(buffer.get(),L,MPI_FLOAT,Direction::NORTH);
     }
 
 } // namespace
@@ -38,7 +38,6 @@ void Produit(
     const DistributedBlockMatrix &B,
           DistributedBlockMatrix &C
 ) {
-    // TODO
     int n = torus.getRowRing().getSize();
     int i = torus.getRowRing().getRank();
 

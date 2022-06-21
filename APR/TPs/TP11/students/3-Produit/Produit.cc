@@ -6,43 +6,41 @@ namespace
 {
     void BroadcastRow(const OPP::MPI::Torus& torus, int i, int j, std::shared_ptr<float> &srcAddr, std::shared_ptr<float>& destAddr, int L )
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
+        using Direction = OPP::MPI::Torus::Direction;
         if (torus.getRowRing().getRank() == j )
         {
-            torus.getRowRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::EAST);
             for (int k = 0; k < L; k++)
                 destAddr.get()[k] = srcAddr.get()[k];
         }
         else if (torus.getRowRing().getNext() == j)
         {
-            torus.getRowRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::WEST);
         }
         else
         {
-            torus.getRowRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
-            torus.getRowRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::WEST);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::EAST);
         }
-        
-        
     }
     
     void BroadcastCol(const OPP::MPI::Torus& torus, int i, int j, std::shared_ptr<float> &srcAddr, std::shared_ptr<float>& destAddr, int L )
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
+        using Direction = OPP::MPI::Torus::Direction;
         if (torus.getColumnRing().getRank() == i )
         {
-            torus.getColumnRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::SOUTH);
             for (int k = 0; k < L; k++)
                 destAddr.get()[k] = srcAddr.get()[k];
         }
         else if (torus.getColumnRing().getNext() == i)
         {
-            torus.getColumnRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::NORTH);
         }
         else
         {
-            torus.getColumnRing().Recv(destAddr.get(),L,MPI_FLOAT,Direction::PREVIOUS);
-            torus.getColumnRing().Send(srcAddr.get(),L,MPI_FLOAT,Direction::NEXT);
+            torus.Recv(destAddr.get(),L,MPI_FLOAT,Direction::NORTH);
+            torus.Send(srcAddr.get(),L,MPI_FLOAT,Direction::SOUTH);
         }
     }
     

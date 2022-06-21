@@ -5,16 +5,16 @@ namespace
 {
     void RotationHorizontale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &buffer,int L)
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
-        torus.getRowRing().Send(buffer.get(),L,MPI_FLOAT,Direction::NEXT);
-        torus.getRowRing().Recv(buffer.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+        using Direction = OPP::MPI::Torus::Direction;
+        torus.Send(buffer.get(),L,MPI_FLOAT,Direction::EAST);
+        torus.Recv(buffer.get(),L,MPI_FLOAT,Direction::WEST);
     }
 
     void RotationVerticale(const OPP::MPI::Torus& torus,std::shared_ptr<float> &buffer, int L)
     {
-        using Direction = OPP::MPI::BidirRing::Direction;
-        torus.getColumnRing().Send(buffer.get(),L,MPI_FLOAT,Direction::NEXT);
-        torus.getColumnRing().Recv(buffer.get(),L,MPI_FLOAT,Direction::PREVIOUS);
+        using Direction = OPP::MPI::Torus::Direction;
+        torus.Send(buffer.get(),L,MPI_FLOAT,Direction::SOUTH);
+        torus.Recv(buffer.get(),L,MPI_FLOAT,Direction::NORTH);
     }
 } // namespace
 
@@ -24,7 +24,6 @@ void Produit(
     const DistributedBlockMatrix &B,
           DistributedBlockMatrix &C
 ) {
-    // TODO
     int n = torus.getRowRing().getSize();
 
     int rows = A.End() - A.Start();
@@ -61,4 +60,6 @@ void Produit(
         RotationHorizontale(torus,bufferA,rows*cols);
         RotationVerticale(torus,bufferB,rows*cols);
     }
+    RotationHorizontale(torus,bufferA,rows*cols);
+    RotationVerticale(torus,bufferB,rows*cols);
 }
