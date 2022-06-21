@@ -6,7 +6,7 @@ android {
     compileSdk 30
 
     defaultConfig {
-        applicationId "com.a3d.android.tp1"
+        applicationId "com.a3d.android.tp4"
         minSdk 25
         targetSdk 30
         versionCode 1
