@@ -25,15 +25,13 @@ Les classes sont commentées avec des commentaires types Javadoc.
 
 Le code a été testé sur émulateur avec version d'API 30, ainsi que sur mobile avec Android version 9 (API 28).
 Avec API inférieur à 30, j'ai plusieurs erreurs que je n'ai pas comprises :
-    - avec émulateur API 25 : 
+- avec émulateur API 25 : 
         "a vertex attribute array is uninitialized. Skipping corresponding vertex attribute" lors de l'appel de renderShadow dès que j'appelle la méthode glDrawElements pour n'importe quel objet. Pourtant, je n'ai pas cette erreur si je commente l'appel à renderShadow donc tout se passe correctement lors de renderScene.
-    - avec émulateur API 28 : 
+- avec émulateur API 28 : 
         "a vertex attribute index out of boundary is detected. Skipping corresponding vertex attribute. buf=0xe79a5a10
         Out of bounds vertex attribute info: clientArray? 0 attribute 2 vbo 216 allocedBufferSize 1648 bufferDataSpecified? 1 wantedStart 0 wantedEnd 20416"
         Encore déclenché par renderShadow
 
-
-Je n'ai pas fait les exercices facultatifs du tp6.
 
 Contrôles :
 Pour se déplacer dans l'espace, j'ai implanté des contrôles simulant des joysticks.
@@ -51,15 +49,15 @@ Je me suis grandement inspiré de l'architecture de Unity.
 
 Ainsi, les objets que j'affiche sont de la classe GameObject.
 Cette classe a plusieurs attributs :
-    - une transform "transform" de la classe Transform
-    - une liste d'objets enfants "children"
-    - une liste de composants de la classe Component
-    - un objet parent "parent"
+- une transform "transform" de la classe Transform
+- une liste d'objets enfants "children"
+- une liste de composants de la classe Component
+- un objet parent "parent"
 
 Les composants réalisés sont :
-    - MeshFilter qui est un conteneur de maillage
-    - MeshRenderer qui affiche le maillage du MeshFilter en fonction des attributs du material
-    - Light qui permet d'émettre de la lumière
+- MeshFilter qui est un conteneur de maillage
+- MeshRenderer qui affiche le maillage du MeshFilter en fonction des attributs du material
+- Light qui permet d'émettre de la lumière
 
 Au niveau des shaders, j'ai laissé toutes celles que j'ai créé.
 La plus abouti est la classes ShadowShaders avec les glsl shadow_frag et shadow_vert.
