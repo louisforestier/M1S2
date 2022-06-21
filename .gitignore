@@ -1,14 +1,14 @@
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+*.gradle
+*/local.properties
+*/.idea/caches
+*/.idea/libraries
+*/.idea/modules.xml
+*/.idea/workspace.xml
+*/.idea/navEditor.xml
+*/.idea/assetWizardSettings.xml
 .DS_Store
-/build
+*/build
 /captures
 .externalNativeBuild
 .cxx
@@ -154,6 +154,10 @@ A3D/projet/imagetest (copie).tga
 A3D/projet/out/production/RayTracing/fr/algo3d/view/MainPane.fxml
 A3D/projet/.idea/workspace.xml
 A3D/projet/imagetest.tga
-AAW/TP Web App/spa/node_modules/*
-AAW/TP Web App/spa/.parcel-cache/*
+*/node_modules/*
+*/.parcel-cache/*
 APR/TPs/TP11/matrix*.bin
+*/dist/*
+AAW/TP_Web_App/spa/.parcel-cache/*
+AAW/TP_Web_App/spa/node_modules/*
+AAW/TP_Web_App/spa/dist/*
