@@ -15,7 +15,7 @@ cd win32
 call :colorPrint 4e , "Configure the projet ..." , /n
 @REM cmake -G"Visual Studio 16 2019" ..
 @REM Or the next line
-cmake -G"Visual Studio 17 2022" ..
+cmake -G"Visual Studio 16 2019" ..
 
 if not [%PARAMS%]==[] set TARGETS=%PARAMS%
 

@@ -11,7 +11,6 @@ namespace
         const DistributedBlockMatrix& M,
         const unsigned width
     ) {
-        // TODO
         for (int i = M.Start(); i < M.End(); i++)
         {
             for (int j = M[i].Start(); j < M[i].End(); j++)
